@@ -19,7 +19,8 @@ print(value)
 PY
 }
 DATA_DIR=${TRAINING_KNOWCARD_DIR:-$(env_value TRAINING_KNOWCARD_DIR ../ai-visit-training/knowcard_output)}
-MODEL_DIR=${FUNASR_MODELS_DIR:-$(env_value FUNASR_MODELS_DIR ../models/funasr)}
+MODEL_DIR=${FUNASR_MODELS_DIR:-$(env_value FUNASR_MODELS_DIR /mnt/disk/models/funasr)}
+TTS_MODEL_ROOT=${TTS_MODELS_DIR:-$(env_value TTS_MODELS_DIR /mnt/disk/models/tts)}
 PORT=${GATEWAY_PORT:-$(env_value GATEWAY_PORT 8080)}
 
 command -v docker >/dev/null || { echo "ERROR: docker is not installed"; exit 1; }
@@ -33,9 +34,12 @@ ss -lnt 2>/dev/null | grep -E ":($PORT|8000|5000)\b" || true
 test -f .env || echo "WARNING: deploy/.env is missing"
 docker compose config --quiet
 python3 validate-data.py "$DATA_DIR" || true
-for name in paraformer-zh fsmn-vad ct-punc-c; do
-  test -d "$MODEL_DIR/$name" || echo "WARNING: missing ASR model directory: $name"
+for pair in "paraformer paraformer-zh" "vad fsmn-vad" "punc ct-punc-c"; do
+  read -r preferred legacy <<<"$pair"
+  [[ -d "$MODEL_DIR/$preferred" || -d "$MODEL_DIR/$legacy" ]] || echo "WARNING: missing ASR model directory: $preferred"
 done
+test -f "$TTS_MODEL_ROOT/vits-melo-tts-zh_en/model.onnx" || echo "WARNING: missing TTS model.onnx"
+test -f "$TTS_MODEL_ROOT/vits-melo-tts-zh_en/tokens.txt" || echo "WARNING: missing TTS tokens.txt"
 docker compose ps
 curl -sS "http://127.0.0.1:$PORT/api/health" || true
 echo

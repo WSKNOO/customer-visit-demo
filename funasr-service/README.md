@@ -6,9 +6,9 @@ Required model layout:
 
 ```text
 /mnt/disk/models/funasr/
-├── paraformer-zh/
-├── fsmn-vad/
-└── ct-punc-c/
+├── paraformer/
+├── vad/
+└── punc/
 ```
 
 The three directories must contain complete ModelScope snapshots, including model configuration, weights and tokenizer files referenced by each model configuration. Copy an already verified cache; do not copy only weight files.
@@ -28,6 +28,6 @@ Multiple workers are intentionally prohibited: every worker would load another f
 
 WAV, WebM/Opus, Ogg/Opus and MP3 are normalized through FFmpeg. Raw signed 16-bit, 16 kHz, mono PCM is accepted only when `format=pcm` is explicitly supplied.
 
-Production must keep `FUNASR_ALLOW_MODEL_DOWNLOAD=false` and `FUNASR_DEVICE=cpu`. Future GPU use requires an explicit `cuda:N` value and `CUDA_VISIBLE_DEVICES`; the service never auto-selects CUDA.
+Production must keep `FUNASR_ALLOW_MODEL_DOWNLOAD=false` and `ASR_DEVICE=cpu`. `ASR_MODEL_DIR` points to the common root. `FUNASR_MODEL_DIR`, `FUNASR_VAD_MODEL_DIR` and `FUNASR_PUNC_MODEL_DIR` remain optional per-model overrides. Future GPU use requires an explicit `cuda:N` value and `CUDA_VISIBLE_DEVICES`; the service never auto-selects CUDA.
 
-The legacy code references ModelScope aliases `paraformer-zh`, `fsmn-vad` and `ct-punc-c`; retain the exact tested snapshot revision when copying its cache. The new service passes local paths to `AutoModel` with updates disabled, so a complete local snapshot is required and startup never downloads missing content.
+The service also recognizes the historical directory names `paraformer-zh`, `fsmn-vad` and `ct-punc-c` when the preferred names are absent. Retain the exact tested snapshot revision when copying its cache. Local paths are passed to `AutoModel` with updates disabled, so a complete local snapshot is required and startup never downloads missing content. The model is loaded once during process startup; use one worker.

@@ -18,5 +18,14 @@ if curl -fsS --max-time 1 http://127.0.0.1:9/health >/dev/null 2>&1; then echo "
 if [[ -z "$AUDIO_FILE" ]]; then echo; echo "Status checked; pass an approved local WAV/WebM fixture to test transcription."; exit 0; fi
 test -f "$AUDIO_FILE"
 format=${AUDIO_FILE##*.}
-curl -fsS -X POST "$BASE_URL/api/asr/transcribe" -F "file=@$AUDIO_FILE" -F "format=$format" -F language=zh
-echo
+result=$(curl -fsS -X POST "$BASE_URL/api/asr/transcribe" -F "audio=@$AUDIO_FILE" -F "format=$format" -F language=zh)
+python3 - "$result" <<'PY'
+import json, re, sys
+payload = json.loads(sys.argv[1])
+text = str(payload.get('text') or '').strip()
+assert payload.get('success') is True, payload
+assert text, payload
+assert re.search(r'[\u3400-\u9fff]', text), f'No Chinese text recognized: {text!r}'
+print('ASR READY')
+print('Text:', text)
+PY

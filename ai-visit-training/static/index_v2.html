@@ -193,6 +193,8 @@
         .record-btn {
             background: #f1f1f4;
             box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            width: auto; min-width: 112px; padding: 0 14px; border-radius: 21px;
+            color: #4b5563; font-size: 0.82rem; font-weight: 600;
         }
         .record-btn:hover { background: #e8e8ed; }
         .record-btn.recording {
@@ -202,6 +204,8 @@
         .record-btn.recording svg { fill: #fff; }
         @keyframes recording-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,59,48,0.4)} 50%{box-shadow:0 0 0 12px rgba(255,59,48,0)} }
         .record-btn svg { width: 22px; height: 22px; fill: #8e8e93; }
+        .tts-play-btn { margin-top: 8px; padding: 6px 11px; border: 0; border-radius: 14px; background: #fff; color: #007aff; cursor: pointer; font-size: 0.78rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .tts-play-btn:disabled { color: #8e8e93; cursor: not-allowed; opacity: 0.65; }
 
         .send-btn {
             background: #007aff;
@@ -547,7 +551,7 @@
             <p id="modeDescription">客户拜访AI智能对练系统 | 正在检测运行模式</p>
             <div class="status-bar" id="statusBar">
                 <div class="status-item"><div class="status-dot loading" id="micStatus"></div><span id="micStatusText">麦克风：检测中...</span></div>
-                <div class="status-item"><div class="status-dot loading" id="asrStatus"></div><span id="asrStatusText">ASR：检测中...</span></div>
+                <div class="status-item"><div class="status-dot loading" id="asrStatus"></div><span id="asrStatusText">语音输入：检测中...</span></div>
                 <div class="status-item"><div class="status-dot loading" id="aiStatus"></div><span id="aiStatusText">AI模型：检测中</span></div>
                 <div class="status-item"><div class="status-dot" id="envStatus"></div><span id="envStatusText">环境：检测中</span></div>
                 <div class="mode-toggle" id="reverseModeToggle">
@@ -617,31 +621,15 @@
                     </div>
                 </div>
 
-                <!-- TTS语音 -->
+                <!-- 可选语音播放 -->
                 <div class="panel">
-                    <h3>🔊 AI语音播放</h3>
-                    <div class="tts-panel">
-                        <div class="tts-toggle-row">
-                            <span class="tts-toggle-label">🔊 AI语音播报</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="ttsToggle">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="voice-select-wrapper">
-                            <select class="voice-select" id="ttsVoice">
-                                <option value="zh-CN-YunxiNeural">云希(男) - 成熟稳重</option>
-                                <option value="zh-CN-YunjianNeural">云健(男) - 年轻阳光</option>
-                                <option value="zh-CN-YunyangNeural">云扬(男) - 新闻播报</option>
-                                <option value="zh-CN-XiaoxiaoNeural">晓晓(女) - 温柔亲切</option>
-                            </select>
-                        </div>
-                    </div>
+                    <h3>🔊 语音输出</h3>
+                    <div id="ttsStatusText" style="font-size:0.82rem;color:#8e8e93;">播放语音未启用</div>
                 </div>
 
-                <!-- 实时转写 -->
+                <!-- 语音输入 -->
                 <div class="panel">
-                    <h3>🎤 实时转写</h3>
+                    <h3>🎤 语音输入</h3>
                     <div class="transcript-box">
                         <div class="transcript-label">语音识别结果</div>
                         <div class="transcript-text" id="transcriptText">等待说话...</div>
@@ -678,9 +666,7 @@
                     <div class="input-row">
                         <div class="input-wrapper">
                             <input type="text" id="textInput" placeholder="输入消息或使用麦克风录音..." />
-                            <button class="record-btn" id="recordBtn" title="点击开始/停止录音">
-                                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                            </button>
+                            <button class="record-btn" id="recordBtn" title="点击开始或结束录音">🎤 开始录音</button>
                         </div>
                         <button class="send-btn" id="sendBtn" title="发送消息 (Enter)">
                             <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
@@ -845,7 +831,7 @@
         selectedScene: '通用销售', selectedSceneId: '通用销售', selectedSceneName: '通用销售',
         selectedSceneFullName: '通用销售', selectedSceneGroup: '', selectedDifficulty: '中等', messages: [],
         msgCount: 0, startTime: Date.now(), isRecording: false, recognition: null,
-        ttsEnabled: false, ttsVoice: 'zh-CN-YunxiNeural', ttsAudio: null, isPlayingTts: false,
+        ttsAvailable: false, ttsAudio: null, isPlayingTts: false,
         backendMode: 'lite', demoMode: false, asrReady: false, voiceEnabled: false, voiceAvailable: false, voiceDenied: false,
         finalTranscript: '', interimTranscript: '', sessionStarted: false, roundLimit: 8, conversationEnded: false,
         scoreHistory: [], isNewSession: true,
@@ -1216,12 +1202,12 @@
         if(!isSecure || !navigator.mediaDevices || !window.MediaRecorder){recordBtn.disabled=true;gId('micStatus').className='status-dot error';gId('micStatusText').textContent='麦克风：需 HTTPS 或 localhost';return;}
         recordBtn.disabled=false;gId('micStatus').className='status-dot ready';gId('micStatusText').textContent='麦克风：可用';
     }
-    function startMediaRecording() {if(recordBtn.disabled||state.isRecording)return;navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true}}).then(function(stream){var mime='';['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus'].some(function(v){if(MediaRecorder.isTypeSupported(v)){mime=v;return true;}return false;});state.mediaStream=stream;state.audioChunks=[];state.mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);state.mediaRecorder.ondataavailable=function(e){if(e.data&&e.data.size)state.audioChunks.push(e.data);};state.mediaRecorder.onstop=uploadRecordedAudio;state.mediaRecorder.onerror=function(){finishRecording();transcriptText.textContent='录音失败，请改用文字输入';};state.isRecording=true;recordBtn.classList.add('recording');transcriptText.textContent='正在录音，再次点击结束';state.mediaRecorder.start(500);}).catch(function(){state.voiceDenied=true;finishRecording();transcriptText.textContent='麦克风不可用，请检查权限或改用文字输入';});}
-    function stopMediaRecording(){state.isRecording=false;recordBtn.classList.remove('recording');if(state.mediaRecorder&&state.mediaRecorder.state!=='inactive'){state.mediaRecorder.stop();}else{finishRecording();}}
+    function startMediaRecording() {if(recordBtn.disabled||state.isRecording)return;navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true}}).then(function(stream){var mime='';['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus'].some(function(v){if(MediaRecorder.isTypeSupported(v)){mime=v;return true;}return false;});state.mediaStream=stream;state.audioChunks=[];state.mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);state.mediaRecorder.ondataavailable=function(e){if(e.data&&e.data.size)state.audioChunks.push(e.data);};state.mediaRecorder.onstop=uploadRecordedAudio;state.mediaRecorder.onerror=function(){finishRecording();recordBtn.textContent='🎤 开始录音';transcriptText.textContent='录音失败，请改用文字输入';};state.isRecording=true;recordBtn.classList.add('recording');recordBtn.textContent='⏹ 结束录音';transcriptText.textContent='正在录音，再次点击结束';state.mediaRecorder.start(500);}).catch(function(){state.voiceDenied=true;finishRecording();recordBtn.textContent='🎤 开始录音';transcriptText.textContent='麦克风不可用，请检查权限或改用文字输入';});}
+    function stopMediaRecording(){state.isRecording=false;recordBtn.classList.remove('recording');recordBtn.textContent='正在识别…';if(state.mediaRecorder&&state.mediaRecorder.state!=='inactive'){state.mediaRecorder.stop();}else{finishRecording();recordBtn.textContent='🎤 开始录音';}}
     function finishRecording(){state.isRecording=false;recordBtn.classList.remove('recording');if(state.mediaStream){state.mediaStream.getTracks().forEach(function(t){t.stop();});}state.mediaStream=null;state.mediaRecorder=null;}
-    function uploadRecordedAudio(){var chunks=state.audioChunks.slice();var mime=(chunks[0]&&chunks[0].type)||'audio/webm';finishRecording();if(!chunks.length){transcriptText.textContent='未录到音频，请重试或使用文字输入';return;}var blob=new Blob(chunks,{type:mime});var format=mime.indexOf('ogg')>=0?'ogg':'webm';var form=new FormData();form.append('file',blob,'recording.'+format);form.append('format',format);form.append('language','zh');transcriptText.textContent='正在识别...';recordBtn.disabled=true;fetch('/api/asr/transcribe',{method:'POST',body:form}).then(function(r){return r.json().then(function(d){return {ok:r.ok,data:d};});}).then(function(v){if(!v.ok||!v.data.success)throw new Error(v.data.error||'识别失败');var text=(v.data.text||'').trim();if(!text){transcriptText.textContent='未识别到文字，请重试或手动输入';return;}transcriptText.textContent=text;gId('textInput').value=text;gId('textInput').focus();}).catch(function(e){transcriptText.textContent=(e.message||'识别失败')+'，可继续使用文字输入';}).finally(function(){recordBtn.disabled=!state.voiceEnabled;});}
+    function uploadRecordedAudio(){var chunks=state.audioChunks.slice();var mime=(chunks[0]&&chunks[0].type)||'audio/webm';finishRecording();if(!chunks.length){recordBtn.textContent='🎤 开始录音';transcriptText.textContent='未录到音频，请重试或使用文字输入';return;}var blob=new Blob(chunks,{type:mime});var format=mime.indexOf('ogg')>=0?'ogg':'webm';var form=new FormData();form.append('audio',blob,'recording.'+format);form.append('format',format);form.append('language','zh');transcriptText.textContent='正在识别...';recordBtn.disabled=true;fetch('/api/asr/transcribe',{method:'POST',body:form}).then(function(r){return r.json().then(function(d){return {ok:r.ok,data:d};});}).then(function(v){if(!v.ok||!v.data.success)throw new Error(v.data.message||v.data.error||'识别失败');var text=(v.data.text||'').trim();if(!text){transcriptText.textContent='未识别到文字，请重试或手动输入';return;}transcriptText.textContent=text;gId('textInput').value=text;gId('textInput').focus();}).catch(function(e){transcriptText.textContent=(e.message||'识别失败')+'，可继续使用文字输入';}).finally(function(){recordBtn.textContent='🎤 开始录音';recordBtn.disabled=!state.voiceEnabled;});}
 
-    function initTts() { var t=gId('ttsToggle'),v=gId('ttsVoice');if(t){t.checked=false;t.onchange=function(){state.ttsEnabled=t.checked;};}if(v)v.onchange=function(){state.ttsVoice=v.value;}; }
+    function initTts() { state.ttsAvailable=false; }
 
     /* ===== 开挂模式 ===== */
     function initCheatMode() {
@@ -1339,9 +1325,11 @@
         });
     }
 
-    function playTts(text) { if(!state.ttsEnabled)return;var s=text.split('<!--SCORE')[0].trim();if(!s||s.length<2)return;fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:s,voice:state.ttsVoice})}).then(function(r){if(!r.ok)throw new Error('TTS');return r.blob()}).then(function(b){var url=URL.createObjectURL(b);state.ttsAudio=new Audio(url);state.isPlayingTts=true;if(recordBtn){recordBtn.style.pointerEvents='none';recordBtn.style.opacity='0.45';}function reset(){state.isPlayingTts=false;state.ttsAudio=null;URL.revokeObjectURL(url);if(recordBtn){recordBtn.style.pointerEvents='';recordBtn.style.opacity='';}}state.ttsAudio.onended=reset;state.ttsAudio.onerror=reset;state.ttsAudio.play().catch(reset);}).catch(function(){state.isPlayingTts=false;if(recordBtn){recordBtn.style.pointerEvents='';recordBtn.style.opacity='';}}); }
+    function updateTtsButtons(){qsa('.tts-play-btn').forEach(function(b){b.disabled=!state.ttsAvailable;});var s=gId('ttsStatusText');if(s)s.textContent=state.ttsAvailable?'可点击客户回复下方的“播放语音”':'播放语音未启用';}
+    function appendTtsButton(container,text){if(!container||!text)return;var b=document.createElement('button');b.className='tts-play-btn';b.type='button';b.textContent='🔊 播放语音';b.disabled=!state.ttsAvailable;b.onclick=function(){playTts(text,b);};container.appendChild(b);}
+    function playTts(text,button) { if(!state.ttsAvailable)return;var s=stripHiddenBlocks(text).replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();if(!s||s.length<2)return;if(button){button.disabled=true;button.textContent='正在生成语音…';}fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:s})}).then(function(r){if(!r.ok)throw new Error('TTS');return r.blob()}).then(function(b){var url=URL.createObjectURL(b);state.ttsAudio=new Audio(url);state.isPlayingTts=true;if(button)button.textContent='正在播放…';function reset(){state.isPlayingTts=false;state.ttsAudio=null;URL.revokeObjectURL(url);if(button){button.disabled=!state.ttsAvailable;button.textContent='🔊 播放语音';}}state.ttsAudio.onended=reset;state.ttsAudio.onerror=reset;state.ttsAudio.play().catch(reset);}).catch(function(){state.isPlayingTts=false;if(button){button.textContent='播放失败，可重试';setTimeout(function(){button.disabled=!state.ttsAvailable;button.textContent='🔊 播放语音';},1500);}}); }
 
-    function addMessage(role, content) { var lb={user:'你',ai:'AI教练',system:'系统'};var d=document.createElement('div');d.className='message '+role;var formatted=role==='system'?content:formatText(content);d.innerHTML='<div class="role">'+(lb[role]||role)+'</div><div class="text">'+formatted+'</div>';var w=gId('welcomeMsg');if(w)w.style.display='none';chatMessages.appendChild(d);chatMessages.scrollTop=chatMessages.scrollHeight; }
+    function addMessage(role, content) { var lb={user:'你',ai:'AI教练',system:'系统'};var d=document.createElement('div');d.className='message '+role;var formatted=role==='system'?content:formatText(content);d.innerHTML='<div class="role">'+(lb[role]||role)+'</div><div class="text">'+formatted+'</div>';if(role==='ai')appendTtsButton(d,content);var w=gId('welcomeMsg');if(w)w.style.display='none';chatMessages.appendChild(d);chatMessages.scrollTop=chatMessages.scrollHeight; }
 
     function stripHiddenBlocks(text) { var t=text||''; t=t.replace(/<think\b[^>]*>[\s\S]*?<\/think\s*>/gi,''); t=t.replace(/<think\b[^>]*>[\s\S]*$/gi,''); t=t.replace(/<\/think\s*>/gi,''); t=t.replace(/<!--SCORE[\s\S]*?-->/g,''); t=t.replace(/<!--REPORT[\s\S]*?-->/g,''); t=t.replace(/<!--FINAL_REPORT[\s\S]*?FINAL_REPORT_END-->/g,''); t=t.replace(/<!--COACH[\s\S]*?-->/g,''); return t.trim(); }
 
@@ -1432,7 +1420,7 @@
                 html += '</div></div>';
                 document.getElementById('chatMessages').insertAdjacentHTML('beforeend', html);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-                playTts(clean, 'ai');
+                appendTtsButton(chatMessages.lastElementChild, clean);
             } else {
                 addMessage('ai','请求失败：'+(r.error||'未知错误'));
             }
@@ -1474,7 +1462,6 @@
         }else{
             var cleanContent=stripHiddenBlocks(r.content);
             addMessage('ai',cleanContent);
-            playTts(cleanContent,'ai');
         }
         if(r.notice)addMessage('system',r.notice);/* Cheat mode */if(isCheatOn()){queryKnowledge();}else{console.log('[Cheat] Skipped');}}else{addMessage('system','客户暂时没有回应，请稍后重试或继续使用演示模式。');}}).catch(function(){hideTypingIndicator();addMessage('system','连接暂时不稳定，请稍后重试，已输入的内容不会丢失。');}); }
 
@@ -1765,7 +1752,7 @@
 
     function startTimer() { setInterval(function(){var e=Math.floor((Date.now()-state.startTime)/1000);var m=Math.floor(e/60);var s=e%60;gId('duration').textContent=m+':'+(s<10?'0':'')+s;},1000); }
 
-    function detectBackendMode() { fetch('/api/mode').then(function(r){return r.json()}).then(function(d){state.backendMode=d.mode||'lite';state.demoMode=!!d.demo_mode;state.voiceEnabled=!!d.voice_enabled;state.asrProvider=(d.asr&&d.asr.method==='http-service')?'http':'disabled';var db=gId('demoBtn');if(db){db.style.display=state.demoMode?'':'none';db.onclick=startDemoSession;}var md=gId('modeDescription');if(md)md.textContent='客户拜访AI智能对练系统 | '+(state.demoMode?'演示保障模式':(d.mock?'Mock模式':'受控模型模式'))+' | '+(state.voiceEnabled?'语音可选':'纯文字主演示');var ais=gId('aiStatus'),ait=gId('aiStatusText');if(ais&&ait){if(state.demoMode){ais.className='status-dot ready';ait.textContent='AI能力：演示就绪';}else if(d.mock){ais.className='status-dot warning';ait.textContent='AI能力：模拟就绪';}else if(d.model_configured){ais.className='status-dot ready';ait.textContent='AI能力：已就绪';}else{ais.className='status-dot warning';ait.textContent='AI能力：准备中';}}var tt=gId('ttsToggle');if(tt){tt.checked=false;tt.disabled=!d.tts_available;state.ttsEnabled=false;}if(state.voiceEnabled&&state.asrProvider==='http'){state.asrReady=true;gId('asrStatus').className='status-dot ready';gId('asrStatusText').textContent='语音：可用';initMediaRecorder();}else{gId('asrStatus').className='status-dot warning';gId('asrStatusText').textContent='语音：未启用';gId('micStatus').className='status-dot warning';gId('micStatusText').textContent='麦克风：未启用';recordBtn.disabled=true;}}).catch(function(){var ait=gId('aiStatusText');if(ait)ait.textContent='AI能力：暂时不可用';recordBtn.disabled=true;}); }
+    function detectBackendMode() { fetch('/api/mode').then(function(r){return r.json()}).then(function(d){state.backendMode=d.mode||'lite';state.demoMode=!!d.demo_mode;state.voiceEnabled=!!d.voice_enabled;state.ttsAvailable=!!d.tts_available;state.asrProvider=(d.asr&&d.asr.method==='http-service')?'http':'disabled';updateTtsButtons();var db=gId('demoBtn');if(db){db.style.display=state.demoMode?'':'none';db.onclick=startDemoSession;}var md=gId('modeDescription');if(md)md.textContent='客户拜访AI智能对练系统 | '+(state.demoMode?'演示保障模式':(d.mock?'Mock模式':'受控模型模式'))+' | '+(state.voiceEnabled?'语音可选':'纯文字主演示');var ais=gId('aiStatus'),ait=gId('aiStatusText');if(ais&&ait){if(state.demoMode){ais.className='status-dot ready';ait.textContent='AI能力：演示就绪';}else if(d.mock){ais.className='status-dot warning';ait.textContent='AI能力：模拟就绪';}else if(d.model_configured){ais.className='status-dot ready';ait.textContent='AI能力：已就绪';}else{ais.className='status-dot warning';ait.textContent='AI能力：准备中';}}if(state.voiceEnabled&&state.asrProvider==='http'){state.asrReady=true;gId('asrStatus').className='status-dot ready';gId('asrStatusText').textContent='语音输入：可用';initMediaRecorder();}else{gId('asrStatus').className='status-dot warning';gId('asrStatusText').textContent='语音输入：未启用';gId('micStatus').className='status-dot warning';gId('micStatusText').textContent='麦克风：未启用';recordBtn.disabled=true;}}).catch(function(){var ait=gId('aiStatusText');if(ait)ait.textContent='AI能力：暂时不可用';recordBtn.disabled=true;}); }
 
     function applyIntegratedSession(data) {
         state.integrationSessionId = data.session_id;

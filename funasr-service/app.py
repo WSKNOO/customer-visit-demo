@@ -26,10 +26,34 @@ engine = ASREngine(settings)
 inference_slots = asyncio.Semaphore(settings.max_concurrency)
 
 
+ERROR_MESSAGES = {
+    "ASR_MODEL_NOT_LOADED": "语音识别模型尚未就绪",
+    "ASR_MODEL_FILES_MISSING": "语音识别模型文件不完整",
+    "ASR_REQUEST_INVALID": "语音请求格式不正确",
+    "ASR_AUDIO_EMPTY": "音频内容为空",
+    "ASR_FILE_TOO_LARGE": "音频文件过大",
+    "ASR_AUDIO_TOO_LONG": "录音时间过长",
+    "ASR_AUDIO_FORMAT_UNSUPPORTED": "不支持该音频格式",
+    "ASR_AUDIO_FORMAT_MISMATCH": "音频内容与文件格式不一致",
+    "ASR_AUDIO_MIME_MISMATCH": "音频类型不正确",
+    "ASR_AUDIO_INVALID": "音频文件无法读取",
+    "ASR_FFMPEG_NOT_AVAILABLE": "音频转换组件未就绪",
+    "ASR_AUDIO_CONVERSION_TIMEOUT": "音频转换超时",
+    "ASR_NO_SPEECH": "未识别到有效语音",
+    "ASR_REQUEST_TIMEOUT": "语音识别超时",
+    "ASR_INTERNAL_ERROR": "语音识别服务暂不可用",
+}
+
+
 def failure(error_code: str, status_code: int) -> JSONResponse:
     return JSONResponse(
         status_code=status_code,
-        content={"success": False, "text": "", "error_code": error_code},
+        content={
+            "success": False,
+            "text": "",
+            "error_code": error_code,
+            "message": ERROR_MESSAGES.get(error_code, "语音识别失败，请改用文字输入"),
+        },
     )
 
 
@@ -78,6 +102,8 @@ async def models_status():
         **status,
         "model_loaded": engine.loaded,
         "warmup_completed": engine.loaded,
+        "device": settings.device,
+        "provider": engine.provider,
         "error_code": engine.error_code,
     }
 

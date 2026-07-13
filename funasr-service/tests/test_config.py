@@ -9,12 +9,13 @@ from config import Settings
 
 
 def test_defaults_to_cpu(monkeypatch):
+    monkeypatch.delenv("ASR_DEVICE", raising=False)
     monkeypatch.delenv("FUNASR_DEVICE", raising=False)
     assert Settings.from_env().device == "cpu"
 
 
 def test_cuda_requires_explicit_visible_device(monkeypatch):
-    monkeypatch.setenv("FUNASR_DEVICE", "cuda:0")
+    monkeypatch.setenv("ASR_DEVICE", "cuda:0")
     monkeypatch.delenv("CUDA_VISIBLE_DEVICES", raising=False)
     with pytest.raises(ValueError):
         Settings.from_env()
@@ -23,3 +24,16 @@ def test_cuda_requires_explicit_visible_device(monkeypatch):
 def test_concurrency_is_bounded(monkeypatch):
     monkeypatch.setenv("FUNASR_MAX_CONCURRENCY", "99")
     assert Settings.from_env().max_concurrency == 2
+
+
+def test_model_root_uses_demo_directory_layout(monkeypatch, tmp_path):
+    for name in ("paraformer", "vad", "punc"):
+        (tmp_path / name).mkdir()
+    monkeypatch.setenv("ASR_MODEL_DIR", str(tmp_path))
+    monkeypatch.delenv("FUNASR_MODEL_DIR", raising=False)
+    monkeypatch.delenv("FUNASR_VAD_MODEL_DIR", raising=False)
+    monkeypatch.delenv("FUNASR_PUNC_MODEL_DIR", raising=False)
+    settings = Settings.from_env()
+    assert settings.model_dir == tmp_path / "paraformer"
+    assert settings.vad_model_dir == tmp_path / "vad"
+    assert settings.punc_model_dir == tmp_path / "punc"

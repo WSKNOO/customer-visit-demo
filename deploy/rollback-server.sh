@@ -11,6 +11,6 @@ cp -p .env ".env.before-rollback.$(date +%Y%m%d-%H%M%S)" 2>/dev/null || true
 cp -p "$BACKUP_DIR/.env" .env
 chmod 600 .env
 docker compose config --quiet
-# Roll back to the safest baseline first: pure-text training with ASR disabled.
-ASR_PROVIDER=disabled docker compose up -d --remove-orphans
+# Roll back to the safest baseline first: pure-text training with voice services disabled.
+ASR_ENABLED=false TTS_ENABLED=false docker compose up -d --remove-orphans
 docker compose ps

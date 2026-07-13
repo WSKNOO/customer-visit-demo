@@ -72,7 +72,8 @@ services:
       MOCK_MODE: ${TRAINING_MOCK_MODE:-true}
       DEMO_MODE: ${DEMO_MODE:-false}
       DEMO_SCENE_ID: ${DEMO_SCENE_ID:-knowcard/标品/省产品运营中心-安全大脑}
-      ASR_PROVIDER: ${ASR_PROVIDER:-disabled}
+      ASR_ENABLED: ${ASR_ENABLED:-false}
+      ASR_PROVIDER: ${ASR_PROVIDER:-http}
       ASR_BASE_URL: ${ASR_BASE_URL:-http://funasr-service:8000}
       ASR_REQUEST_TIMEOUT_SECONDS: ${ASR_REQUEST_TIMEOUT_SECONDS:-120}
       ASR_TIMEOUT_SECONDS: ${ASR_TIMEOUT_SECONDS:-120}
@@ -80,6 +81,11 @@ services:
       MAX_AUDIO_BYTES: ${MAX_AUDIO_BYTES:-52428800}
       MAX_CONTENT_LENGTH_MB: ${MAX_CONTENT_LENGTH_MB:-52}
       TTS_ENABLED: ${TTS_ENABLED:-false}
+      TTS_PROVIDER: ${TTS_PROVIDER:-http}
+      TTS_BASE_URL: ${TTS_BASE_URL:-http://tts-service:8001}
+      TTS_REQUEST_TIMEOUT_SECONDS: ${TTS_REQUEST_TIMEOUT_SECONDS:-30}
+      TTS_MAX_TEXT_CHARS: ${TTS_MAX_TEXT_CHARS:-500}
+      TTS_MAX_AUDIO_BYTES: ${TTS_MAX_AUDIO_BYTES:-20971520}
       CORS_ORIGINS: ${PUBLIC_ORIGIN:-http://localhost:8080}
       DEEPSEEK_BASE_URL: ${TRAINING_MODEL_BASE_URL:-}
       DEEPSEEK_MODEL: ${TRAINING_MODEL_NAME:-}
@@ -93,7 +99,7 @@ services:
       MAX_SESSIONS: ${MAX_SESSIONS:-100}
       HTTP_PROXY: ${HTTP_PROXY:-}
       HTTPS_PROXY: ${HTTPS_PROXY:-}
-      NO_PROXY: ${NO_PROXY:-127.0.0.1,localhost,ai-training,funasr-service,customer-intelligence-api,unified-portal,nginx}
+      NO_PROXY: ${NO_PROXY:-127.0.0.1,localhost,ai-training,funasr-service,tts-service,customer-intelligence-api,unified-portal,nginx}
     volumes:
       - type: bind
         source: ${TRAINING_KNOWCARD_DIR:-../ai-visit-training/knowcard_output}
@@ -115,30 +121,58 @@ services:
       args:
         DEBIAN_MIRROR: ${DEBIAN_MIRROR:-deb.debian.org}
     environment:
-      FUNASR_DEVICE: ${FUNASR_DEVICE:-cpu}
-      FUNASR_MODEL_DIR: /models/paraformer-zh
-      FUNASR_VAD_MODEL_DIR: /models/fsmn-vad
-      FUNASR_PUNC_MODEL_DIR: /models/ct-punc-c
+      ASR_MODEL_DIR: /models/funasr
+      ASR_DEVICE: cpu
+      FUNASR_DEVICE: cpu
       FUNASR_MAX_CONCURRENCY: ${FUNASR_MAX_CONCURRENCY:-2}
       FUNASR_REQUEST_TIMEOUT_SECONDS: ${FUNASR_TIMEOUT_SECONDS:-120}
       FUNASR_MAX_AUDIO_SECONDS: ${FUNASR_MAX_AUDIO_SECONDS:-120}
       FUNASR_MAX_FILE_SIZE_MB: ${FUNASR_MAX_UPLOAD_MB:-50}
       FUNASR_TORCH_THREADS: ${FUNASR_THREADS:-16}
       FUNASR_ALLOW_MODEL_DOWNLOAD: "false"
-      CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES:-}
+      CUDA_VISIBLE_DEVICES: ""
     volumes:
       - type: bind
-        source: ${FUNASR_MODELS_DIR:-../models/funasr}
-        target: /models
+        source: ${FUNASR_MODELS_DIR:-/mnt/disk/models/funasr}
+        target: /models/funasr
         read_only: true
         bind:
-          create_host_path: false
+          create_host_path: true
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
       interval: 15s
       timeout: 3s
       retries: 8
       start_period: 120s
+    restart: unless-stopped
+
+  tts-service:
+    profiles: ["tts"]
+    image: ${TTS_IMAGE:-deploy-tts-service}:${IMAGE_TAG:-dev}
+    build:
+      context: ../tts-service
+    environment:
+      TTS_MODEL_DIR: /models/tts/vits-melo-tts-zh_en
+      TTS_DEVICE: cpu
+      TTS_DATA_DIR: ${TTS_DATA_DIR:-}
+      TTS_NUM_THREADS: ${TTS_NUM_THREADS:-8}
+      TTS_MAX_TEXT_CHARS: ${TTS_MAX_TEXT_CHARS:-500}
+      TTS_SPEAKER_ID: ${TTS_SPEAKER_ID:-0}
+      TTS_SPEED: ${TTS_SPEED:-1.0}
+      CUDA_VISIBLE_DEVICES: ""
+    volumes:
+      - type: bind
+        source: ${TTS_MODELS_DIR:-/mnt/disk/models/tts}
+        target: /models/tts
+        read_only: true
+        bind:
+          create_host_path: true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health', timeout=2)"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
     restart: unless-stopped
 
   nginx:

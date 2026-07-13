@@ -15,8 +15,17 @@ services:
     volumes:
       - ../funasr-service:/app:ro
       - type: bind
-        source: ${FUNASR_MODELS_DIR:-../models/funasr}
-        target: /models
+        source: ${FUNASR_MODELS_DIR:-/mnt/disk/models/funasr}
+        target: /models/funasr
         read_only: true
         bind:
-          create_host_path: false
+          create_host_path: true
+  tts-service:
+    volumes:
+      - ../tts-service:/app:ro
+      - type: bind
+        source: ${TTS_MODELS_DIR:-/mnt/disk/models/tts}
+        target: /models/tts
+        read_only: true
+        bind:
+          create_host_path: true

@@ -29,7 +29,7 @@ from model_client import (
 )
 from pathlib import Path
 from urllib.parse import unquote
-from flask import Flask, request, jsonify, send_from_directory, send_file
+from flask import Flask, request, jsonify, send_from_directory, send_file, Response
 from flask_cors import CORS
 from dotenv import load_dotenv
 import requests
@@ -80,8 +80,11 @@ DEMO_SCENE_ID = os.getenv('DEMO_SCENE_ID', 'knowcard/标品/省产品运营中�
 TRAINING_MODEL_ENABLE_THINKING = parse_bool(os.getenv('TRAINING_MODEL_ENABLE_THINKING'), False)
 TRAINING_MODEL_MAX_TOKENS = parse_bounded_int(os.getenv('TRAINING_MODEL_MAX_TOKENS'), 1000, 256, 4096)
 MODEL_CONFIG_STATUS = validate_model_config(DEEPSEEK_BASE_URL, DEEPSEEK_API_KEY, DEEPSEEK_MODEL)
-_legacy_asr_enabled = parse_bool(os.getenv('ASR_ENABLED', os.getenv('VOICE_ENABLED')), False)
+_asr_enabled_setting = os.getenv('ASR_ENABLED')
+_legacy_asr_enabled = parse_bool(_asr_enabled_setting if _asr_enabled_setting is not None else os.getenv('VOICE_ENABLED'), False)
 ASR_PROVIDER = os.getenv('ASR_PROVIDER', '').strip().lower() or ('browser' if _legacy_asr_enabled else 'disabled')
+if _asr_enabled_setting is not None and not _legacy_asr_enabled:
+    ASR_PROVIDER = 'disabled'
 if ASR_PROVIDER not in {'disabled', 'browser', 'http'}:
     app.logger.warning('Unsupported ASR_PROVIDER; voice input is disabled')
     ASR_PROVIDER = 'disabled'
@@ -90,7 +93,15 @@ VOICE_ENABLED = ASR_ENABLED
 ASR_BASE_URL = os.getenv('ASR_BASE_URL', 'http://funasr-service:8000').rstrip('/')
 ASR_REQUEST_TIMEOUT_SECONDS = min(180, max(5, int(os.getenv('ASR_REQUEST_TIMEOUT_SECONDS', os.getenv('ASR_TIMEOUT_SECONDS', '120')))))
 TTS_ENABLED = os.getenv('TTS_ENABLED', '').lower() in ('1', 'true', 'yes')
-TTS_CONFIGURED = False
+TTS_PROVIDER = os.getenv('TTS_PROVIDER', 'disabled' if not TTS_ENABLED else 'http').strip().lower()
+if TTS_PROVIDER not in {'disabled', 'http'}:
+    app.logger.warning('Unsupported TTS_PROVIDER; voice playback is disabled')
+    TTS_PROVIDER = 'disabled'
+TTS_BASE_URL = os.getenv('TTS_BASE_URL', 'http://tts-service:8001').rstrip('/')
+TTS_REQUEST_TIMEOUT_SECONDS = min(60, max(2, int(os.getenv('TTS_REQUEST_TIMEOUT_SECONDS', '30'))))
+TTS_MAX_TEXT_CHARS = min(2000, max(20, int(os.getenv('TTS_MAX_TEXT_CHARS', '500'))))
+TTS_MAX_AUDIO_BYTES = min(50 * 1024 * 1024, max(1024, int(os.getenv('TTS_MAX_AUDIO_BYTES', str(20 * 1024 * 1024)))))
+TTS_CONFIGURED = TTS_ENABLED and TTS_PROVIDER == 'http' and bool(TTS_BASE_URL)
 MAX_AUDIO_BYTES = int(os.getenv('MAX_AUDIO_BYTES', str(5 * 1024 * 1024)))
 ASR_DEBUG_AUDIO = os.getenv('ASR_DEBUG_AUDIO', '').lower() in ('1', 'true', 'yes')
 SESSION_TTL_SECONDS = int(os.getenv('SESSION_TTL_SECONDS', '7200'))
@@ -1455,19 +1466,22 @@ def speech_to_text():
 @app.route('/api/asr/transcribe', methods=['POST'])
 def transcribe_audio():
     """Proxy a bounded browser audio upload to the isolated ASR service."""
+    def fail(message, error_code, status_code):
+        return jsonify({'success': False, 'error': message, 'message': message, 'error_code': error_code}), status_code
+
     if ASR_PROVIDER != 'http':
-        return jsonify({'success': False, 'error': '语音识别未启用', 'error_code': 'ASR_DISABLED'}), 503
-    upload = request.files.get('file') or request.files.get('audio')
+        return fail('语音识别未启用，请继续使用文字输入', 'ASR_DISABLED', 503)
+    upload = request.files.get('audio') or request.files.get('file')
     if upload is None:
-        return jsonify({'success': False, 'error': '缺少音频文件', 'error_code': 'AUDIO_REQUIRED'}), 400
+        return fail('缺少音频文件', 'AUDIO_REQUIRED', 400)
     audio_bytes = upload.stream.read(MAX_AUDIO_BYTES + 1)
     if not audio_bytes:
-        return jsonify({'success': False, 'error': '音频内容为空', 'error_code': 'AUDIO_EMPTY'}), 400
+        return fail('音频内容为空', 'AUDIO_EMPTY', 400)
     if len(audio_bytes) > MAX_AUDIO_BYTES:
-        return jsonify({'success': False, 'error': '音频文件过大', 'error_code': 'AUDIO_TOO_LARGE'}), 413
+        return fail('音频文件过大', 'AUDIO_TOO_LARGE', 413)
     format_type = (request.form.get('format') or Path(upload.filename or '').suffix.lstrip('.') or 'webm').lower()
     if format_type not in {'webm', 'wav', 'mp3', 'ogg', 'm4a', 'pcm'}:
-        return jsonify({'success': False, 'error': '不支持的音频格式', 'error_code': 'AUDIO_FORMAT_INVALID'}), 400
+        return fail('不支持的音频格式', 'AUDIO_FORMAT_INVALID', 400)
     try:
         upstream = requests.post(
             f'{ASR_BASE_URL}/transcribe',
@@ -1476,19 +1490,26 @@ def transcribe_audio():
             timeout=ASR_REQUEST_TIMEOUT_SECONDS,
         )
     except requests.Timeout:
-        return jsonify({'success': False, 'error': '语音识别超时，请重试或改用文字输入', 'error_code': 'ASR_TIMEOUT'}), 504
+        return fail('语音识别超时，请重试或改用文字输入', 'ASR_TIMEOUT', 504)
     except requests.RequestException:
-        return jsonify({'success': False, 'error': '语音识别暂不可用，请改用文字输入', 'error_code': 'ASR_UNAVAILABLE'}), 503
+        return fail('语音识别暂不可用，请改用文字输入', 'ASR_UNAVAILABLE', 503)
     if not upstream.ok:
-        error_code = 'ASR_BUSY' if upstream.status_code in {429, 503} else 'ASR_FAILED'
-        return jsonify({'success': False, 'error': '语音识别失败，请重试或改用文字输入', 'error_code': error_code}), upstream.status_code
+        try:
+            upstream_code = upstream.json().get('error_code')
+        except ValueError:
+            upstream_code = None
+        error_code = upstream_code or ('ASR_BUSY' if upstream.status_code in {429, 503} else 'ASR_FAILED')
+        return fail('语音识别失败，请重试或改用文字输入', error_code, upstream.status_code)
     try:
         result = upstream.json()
     except ValueError:
-        return jsonify({'success': False, 'error': '语音识别返回异常', 'error_code': 'ASR_RESPONSE_INVALID'}), 502
+        return fail('语音识别返回异常', 'ASR_RESPONSE_INVALID', 502)
+    text = str(result.get('text') or '').strip()
+    if not text:
+        return fail('未识别到有效语音，请重试或手动输入', 'ASR_NO_SPEECH', 422)
     return jsonify({
         'success': True,
-        'text': str(result.get('text') or '').strip(),
+        'text': text,
         'duration_ms': result.get('duration_ms'),
         'audio_duration_seconds': result.get('audio_duration_seconds'),
         'request_id': result.get('request_id'),
@@ -2016,11 +2037,13 @@ def get_mode():
         'method': 'disabled', 'status': 'disabled', 'loaded': False, 'error': None
     })
     
+    tts_status = _get_tts_status()
     return jsonify({
         'mode': 'integrated' if ASR_PROVIDER == 'http' else 'lite',
         'asr': asr_info,
         'voice_enabled': VOICE_ENABLED,
-        'tts_available': TTS_ENABLED and TTS_CONFIGURED,
+        'tts_available': tts_status['available'],
+        'tts': tts_status,
         'mock': MOCK_MODE,
         'demo_mode': DEMO_MODE,
         'demo_scene_id': DEMO_SCENE_ID if DEMO_MODE else None,
@@ -2106,22 +2129,67 @@ def test_api():
     except Exception:
         return jsonify({'success': False, 'error': 'Model test failed'}), 500
 
-# ===== Reserved offline TTS contract =====
+def _get_tts_status():
+    if not TTS_ENABLED:
+        return {'enabled': False, 'available': False, 'status': 'disabled', 'provider': 'disabled'}
+    if not TTS_CONFIGURED:
+        return {'enabled': True, 'available': False, 'status': 'not-configured', 'provider': TTS_PROVIDER}
+    try:
+        response = requests.get(f'{TTS_BASE_URL}/health', timeout=min(2, TTS_REQUEST_TIMEOUT_SECONDS))
+        payload = response.json() if response.headers.get('Content-Type', '').startswith('application/json') else {}
+        ready = response.ok and payload.get('status') == 'ok' and payload.get('model_loaded') is True
+        return {'enabled': True, 'available': ready, 'status': 'ready' if ready else 'degraded', 'provider': 'http'}
+    except (requests.RequestException, ValueError):
+        return {'enabled': True, 'available': False, 'status': 'unavailable', 'provider': 'http'}
+
+
+# ===== Optional offline TTS proxy =====
 @app.route('/api/tts', methods=['POST'])
 def tts():
-    """Reserved offline TTS contract; no public-network engine is called."""
+    """Proxy text to the isolated offline CPU TTS service."""
     if not TTS_ENABLED:
         return jsonify({'success': False, 'error': 'TTS feature is disabled', 'error_code': 'TTS_DISABLED'}), 503
     data = request.get_json(silent=True) or {}
-    if not isinstance(data.get('text'), str) or not data['text'].strip():
+    text = data.get('text')
+    if not isinstance(text, str) or not text.strip():
         return jsonify({'success': False, 'error': 'Text is required', 'error_code': 'TTS_TEXT_REQUIRED'}), 400
-    return jsonify({'success': False, 'error': 'Offline TTS is not configured', 'error_code': 'TTS_NOT_CONFIGURED'}), 501
+    text = text.strip()
+    if len(text) > TTS_MAX_TEXT_CHARS:
+        return jsonify({'success': False, 'error': 'Text is too long', 'error_code': 'TTS_TEXT_TOO_LONG'}), 413
+    if not TTS_CONFIGURED:
+        return jsonify({'success': False, 'error': 'Offline TTS is unavailable', 'error_code': 'TTS_UNAVAILABLE'}), 503
+    try:
+        upstream = requests.post(
+            f'{TTS_BASE_URL}/tts',
+            json={'text': text},
+            timeout=TTS_REQUEST_TIMEOUT_SECONDS,
+        )
+        if not upstream.ok or not upstream.headers.get('Content-Type', '').startswith('audio/wav'):
+            return jsonify({'success': False, 'error': 'Offline TTS is unavailable', 'error_code': 'TTS_UNAVAILABLE'}), 503
+        if len(upstream.content) > TTS_MAX_AUDIO_BYTES:
+            return jsonify({'success': False, 'error': 'Generated audio is too large', 'error_code': 'TTS_AUDIO_TOO_LARGE'}), 502
+        return Response(
+            upstream.content,
+            mimetype='audio/wav',
+            headers={'Content-Disposition': 'inline; filename="speech.wav"', 'Cache-Control': 'no-store'},
+        )
+    except requests.Timeout:
+        return jsonify({'success': False, 'error': 'Offline TTS timed out', 'error_code': 'TTS_TIMEOUT'}), 504
+    except requests.RequestException:
+        return jsonify({'success': False, 'error': 'Offline TTS is unavailable', 'error_code': 'TTS_UNAVAILABLE'}), 503
 
 
 @app.route('/api/tts/voices', methods=['GET'])
 def list_voices():
-    """Return the stable contract while no offline voice package is installed."""
-    return jsonify({'success': True, 'configured': False, 'format': 'wav', 'voices': [], 'default': None})
+    """Expose one deployment-selected offline voice without binding the UI to a model."""
+    status = _get_tts_status()
+    return jsonify({
+        'success': True,
+        'configured': status['available'],
+        'format': 'wav',
+        'voices': [{'id': 'default', 'name': '离线中文语音'}] if status['available'] else [],
+        'default': 'default' if status['available'] else None,
+    })
 
 # ==================== 讯飞实时语音转写 ====================
 XF_APPID = os.getenv('XF_APPID', '')

@@ -1,4 +1,4 @@
-# 🎙️ 语音对联 - 客户拜访AI对练系统
+# 🎙️ 语音对练 - 客户拜访AI对练系统
 
 > Phase 2 启动基线：Python 3.11，默认端口 `127.0.0.1:5000`。纯文字为默认主链路，语音和 TTS 默认关闭。旧部署脚本仅兼容保留，所有连接信息必须通过 `DEPLOY_*` 环境变量提供。
 
@@ -20,7 +20,9 @@ export TTS_ENABLED=false
 python app.py
 ```
 
-访问 `http://127.0.0.1:5000`；健康检查为 `GET /api/health`。完整语音依赖使用 `requirements-full.txt`，只有显式设置 `ASR_ENABLED=true` 并使用 `python app.py --full` 才加载 FunASR。
+访问 `http://127.0.0.1:5000`；健康检查为 `GET /api/health`。AI 陪练进程不加载语音模型：设置 `ASR_ENABLED=true`、`ASR_PROVIDER=http` 后代理到独立 `funasr-service`，设置 `TTS_ENABLED=true`、`TTS_PROVIDER=http` 后代理到独立 `tts-service`。
+
+当前 Demo 语音链路为“浏览器 MediaRecorder 单次录音 → `/api/asr/transcribe` → 识别文本填入输入框（不自动发送）→ AI 陪练 → 用户点击 `/api/tts` 播放 WAV”。语音服务失败时文字输入和 AI 回复保持可用。模型只读外置、CPU 推理、不在启动时下载；完整 Compose 配置和部署步骤见 `deploy/DEPLOYMENT_RUNBOOK.md`。下文保留的早期全量设计说明不作为当前部署依据。
 
 测试：
 

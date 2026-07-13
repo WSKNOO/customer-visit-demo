@@ -32,6 +32,11 @@ tmp/
 temp/
 logs/
 models/
+*.onnx
+*.pt
+*.bin
+customer-visit-models.tar.gz
+customer-visit-models.tar.gz.sha256
 legacy-funasr/models/
 funasr-service/models/
 modelscope_cache/

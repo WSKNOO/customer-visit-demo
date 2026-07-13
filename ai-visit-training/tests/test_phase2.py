@@ -1,7 +1,9 @@
 import os
+import io
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import Mock, patch
 
 os.environ["MOCK_MODE"] = "true"
 os.environ["VOICE_ENABLED"] = "false"
@@ -163,10 +165,66 @@ class TrainingApiTests(unittest.TestCase):
         try:
             training_app.TTS_ENABLED = True
             response = self.client.post('/api/tts', json={'text': '测试'})
-            self.assertEqual(response.status_code, 501)
-            self.assertEqual(response.get_json()['error_code'], 'TTS_NOT_CONFIGURED')
+            self.assertEqual(response.status_code, 503)
+            self.assertEqual(response.get_json()['error_code'], 'TTS_UNAVAILABLE')
         finally:
             training_app.TTS_ENABLED = previous_tts
+
+    def test_asr_proxy_accepts_audio_field_and_degrades_safely(self):
+        previous_provider = training_app.ASR_PROVIDER
+        try:
+            training_app.ASR_PROVIDER = 'http'
+            upstream = Mock()
+            upstream.ok = True
+            upstream.json.return_value = {'success': True, 'text': '请先了解我们的现状'}
+            with patch.object(training_app.requests, 'post', return_value=upstream):
+                response = self.client.post('/api/asr/transcribe', data={
+                    'audio': (io.BytesIO(b'RIFF0000WAVEtest'), 'demo.wav'),
+                    'format': 'wav',
+                }, content_type='multipart/form-data')
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.get_json()['text'], '请先了解我们的现状')
+
+            with patch.object(training_app.requests, 'post', side_effect=training_app.requests.ConnectionError):
+                response = self.client.post('/api/asr/transcribe', data={
+                    'audio': (io.BytesIO(b'RIFF0000WAVEtest'), 'demo.wav'),
+                    'format': 'wav',
+                }, content_type='multipart/form-data')
+            self.assertEqual(response.status_code, 503)
+            self.assertEqual(response.get_json()['error_code'], 'ASR_UNAVAILABLE')
+            self.assertIn('文字输入', response.get_json()['message'])
+        finally:
+            training_app.ASR_PROVIDER = previous_provider
+
+    def test_tts_proxy_returns_wav_and_failure_does_not_change_text_chat(self):
+        previous = (training_app.TTS_ENABLED, training_app.TTS_PROVIDER, training_app.TTS_CONFIGURED)
+        try:
+            training_app.TTS_ENABLED = True
+            training_app.TTS_PROVIDER = 'http'
+            training_app.TTS_CONFIGURED = True
+            upstream = Mock()
+            upstream.ok = True
+            upstream.content = b'RIFF0000WAVEdata'
+            upstream.headers = {'Content-Type': 'audio/wav'}
+            with patch.object(training_app.requests, 'post', return_value=upstream):
+                response = self.client.post('/api/tts', json={'text': '您好，请介绍一下您的方案。'})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.mimetype, 'audio/wav')
+
+            with patch.object(training_app.requests, 'post', side_effect=training_app.requests.ConnectionError):
+                response = self.client.post('/api/tts', json={'text': '测试'})
+            self.assertEqual(response.status_code, 503)
+            self.assertEqual(response.get_json()['error_code'], 'TTS_UNAVAILABLE')
+
+            chat = self.client.post('/api/chat', json={
+                'messages': [{'role': 'user', 'content': '继续文字陪练'}],
+                'difficulty': '中等',
+                'scene': '通用销售',
+            })
+            self.assertEqual(chat.status_code, 200)
+            self.assertTrue(chat.get_json()['success'])
+        finally:
+            training_app.TTS_ENABLED, training_app.TTS_PROVIDER, training_app.TTS_CONFIGURED = previous
 
 
 if __name__ == "__main__":

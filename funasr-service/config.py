@@ -37,15 +37,25 @@ class Settings:
 
     @classmethod
     def from_env(cls) -> "Settings":
-        device = os.getenv("FUNASR_DEVICE", "cpu").strip().lower()
+        model_root = Path(os.getenv("ASR_MODEL_DIR", "/models/funasr"))
+
+        def model_path(env_name: str, preferred: str, legacy: str) -> Path:
+            configured = os.getenv(env_name, "").strip()
+            if configured:
+                return Path(configured)
+            preferred_path = model_root / preferred
+            legacy_path = model_root / legacy
+            return legacy_path if legacy_path.is_dir() and not preferred_path.is_dir() else preferred_path
+
+        device = os.getenv("ASR_DEVICE", os.getenv("FUNASR_DEVICE", "cpu")).strip().lower()
         if device != "cpu" and not device.startswith("cuda:"):
-            raise ValueError("FUNASR_DEVICE must be cpu or an explicit cuda:N device")
+            raise ValueError("ASR_DEVICE must be cpu or an explicit cuda:N device")
         if device.startswith("cuda:") and not os.getenv("CUDA_VISIBLE_DEVICES", "").strip():
             raise ValueError("CUDA_VISIBLE_DEVICES is required for GPU mode")
         return cls(
-            model_dir=Path(os.getenv("FUNASR_MODEL_DIR", "/models/paraformer-zh")),
-            vad_model_dir=Path(os.getenv("FUNASR_VAD_MODEL_DIR", "/models/fsmn-vad")),
-            punc_model_dir=Path(os.getenv("FUNASR_PUNC_MODEL_DIR", "/models/ct-punc-c")),
+            model_dir=model_path("FUNASR_MODEL_DIR", "paraformer", "paraformer-zh"),
+            vad_model_dir=model_path("FUNASR_VAD_MODEL_DIR", "vad", "fsmn-vad"),
+            punc_model_dir=model_path("FUNASR_PUNC_MODEL_DIR", "punc", "ct-punc-c"),
             device=device,
             max_concurrency=_bounded_int("FUNASR_MAX_CONCURRENCY", 2, 1, 2),
             max_audio_seconds=_bounded_int("FUNASR_MAX_AUDIO_SECONDS", 120, 1, 600),
