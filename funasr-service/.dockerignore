@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+tests/
+models/
+*.wav
+*.webm
+*.mp3
+*.pcm

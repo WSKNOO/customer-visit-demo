@@ -4,13 +4,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     HOST=0.0.0.0 \
     PORT=5000 \
-    VOICE_ENABLED=false \
+    ASR_PROVIDER=disabled \
     TTS_ENABLED=false
 
 WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
-COPY app.py visit_brief.py ./
+COPY app.py model_client.py visit_brief.py ./
 COPY static ./static
 COPY knowcard_output ./knowcard_output
 

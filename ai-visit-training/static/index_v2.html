@@ -555,7 +555,7 @@
                     <span style="font-size:0.7rem;opacity:0.5;">(我来当客户)</span>
                     <div class="toggle-slider-round"></div>
                 </div>
-                <span id="xfyunBadge" style="display:none;font-size:0.72rem;padding:3px 10px;border-radius:12px;background:rgba(0,122,255,0.08);color:#007aff;font-weight:600;margin-left:8px;">🎙 FunASR 实时转写</span>
+                <span id="xfyunBadge" style="display:none;font-size:0.72rem;padding:3px 10px;border-radius:12px;background:rgba(0,122,255,0.08);color:#007aff;font-weight:600;margin-left:8px;">🎙 语音转写</span>
             </div>
         </div>
 
@@ -670,7 +670,7 @@
                             </ol>
                         </div>
                         <br>
-                        <p id="welcomeHint" style="font-size:0.88rem;opacity:0.5;">⌨️ 支持文字输入 | 🎤 支持语音识别(FunASR)</p>
+                        <p id="welcomeHint" style="font-size:0.88rem;opacity:0.5;">⌨️ 支持文字输入 | 🎤 本地语音识别（可选）</p>
                     </div>
                 </div>
 
@@ -836,7 +836,8 @@
     var isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
     var isSecure = isHttps || isLocalhost;
     var state = {
-        selectedScene: '通用销售', selectedDifficulty: '中等', messages: [],
+        selectedScene: '通用销售', selectedSceneId: '通用销售', selectedSceneName: '通用销售',
+        selectedSceneFullName: '通用销售', selectedSceneGroup: '', selectedDifficulty: '中等', messages: [],
         msgCount: 0, startTime: Date.now(), isRecording: false, recognition: null,
         ttsEnabled: false, ttsVoice: 'zh-CN-YunxiNeural', ttsAudio: null, isPlayingTts: false,
         backendMode: 'lite', asrReady: false, voiceEnabled: false, voiceAvailable: false, voiceDenied: false,
@@ -844,8 +845,8 @@
         scoreHistory: [], isNewSession: true,
         selectedPhase: 'discovery',
         integrationSessionId: null, integrationSession: null,
-        reverseMode: false,
-        useXFYun: true  // 优先使用后端语音转写
+        reverseMode: false, asrProvider: 'disabled', mediaRecorder: null,
+        mediaStream: null, audioChunks: [], useXFYun: false
     };
 
     var PHASES = {
@@ -879,7 +880,9 @@
     }
     function addHistoryRecord(record) {
         var h = loadHistory();
-        h.unshift({ id: Date.now(), time: new Date().toISOString(), scene: state.selectedScene,
+        h.unshift({ id: Date.now(), time: new Date().toISOString(), scene: state.selectedSceneId,
+            scene_id: state.selectedSceneId, scene_name: state.selectedSceneName,
+            scene_full_name: state.selectedSceneFullName, scene_group: state.selectedSceneGroup,
             difficulty: state.selectedDifficulty, rounds: state.msgCount, score: record.score,
             scoreHistory: state.scoreHistory, duration: Math.round((Date.now()-state.startTime)/60000),
             messages: state.messages.slice(-20) });
@@ -895,10 +898,10 @@
         renderHistoryPanel();
     }
     function getSceneHistoryCount(sceneId) {
-        return loadHistory().filter(function(x){return x.scene===sceneId;}).length;
+        return loadHistory().filter(function(x){return (x.scene_id||x.scene)===sceneId;}).length;
     }
     function getHistoryByScene(sceneId, limit) {
-        var all = loadHistory().filter(function(x){return x.scene===sceneId;});
+        var all = loadHistory().filter(function(x){return (x.scene_id||x.scene)===sceneId;});
         return limit ? all.slice(0, limit) : all;
     }
     function refreshHistoryCounts() {
@@ -920,6 +923,13 @@
     function gId(id) { return document.getElementById(id); }
     function qsa(sel) { return document.querySelectorAll(sel); }
     function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function selectScene(scene, group) {
+        state.selectedSceneId = scene.id;
+        state.selectedScene = scene.id;
+        state.selectedSceneName = scene.name || scene.full_name || scene.id.split('/').pop();
+        state.selectedSceneFullName = scene.full_name || state.selectedSceneName;
+        state.selectedSceneGroup = group ? (group.name || group.id || '') : '';
+    }
 
     function initStatusBar() {
         var el; el = gId('micStatus'); if(el) el.className = 'status-dot warning'; el = gId('micStatusText'); if(el) el.textContent = '麦克风：待检测'; el = gId('asrStatus'); if(el) el.className = 'status-dot loading'; el = gId('asrStatusText'); if(el) el.textContent = 'ASR：检测中...'; el = gId('envStatus'); var t = gId('envStatusText'); if(el&&t) { if(isSecure){el.className='status-dot ready';t.textContent='环境：安全';} else{el.className='status-dot warning';t.textContent='环境：HTTP';} }
@@ -941,10 +951,10 @@
             d.onclick=function(){
                 qsa('.scene-option').forEach(function(o){o.classList.remove('selected')});
                 d.classList.add('selected');
-                state.selectedScene = s.id;
+                selectScene(s, null);
             };
         });
-        state.selectedScene = scenes[0].id;
+        selectScene(scenes[0], null);
     }
 
     var allSceneGroups = [];
@@ -1001,7 +1011,7 @@
             div.onclick = function(){
                 qsa('.scene-option').forEach(function(o){ o.classList.remove('selected'); });
                 div.classList.add('selected');
-                state.selectedScene = s.id;
+                selectScene(s, group);
                 console.log('[Scene] Selected:', s.id);
                 preloadScene(s.id, c);
             };
@@ -1009,7 +1019,7 @@
         
         // Select first scene by default + preload
         if (group.scenes.length > 0) {
-            state.selectedScene = group.scenes[0].id;
+            selectScene(group.scenes[0], group);
             preloadScene(group.scenes[0].id, c);
         }
     }
@@ -1056,7 +1066,7 @@
                 renderSceneGroups();
                 // 默认选择第一个组的第一个场景
                 if (allSceneGroups.length > 0 && allSceneGroups[0].scenes.length > 0) {
-                    state.selectedScene = allSceneGroups[0].scenes[0].id;
+                    selectScene(allSceneGroups[0].scenes[0], allSceneGroups[0]);
                 }
             } else {
                 loadFallbackScenes(c);
@@ -1078,7 +1088,7 @@
             state.voiceAvailable=true;
             if(state.useXFYun){
                 gId('micStatus').className='status-dot ready';
-                gId('micStatusText').textContent='麦克风：就绪(FunASR)';
+                gId('micStatusText').textContent='麦克风：就绪';
             } else {
                 gId('micStatus').className='status-dot ready';
                 gId('micStatusText').textContent='麦克风：就绪';
@@ -1086,7 +1096,7 @@
         }).catch(function(){state.voiceDenied=true;gId('micStatus').className='status-dot error';gId('micStatusText').textContent='麦克风：未授权';});
     }
 
-    recordBtn.onclick = function() { if(state.isPlayingTts)return; state.isRecording?stopRecording():startRecording(); };
+    recordBtn.onclick = function() { if(state.isPlayingTts)return; state.isRecording?stopMediaRecording():startMediaRecording(); };
 
     function startRecording() {
         if(state.useXFYun){ startXFRecording(); return; }
@@ -1106,7 +1116,7 @@
     function startXFRecording() {
         state.isRecording=true; state.finalTranscript=''; xfBuffer=[];
         recordBtn.classList.add('recording');
-        transcriptText.textContent='正在录音(FunASR)...';
+        transcriptText.textContent='正在录音...';
         // 请求麦克风（先不设 sampleRate，拿到实际值后再建 AudioContext）
         navigator.mediaDevices.getUserMedia({audio:{channelCount:1, echoCancellation:true, noiseSuppression:true}})
         .then(function(stream){
@@ -1140,7 +1150,7 @@
                 }
                 xfBuffer.push(pcm);
                 var dur=Math.round(xfBuffer.length*4096/16000);
-                transcriptText.textContent='正在录音(FunASR)... '+dur+'秒';
+                transcriptText.textContent='正在录音... '+dur+'秒';
             };
             source.connect(xfProcessor);
             xfProcessor.connect(xfAudioCtx.destination);
@@ -1194,6 +1204,16 @@
             transcriptText.textContent='识别错误：'+e.message;
         });
     }
+
+    function initMediaRecorder() {
+        if(!state.voiceEnabled || state.asrProvider!=='http'){recordBtn.disabled=true;return;}
+        if(!isSecure || !navigator.mediaDevices || !window.MediaRecorder){recordBtn.disabled=true;gId('micStatus').className='status-dot error';gId('micStatusText').textContent='麦克风：需 HTTPS 或 localhost';return;}
+        recordBtn.disabled=false;gId('micStatus').className='status-dot ready';gId('micStatusText').textContent='麦克风：可用';
+    }
+    function startMediaRecording() {if(recordBtn.disabled||state.isRecording)return;navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true}}).then(function(stream){var mime='';['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus'].some(function(v){if(MediaRecorder.isTypeSupported(v)){mime=v;return true;}return false;});state.mediaStream=stream;state.audioChunks=[];state.mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);state.mediaRecorder.ondataavailable=function(e){if(e.data&&e.data.size)state.audioChunks.push(e.data);};state.mediaRecorder.onstop=uploadRecordedAudio;state.mediaRecorder.onerror=function(){finishRecording();transcriptText.textContent='录音失败，请改用文字输入';};state.isRecording=true;recordBtn.classList.add('recording');transcriptText.textContent='正在录音，再次点击结束';state.mediaRecorder.start(500);}).catch(function(){state.voiceDenied=true;finishRecording();transcriptText.textContent='麦克风不可用，请检查权限或改用文字输入';});}
+    function stopMediaRecording(){state.isRecording=false;recordBtn.classList.remove('recording');if(state.mediaRecorder&&state.mediaRecorder.state!=='inactive'){state.mediaRecorder.stop();}else{finishRecording();}}
+    function finishRecording(){state.isRecording=false;recordBtn.classList.remove('recording');if(state.mediaStream){state.mediaStream.getTracks().forEach(function(t){t.stop();});}state.mediaStream=null;state.mediaRecorder=null;}
+    function uploadRecordedAudio(){var chunks=state.audioChunks.slice();var mime=(chunks[0]&&chunks[0].type)||'audio/webm';finishRecording();if(!chunks.length){transcriptText.textContent='未录到音频，请重试或使用文字输入';return;}var blob=new Blob(chunks,{type:mime});var format=mime.indexOf('ogg')>=0?'ogg':'webm';var form=new FormData();form.append('file',blob,'recording.'+format);form.append('format',format);form.append('language','zh');transcriptText.textContent='正在识别...';recordBtn.disabled=true;fetch('/api/asr/transcribe',{method:'POST',body:form}).then(function(r){return r.json().then(function(d){return {ok:r.ok,data:d};});}).then(function(v){if(!v.ok||!v.data.success)throw new Error(v.data.error||'识别失败');var text=(v.data.text||'').trim();if(!text){transcriptText.textContent='未识别到文字，请重试或手动输入';return;}transcriptText.textContent=text;gId('textInput').value=text;gId('textInput').focus();}).catch(function(e){transcriptText.textContent=(e.message||'识别失败')+'，可继续使用文字输入';}).finally(function(){recordBtn.disabled=!state.voiceEnabled;});}
 
     function initTts() { var t=gId('ttsToggle'),v=gId('ttsVoice');if(t){t.checked=false;t.onchange=function(){state.ttsEnabled=t.checked;};}if(v)v.onchange=function(){state.ttsVoice=v.value;}; }
 
@@ -1317,7 +1337,7 @@
 
     function addMessage(role, content) { var lb={user:'你',ai:'AI教练',system:'系统'};var d=document.createElement('div');d.className='message '+role;var formatted=role==='system'?content:formatText(content);d.innerHTML='<div class="role">'+(lb[role]||role)+'</div><div class="text">'+formatted+'</div>';var w=gId('welcomeMsg');if(w)w.style.display='none';chatMessages.appendChild(d);chatMessages.scrollTop=chatMessages.scrollHeight; }
 
-    function stripHiddenBlocks(text) { var t=text; t=t.replace(/<!--SCORE[\s\S]*?-->/g,''); t=t.replace(/<!--REPORT[\s\S]*?-->/g,''); t=t.replace(/<!--FINAL_REPORT[\s\S]*?FINAL_REPORT_END-->/g,''); t=t.replace(/<!--COACH[\s\S]*?-->/g,''); return t.trim(); }
+    function stripHiddenBlocks(text) { var t=text||''; t=t.replace(/<think\b[^>]*>[\s\S]*?<\/think\s*>/gi,''); t=t.replace(/<think\b[^>]*>[\s\S]*$/gi,''); t=t.replace(/<\/think\s*>/gi,''); t=t.replace(/<!--SCORE[\s\S]*?-->/g,''); t=t.replace(/<!--REPORT[\s\S]*?-->/g,''); t=t.replace(/<!--FINAL_REPORT[\s\S]*?FINAL_REPORT_END-->/g,''); t=t.replace(/<!--COACH[\s\S]*?-->/g,''); return t.trim(); }
 
     function updateCoachPanel(aiContent) {
         var body = gId('coachBody');
@@ -1361,7 +1381,7 @@
             if(!state.reverseMode){
                 var r=state.selectedDifficulty==='简单'?5:state.selectedDifficulty==='困难'?10:8;state.roundLimit=r;
                 addMessage('system','对练已启动');
-                addMessage('system','场景：'+state.selectedScene+' | 难度：'+state.selectedDifficulty+' | 共 '+r+' 轮');
+                addMessage('system','场景：'+state.selectedSceneName+' | 难度：'+state.selectedDifficulty+' | 共 '+r+' 轮');
             } else {
                 addMessage('system','🔄 反转模式：你扮演客户，AI作为客户经理为你解答');
             }
@@ -1495,7 +1515,7 @@
         if (Object.keys(scores).length === 0) scores = lastParsedScores;
 
         // 基本信息
-        gId('repScene').textContent = '场景：' + state.selectedScene;
+        gId('repScene').textContent = '场景：' + state.selectedSceneFullName;
         gId('repDifficulty').textContent = '难度：' + state.selectedDifficulty;
         gId('repRounds').textContent = '对话轮次：' + state.msgCount;
         var dur = Math.round((Date.now() - state.startTime) / 60000);
@@ -1692,11 +1712,15 @@
         if (!h.length) return;
         var rec = h[0];
         // 切换场景选择
-        state.selectedScene = rec.scene;
+        state.selectedSceneId = rec.scene_id || rec.scene;
+        state.selectedScene = state.selectedSceneId;
+        state.selectedSceneName = rec.scene_name || String(state.selectedSceneId).split('/').pop();
+        state.selectedSceneFullName = rec.scene_full_name || state.selectedSceneName;
+        state.selectedSceneGroup = rec.scene_group || '';
         state.selectedDifficulty = rec.difficulty;
         // 清空并填充对话区域
         chatMessages.innerHTML = '';
-        addMessage('system', '📜 <strong>历史记录回看</strong> — '+rec.scene.split('/').pop()+' ('+rec.difficulty+' · '+rec.rounds+'轮 · '+rec.duration+'分钟)');
+        addMessage('system', '📜 <strong>历史记录回看</strong> — '+state.selectedSceneName+' ('+rec.difficulty+' · '+rec.rounds+'轮 · '+rec.duration+'分钟)');
         // 填充消息
         var msgs = rec.messages || [];
         msgs.forEach(function(m) {
@@ -1724,11 +1748,11 @@
         console.log('[History] Viewed:', rec.scene, rec.id);
     }
 
-    function exportChat() { var t='=== 语音对练记录 ===\n';t+='时间：'+new Date().toLocaleString()+'\n';t+='场景：'+state.selectedScene+'\n';t+='难度：'+state.selectedDifficulty+'\n';t+='轮次：'+state.msgCount+'\n';t+='='.repeat(40)+'\n\n';state.messages.forEach(function(m){var r=m.role==='user'?'[销售]':'[AI]';t+=r+':\n'+m.content+'\n\n';});var b=new Blob([t],{type:'text/plain;charset=utf-8'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='对练记录_'+new Date().toISOString().slice(0,10)+'.txt';a.click();URL.revokeObjectURL(u);}
+    function exportChat() { var t='=== 客户拜访陪练记录 ===\n';t+='时间：'+new Date().toLocaleString()+'\n';t+='场景：'+state.selectedSceneFullName+'\n';t+='难度：'+state.selectedDifficulty+'\n';t+='轮次：'+state.msgCount+'\n';t+='='.repeat(40)+'\n\n';state.messages.forEach(function(m){var r=m.role==='user'?'[销售]':'[AI]';t+=r+':\n'+stripHiddenBlocks(m.content)+'\n\n';});var b=new Blob([t],{type:'text/plain;charset=utf-8'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='对练记录_'+new Date().toISOString().slice(0,10)+'.txt';a.click();URL.revokeObjectURL(u);}
 
     function startTimer() { setInterval(function(){var e=Math.floor((Date.now()-state.startTime)/1000);var m=Math.floor(e/60);var s=e%60;gId('duration').textContent=m+':'+(s<10?'0':'')+s;},1000); }
 
-    function detectBackendMode() { fetch('/api/mode').then(function(r){return r.json()}).then(function(d){state.backendMode=d.mode||'lite';state.voiceEnabled=!!d.voice_enabled;var md=gId('modeDescription');if(md)md.textContent='客户拜访AI智能对练系统 | '+(d.mock?'Mock模式':'受控模型模式')+' | '+(state.voiceEnabled?'语音可选':'纯文字主演示');var ais=gId('aiStatus'),ait=gId('aiStatusText');if(ais&&ait){if(d.mock){ais.className='status-dot warning';ait.textContent='AI模型：Mock';}else if(d.model_configured){ais.className='status-dot ready';ait.textContent='AI模型：已配置';}else{ais.className='status-dot warning';ait.textContent='AI模型：未配置';}}var tt=gId('ttsToggle');if(tt){tt.checked=false;tt.disabled=!d.tts_available;state.ttsEnabled=false;}if(state.voiceEnabled){recordBtn.disabled=false;initSpeechRecognition();}else{gId('asrStatus').className='status-dot warning';gId('asrStatusText').textContent='ASR：已关闭';gId('micStatus').className='status-dot warning';gId('micStatusText').textContent='麦克风：已关闭';recordBtn.disabled=true;}if(d.asr&&d.asr.status==='ready'){state.asrReady=true;gId('asrStatus').className='status-dot ready';gId('asrStatusText').textContent='ASR：FunASR';}}).catch(function(){var ait=gId('aiStatusText');if(ait)ait.textContent='AI模型：状态未知';}); }
+    function detectBackendMode() { fetch('/api/mode').then(function(r){return r.json()}).then(function(d){state.backendMode=d.mode||'lite';state.voiceEnabled=!!d.voice_enabled;state.asrProvider=(d.asr&&d.asr.method==='http-service')?'http':'disabled';var md=gId('modeDescription');if(md)md.textContent='客户拜访AI智能对练系统 | '+(d.mock?'Mock模式':'受控模型模式')+' | '+(state.voiceEnabled?'语音可选':'纯文字主演示');var ais=gId('aiStatus'),ait=gId('aiStatusText');if(ais&&ait){if(d.mock){ais.className='status-dot warning';ait.textContent='AI模型：Mock';}else if(d.model_configured){ais.className='status-dot ready';ait.textContent='AI模型：已配置';}else{ais.className='status-dot warning';ait.textContent='AI模型：未配置';}}var tt=gId('ttsToggle');if(tt){tt.checked=false;tt.disabled=!d.tts_available;state.ttsEnabled=false;}if(state.voiceEnabled&&state.asrProvider==='http'){state.asrReady=true;gId('asrStatus').className='status-dot ready';gId('asrStatusText').textContent='ASR：已配置';initMediaRecorder();}else{gId('asrStatus').className='status-dot warning';gId('asrStatusText').textContent='ASR：已关闭';gId('micStatus').className='status-dot warning';gId('micStatusText').textContent='麦克风：已关闭';recordBtn.disabled=true;}}).catch(function(){var ait=gId('aiStatusText');if(ait)ait.textContent='AI模型：状态未知';recordBtn.disabled=true;}); }
 
     function applyIntegratedSession(data) {
         state.integrationSessionId = data.session_id;
@@ -1792,7 +1816,7 @@
             var r=state.selectedDifficulty==='简单'?5:state.selectedDifficulty==='困难'?10:8;state.roundLimit=r;
             gId('totalRounds').textContent=r;
             addMessage('system','对练已启动');
-            addMessage('system','场景：'+state.selectedScene+' | 难度：'+state.selectedDifficulty+' | 共 '+r+' 轮。AI客户即将开始对话...');
+            addMessage('system','场景：'+state.selectedSceneName+' | 难度：'+state.selectedDifficulty+' | 共 '+r+' 轮。AI客户即将开始对话...');
             setTimeout(function(){state.messages.push({role:'user',content:'对练开始！'});callAI('对练开始！');},500);
         };
         gId('exportBtn').onclick = exportChat;

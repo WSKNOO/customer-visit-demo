@@ -1,0 +1,4 @@
+services:
+  funasr-service:
+    ports:
+      - "127.0.0.1:${FUNASR_DEBUG_PORT:-18000}:8000"

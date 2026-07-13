@@ -40,7 +40,7 @@ services:
       SEARCH_MCP_SUMMARIZER_API_KEY: ${INTELLIGENCE_MODEL_API_KEY:-}
       HTTP_PROXY: ${HTTP_PROXY:-}
       HTTPS_PROXY: ${HTTPS_PROXY:-}
-      NO_PROXY: ${NO_PROXY:-127.0.0.1,localhost,ai-training,customer-intelligence-api,unified-portal,nginx}
+      NO_PROXY: ${NO_PROXY:-127.0.0.1,localhost,ai-training,funasr-service,customer-intelligence-api,unified-portal,nginx}
     volumes:
       - intelligence_reports:/app/tmp/reports
     depends_on:
@@ -65,16 +65,25 @@ services:
       retries: 5
 
   ai-training:
+    image: ${AI_TRAINING_IMAGE:-deploy-ai-training}:${IMAGE_TAG:-dev}
     build:
       context: ../ai-visit-training
     environment:
       MOCK_MODE: ${TRAINING_MOCK_MODE:-true}
-      ASR_ENABLED: "false"
-      TTS_ENABLED: "false"
+      ASR_PROVIDER: ${ASR_PROVIDER:-disabled}
+      ASR_BASE_URL: ${ASR_BASE_URL:-http://funasr-service:8000}
+      ASR_REQUEST_TIMEOUT_SECONDS: ${ASR_REQUEST_TIMEOUT_SECONDS:-120}
+      ASR_TIMEOUT_SECONDS: ${ASR_TIMEOUT_SECONDS:-120}
+      ASR_MAX_AUDIO_SECONDS: ${ASR_MAX_AUDIO_SECONDS:-120}
+      MAX_AUDIO_BYTES: ${MAX_AUDIO_BYTES:-52428800}
+      MAX_CONTENT_LENGTH_MB: ${MAX_CONTENT_LENGTH_MB:-52}
+      TTS_ENABLED: ${TTS_ENABLED:-false}
       CORS_ORIGINS: ${PUBLIC_ORIGIN:-http://localhost:8080}
       DEEPSEEK_BASE_URL: ${TRAINING_MODEL_BASE_URL:-}
       DEEPSEEK_MODEL: ${TRAINING_MODEL_NAME:-}
       DEEPSEEK_API_KEY: ${TRAINING_MODEL_API_KEY:-}
+      TRAINING_MODEL_ENABLE_THINKING: ${TRAINING_MODEL_ENABLE_THINKING:-false}
+      TRAINING_MODEL_MAX_TOKENS: ${TRAINING_MODEL_MAX_TOKENS:-1000}
       DEFAULT_TRAINING_ROUNDS: ${DEFAULT_TRAINING_ROUNDS:-6}
       MODEL_REQUEST_TIMEOUT_SECONDS: ${MODEL_REQUEST_TIMEOUT_SECONDS:-60}
       MODEL_MAX_RETRIES: ${MODEL_MAX_RETRIES:-1}
@@ -82,12 +91,53 @@ services:
       MAX_SESSIONS: ${MAX_SESSIONS:-100}
       HTTP_PROXY: ${HTTP_PROXY:-}
       HTTPS_PROXY: ${HTTPS_PROXY:-}
-      NO_PROXY: ${NO_PROXY:-127.0.0.1,localhost,ai-training,customer-intelligence-api,unified-portal,nginx}
+      NO_PROXY: ${NO_PROXY:-127.0.0.1,localhost,ai-training,funasr-service,customer-intelligence-api,unified-portal,nginx}
+    volumes:
+      - type: bind
+        source: ${TRAINING_KNOWCARD_DIR:-../ai-visit-training/knowcard_output}
+        target: /app/knowcard_output
+        read_only: true
+        bind:
+          create_host_path: false
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/api/health', timeout=2)"]
       interval: 10s
       timeout: 3s
       retries: 5
+
+  funasr-service:
+    profiles: ["asr"]
+    image: ${FUNASR_IMAGE:-deploy-funasr-service}:${IMAGE_TAG:-dev}
+    build:
+      context: ../funasr-service
+      args:
+        DEBIAN_MIRROR: ${DEBIAN_MIRROR:-deb.debian.org}
+    environment:
+      FUNASR_DEVICE: ${FUNASR_DEVICE:-cpu}
+      FUNASR_MODEL_DIR: /models/paraformer-zh
+      FUNASR_VAD_MODEL_DIR: /models/fsmn-vad
+      FUNASR_PUNC_MODEL_DIR: /models/ct-punc-c
+      FUNASR_MAX_CONCURRENCY: ${FUNASR_MAX_CONCURRENCY:-2}
+      FUNASR_REQUEST_TIMEOUT_SECONDS: ${FUNASR_TIMEOUT_SECONDS:-120}
+      FUNASR_MAX_AUDIO_SECONDS: ${FUNASR_MAX_AUDIO_SECONDS:-120}
+      FUNASR_MAX_FILE_SIZE_MB: ${FUNASR_MAX_UPLOAD_MB:-50}
+      FUNASR_TORCH_THREADS: ${FUNASR_THREADS:-16}
+      FUNASR_ALLOW_MODEL_DOWNLOAD: "false"
+      CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES:-}
+    volumes:
+      - type: bind
+        source: ${FUNASR_MODELS_DIR:-../models/funasr}
+        target: /models
+        read_only: true
+        bind:
+          create_host_path: false
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 15s
+      timeout: 3s
+      retries: 8
+      start_period: 120s
+    restart: unless-stopped
 
   nginx:
     image: nginx:1.27-alpine

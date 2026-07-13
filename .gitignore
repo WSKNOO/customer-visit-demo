@@ -6,6 +6,8 @@
 *.key
 *.p12
 *.pfx
+deploy/certs/*
+!deploy/certs/README.md
 id_rsa*
 
 # Python
@@ -28,6 +30,18 @@ build/
 uploads/
 tmp/
 temp/
+logs/
+models/
+legacy-funasr/models/
+funasr-service/models/
+modelscope_cache/
+.cache/
+*.pcm
+*.webm
+*.mp3
+*.wav
+!**/tests/fixtures/*.wav
+!**/tests/fixtures/*.webm
 
 # IDE / OS
 .DS_Store

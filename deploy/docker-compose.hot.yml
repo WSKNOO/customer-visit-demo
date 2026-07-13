@@ -1,0 +1,22 @@
+services:
+  ai-training:
+    volumes:
+      - ../ai-visit-training/app.py:/app/app.py:ro
+      - ../ai-visit-training/model_client.py:/app/model_client.py:ro
+      - ../ai-visit-training/visit_brief.py:/app/visit_brief.py:ro
+      - ../ai-visit-training/static:/app/static:ro
+      - type: bind
+        source: ${TRAINING_KNOWCARD_DIR:-../ai-visit-training/knowcard_output}
+        target: /app/knowcard_output
+        read_only: true
+        bind:
+          create_host_path: false
+  funasr-service:
+    volumes:
+      - ../funasr-service:/app:ro
+      - type: bind
+        source: ${FUNASR_MODELS_DIR:-../models/funasr}
+        target: /models
+        read_only: true
+        bind:
+          create_host_path: false

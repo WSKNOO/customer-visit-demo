@@ -5,11 +5,13 @@ import os, sys, json, time, re
 sys.stdout.reconfigure(encoding='utf-8')
 from pathlib import Path
 import requests
+from model_client import add_chat_template_kwargs, parse_bool, strip_think_content, validate_model_config
 
 # API 配置（硅基流动）
 DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY', '')
-DEEPSEEK_BASE_URL = os.getenv('DEEPSEEK_BASE_URL', '')
+DEEPSEEK_BASE_URL = os.getenv('DEEPSEEK_BASE_URL', '').rstrip('/')
 DEEPSEEK_MODEL = os.getenv('DEEPSEEK_MODEL', '')
+TRAINING_MODEL_ENABLE_THINKING = parse_bool(os.getenv('TRAINING_MODEL_ENABLE_THINKING'), False)
 
 BASE = Path(r'd:/demo2/knowcard')
 # 直接输出到 knowcard 各子目录（与原文档同目录，方便 app.py 自动加载）
@@ -74,12 +76,14 @@ OUTPUT_DIR = Path(r'd:/demo2/knowcard_output')  # 输出到独立目录，不改
 
 def call_deepseek(prompt, max_tokens=3000, temperature=0.3):
     """调用 DeepSeek API"""
-    payload = {
+    if not validate_model_config(DEEPSEEK_BASE_URL, DEEPSEEK_API_KEY, DEEPSEEK_MODEL).configured:
+        raise RuntimeError('MODEL_CONFIG_INVALID')
+    payload = add_chat_template_kwargs({
         "model": DEEPSEEK_MODEL,
         "messages": [{"role": "user", "content": prompt}],
         "temperature": temperature,
         "max_tokens": max_tokens
-    }
+    }, TRAINING_MODEL_ENABLE_THINKING)
     headers = {
         "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
         "Content-Type": "application/json"
@@ -91,7 +95,10 @@ def call_deepseek(prompt, max_tokens=3000, temperature=0.3):
     if resp.status_code != 200:
         raise Exception(f"API error {resp.status_code}: {resp.text[:200]}")
     data = resp.json()
-    return data['choices'][0]['message']['content']
+    content = strip_think_content(data['choices'][0]['message']['content'])
+    if not content:
+        raise RuntimeError('MODEL_OUTPUT_INVALID')
+    return content
 
 def extract_folder_texts(folder_path):
     """提取文件夹内所有可读文档的文本"""
