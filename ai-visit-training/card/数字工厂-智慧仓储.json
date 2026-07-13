@@ -1,0 +1,95 @@
+{
+  "industry": "汽车零部件",
+  "scenario_name": "汽车零部件-中小制造企业-仓储管理数字化",
+  "client_profile": {
+    "role": "仓库主管/IT经理",
+    "age_range": "30-45岁",
+    "personality": "务实、注重效率",
+    "org_type": "中小制造企业",
+    "current_situation": "使用金蝶ERP系统，仓库管理颗粒度粗，现场找货时间长，库存无预警，经常出现库存不足和呆滞库存"
+  },
+  "pain_points": [
+    {
+      "id": "P1",
+      "point": "仓库管理效率低，找货时间长",
+      "severity": "high",
+      "hint": "抱怨生产进度不透明，物料流转混乱"
+    },
+    {
+      "id": "P2",
+      "point": "库存管理不精准，影响生产",
+      "severity": "high",
+      "hint": "提到库存不足和呆滞库存问题"
+    },
+    {
+      "id": "P3",
+      "point": "数据安全与系统稳定性担忧",
+      "severity": "medium",
+      "hint": "询问系统崩溃风险和数据恢复能力"
+    }
+  ],
+  "product_match": [
+    {
+      "pain_point_ref": "P1",
+      "product": "WMS系统",
+      "value_prop": "通过条码标签管理和库位管理实现精准定位",
+      "case_ref": "[文档未涉及]",
+      "key_talking_point": "全过程PDA扫码，实现产品精准定位"
+    },
+    {
+      "pain_point_ref": "P2",
+      "product": "WMS系统",
+      "value_prop": "库存预警和库龄预警功能",
+      "case_ref": "[文档未涉及]",
+      "key_talking_point": "实时库存更新和智能预警机制"
+    },
+    {
+      "pain_point_ref": "P3",
+      "product": "WMS系统",
+      "value_prop": "电信级数据安全与网络稳定性",
+      "case_ref": "[文档未涉及]",
+      "key_talking_point": "数据加密和备份机制"
+    }
+  ],
+  "objections": [
+    {
+      "id": "O1",
+      "objection": "我们已经有ERP系统了，为什么还需要WMS？",
+      "trigger": "介绍WMS功能时",
+      "ideal_response_direction": "强调WMS在仓储管理上的专业性和精细化"
+    },
+    {
+      "id": "O2",
+      "objection": "系统上线会不会影响我们现有的生产？",
+      "trigger": "讨论实施周期时",
+      "ideal_response_direction": "说明分阶段升级和避开生产高峰期的策略"
+    }
+  ],
+  "scoring_points": [
+    {
+      "id": "S1",
+      "category": "product_knowledge",
+      "point": "能否清晰解释WMS与ERP的区别",
+      "weight": 2,
+      "check_method": "回答是否包含仓储管理的专业性"
+    },
+    {
+      "id": "S2",
+      "category": "need_discovery",
+      "point": "是否挖掘出客户对库存预警的需求",
+      "weight": 3,
+      "check_method": "提问是否涉及库存不足和呆滞库存"
+    },
+    {
+      "id": "S3",
+      "category": "objection_handling",
+      "point": "如何处理系统稳定性的担忧",
+      "weight": 2,
+      "check_method": "回答是否包含压力测试和备份机制"
+    }
+  ],
+  "difficulty": "medium",
+  "difficulty_reason": "需要平衡现有ERP系统的使用和新系统的引入",
+  "_source": "数字工厂-智慧仓储",
+  "_generated": true
+}

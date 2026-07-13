@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "search-mcp"
+version = "1.0.0"
+description = "AI4Search MCP tool — search, fetch, and parse web/PDF content for LLMs"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=1.0.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0,<2.0",
+    "openai>=1.0",
+    "crawl4ai[pdf]>=0.8",
+]
+
+[project.scripts]
+search-mcp = "search_mcp.server:main"

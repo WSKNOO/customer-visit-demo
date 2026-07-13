@@ -1,0 +1,127 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "云省分-HBlock存储",
+    "content": {
+      "product_name": "天翼存储资源盘活系统（HBlock）",
+      "positioning": "轻量级全用户态软件定义存储，盘活通用服务器闲置硬盘空间，提供高性能高可用分布式块存储服务，助力降本增效与绿色转型。",
+      "core_capabilities": [
+        "盘活存储资源：三分钟部署，整合3台及以上服务器空闲空间为统一资源池",
+        "提供块存储服务：通过标准iSCSI协议创建并挂载虚拟硬盘，支持多客户端",
+        "多种数据保护：支持多副本和纠删码冗余，快照克隆备份，数据导出异地备份",
+        "多种运维方式：提供Web控制台、命令行、RESTful API，支持故障报警和NAT访问",
+        "数据上云：支持卷级别云缓存、云复制，兼容S3对象存储",
+        "安全认证：支持CHAP协议，保障数据传输安全"
+      ],
+      "competitive_advantages": [
+        "全用户态混合部署：无需root权限，可与现有应用共存，原地盘活资源",
+        "硬件无关：不限定服务器架构与配置，支持x86、ARM、龙芯",
+        "权威认可：通过中国电信预集成测试，进入首台套推荐名单，入选国家节能降碳技术装备推荐目录，获新绿杯国奖",
+        "极简运维：三分钟部署，多种管理方式，支持远程协助"
+      ],
+      "pricing_model": "未提及"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "",
+    "content": {}
+  },
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "",
+    "content": {}
+  },
+  {
+    "id": "C004",
+    "card_type": "solution",
+    "title": "HBlock一体机存储方案",
+    "content": {
+      "solution_name": "云存储HBlock一体机集成方案",
+      "target_scenario": "适用于企业本地分布式块存储、混合云存储、虚拟化平台、数据库、高性能计算、视频监控、医疗影像等场景，尤其适合需要利旧服务器、整合多品牌多代际存储资源的中大型企业。",
+      "product_composition": [
+        {
+          "product_ref": "天翼存储资源盘活系统（HBlock）软件",
+          "role": "核心存储集群控制器，提供分布式块存储服务"
+        },
+        {
+          "product_ref": "通用服务器或一体机硬件",
+          "role": "承载HBlock软件，提供计算、存储、网络资源"
+        }
+      ],
+      "implementation_roadmap": "现场工勘（机柜功率、网络规划）→ 机房改造（PDU适配、机柜加固）→ 设备签收核验 → 硬件集成（BIOS初始化：开启NUMA平衡、超线程、硬RAID、IPMI、PXE、UEFI模式；安装CTyunOS3操作系统；创建带外账户）→ HBlock软件部署与配置 → 运维纳管（监控、告警、日志）。"
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "parameter",
+    "title": "关键技术与部署参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "最小集群节点数",
+          "value": "3",
+          "unit": "台",
+          "notes": "将3台及以上通用服务器整合为统一资源池"
+        },
+        {
+          "name": "数据冗余机制",
+          "value": "多副本、纠删码",
+          "unit": "",
+          "notes": "支持机房、机架、服务器、磁盘级别故障域，可设置折叠副本数"
+        },
+        {
+          "name": "存储协议",
+          "value": "iSCSI",
+          "unit": "",
+          "notes": "标准iSCSI协议，支持一主多备，Target权限管理"
+        },
+        {
+          "name": "部署模式",
+          "value": "全用户态",
+          "unit": "",
+          "notes": "非root安装运行，可与现有应用混合部署"
+        },
+        {
+          "name": "支持CPU架构",
+          "value": "x86_64, aarch64, 龙芯",
+          "unit": "",
+          "notes": "不限定服务器架构"
+        },
+        {
+          "name": "操作系统",
+          "value": "CTyunOS3 (内核5.10.0-136.12.0.88)",
+          "unit": "",
+          "notes": "默认使用CTyunOS3官方镜像，支持UEFI模式"
+        },
+        {
+          "name": "管理接口",
+          "value": "Web控制台、命令行、RESTful API",
+          "unit": "",
+          "notes": "支持Prometheus监控对接、智能运维平台告警对接"
+        },
+        {
+          "name": "高级功能",
+          "value": "快照、克隆、备份、QoS、数据上云",
+          "unit": "",
+          "notes": "支持卷级别云缓存/云复制，兼容S3对象存储"
+        },
+        {
+          "name": "BIOS要求",
+          "value": "NUMA平衡开启、超线程开启、硬RAID、IPMI开启、PXE开启且轮循≤30秒、UEFI模式",
+          "unit": "",
+          "notes": "服务器BIOS需清除密码或统一设置为Admin@HBlock531"
+        },
+        {
+          "name": "带外账户",
+          "value": "Hbadmin(管理员)、Hbmonitor(只读)等",
+          "unit": "",
+          "notes": "密码要求大小写字母+特殊符号+数字不小于12位"
+        }
+      ]
+    }
+  }
+]

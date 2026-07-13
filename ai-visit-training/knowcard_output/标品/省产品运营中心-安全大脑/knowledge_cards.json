@@ -1,0 +1,116 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "天翼安全大脑",
+    "content": {
+      "product_name": "天翼安全大脑（防护型/审计型）",
+      "positioning": "集DDoS防护、流量审计、安全策略管理于一体的网络安全硬件解决方案",
+      "core_capabilities": [
+        "DDoS攻击防护",
+        "网络流量审计与分析",
+        "安全策略集中管理",
+        "远程纳管与运维"
+      ],
+      "competitive_advantages": [
+        "电信级高可靠性",
+        "一体化硬件部署，支持防护与审计双模式",
+        "专业运维支持（400热线/10009）",
+        "支持网桥透明部署，不改变现网拓扑"
+      ],
+      "pricing_model": "文档未提及"
+    }
+  },
+  {},
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "设备无法纳管",
+    "content": {
+      "objection_category": "技术",
+      "objection_text": "设备管理口IP能正常通外网，但无法纳管，是不是产品有问题？",
+      "root_concern": "担心设备无法被平台管理，影响远程运维和威胁情报更新",
+      "response_framework": {
+        "step_1_acknowledge": "理解您的担忧，无法纳管确实会影响安全大脑的集中管理能力。",
+        "step_2_redirect": "根据我们的运维经验，此类问题通常由云服务器IP配置错误或上层防火墙未放行纳管端口引起。我们可以立即协助您检查云服务器IP是否为49.7.223.89，并协调网络管理员放行对应端口，快速恢复纳管。设备本身经过严格测试，稳定可靠。"
+      }
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "solution",
+    "title": "安全大脑审计版网桥模式部署方案",
+    "content": {
+      "solution_name": "审计版网桥模式部署",
+      "target_scenario": "需要对网络流量进行透明审计和威胁检测，不改变现有网络拓扑和IP规划的旁路/串接场景",
+      "product_composition": [
+        {
+          "product_ref": "天翼安全大脑审计版设备（派网）",
+          "role": "核心审计引擎"
+        },
+        {
+          "product_ref": "天翼安全大脑管理平台",
+          "role": "集中管理与威胁分析"
+        }
+      ],
+      "implementation_roadmap": "1. 修改管理终端IP为192.168.0.10；2. 登录设备Web（https://192.168.0.200）；3. 检查并升级系统版本至推荐版本；4. 绑定逻辑ID；5. 配置纳管口使设备可访问互联网；6. 配置业务口为网桥模式；7. 配置威胁情报；8. 回填设备SN至装维小程序；9. 检查纳管状态；10. 业务割接上线。"
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "parameter",
+    "title": "设备关键参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "防护版默认管理口IP",
+          "value": "192.168.1.1",
+          "unit": "",
+          "notes": "HTTPS端口10443"
+        },
+        {
+          "name": "防护版默认账号",
+          "value": "admin",
+          "unit": "",
+          "notes": "初始密码admin@CTSGW2，首次登录强制修改"
+        },
+        {
+          "name": "审计版默认管理口IP",
+          "value": "192.168.0.200",
+          "unit": "",
+          "notes": "HTTPS访问"
+        },
+        {
+          "name": "审计版默认账号",
+          "value": "admin",
+          "unit": "",
+          "notes": "初始密码CTSGW@admin"
+        },
+        {
+          "name": "Console波特率（防护版/审计版旧款）",
+          "value": "9600",
+          "unit": "bps",
+          "notes": "所有型号通用"
+        },
+        {
+          "name": "Console波特率（审计版新款S300）",
+          "value": "115200",
+          "unit": "bps",
+          "notes": "新版S300设备"
+        },
+        {
+          "name": "云服务器IP",
+          "value": "49.7.223.89",
+          "unit": "",
+          "notes": "纳管通信目标地址"
+        },
+        {
+          "name": "客服热线",
+          "value": "400-925-9120 / 10009",
+          "unit": "",
+          "notes": "技术支持与服务"
+        }
+      ]
+    }
+  }
+]

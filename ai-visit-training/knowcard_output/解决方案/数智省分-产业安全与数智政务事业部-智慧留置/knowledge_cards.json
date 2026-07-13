@@ -1,0 +1,152 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "智慧留置平台",
+    "content": {
+      "product_name": "智慧留置平台",
+      "positioning": "以“助力案件突破，筑牢基地安全”为目标，面向LZ办案六类用户角色，打造的集智慧监控、业务管理、数据分析于一体，符合国产化要求的综合管理系统。",
+      "core_capabilities": [
+        "入离场所全过程管理",
+        "智慧监控全区域覆盖",
+        "办案过程全时域监督",
+        "场所安全全方位保障",
+        "多模态（视觉+语音+体征）智能预警"
+      ],
+      "competitive_advantages": [
+        "国产化全栈技术体系，自主可控",
+        "本地化标杆案例与驻场服务，灵活部署"
+      ],
+      "pricing_model": ""
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "某市留置中心智慧看护信息化改造项目",
+    "content": {
+      "case_name": "某市留置中心智慧看护信息化改造项目",
+      "background": "某市留置中心面临看护人力成本高、安全监管手段缺失等问题，需向智慧看护模式转型。",
+      "solution": "部署智慧留置平台，建设13间智慧房间，实现智慧看护、实时监控、智能预警。",
+      "results": [
+        {
+          "metric": "节约人力成本",
+          "value": "1000万/年"
+        },
+        {
+          "metric": "建设智慧房间",
+          "value": "13间"
+        },
+        {
+          "metric": "模式转变",
+          "value": "省内首个近身看护转智慧看护"
+        }
+      ],
+      "key_value": "省内首个智慧看护模式标杆，大幅降低人力成本，获省市JW高度认可。"
+    }
+  },
+  {
+    "id": "C003",
+    "card_type": "case",
+    "title": "某县走读式谈话信息化项目",
+    "content": {
+      "case_name": "某县走读式谈话信息化项目",
+      "background": "某县纪委监委走读式谈话缺乏信息化手段，办案规范性和效率有待提升。",
+      "solution": "部署智慧走读式谈话平台，建设3间智慧房间，实现谈话过程数字化管理。",
+      "results": [
+        {
+          "metric": "建设智慧房间",
+          "value": "3间"
+        },
+        {
+          "metric": "模式创新",
+          "value": "省内首批智慧走读式谈话模式"
+        }
+      ],
+      "key_value": "省内首批启用智慧走读式谈话，大幅提升办案规范化水平与工作效率。"
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "objection",
+    "title": "功能范围异议",
+    "content": {
+      "objection_category": "功能范围",
+      "objection_text": "你们的智慧留置平台能管理财务审计吗？",
+      "root_concern": "客户希望一个平台覆盖所有后勤业务，减少系统切换。",
+      "response_framework": {
+        "step_1_acknowledge": "理解您希望统一管理各项业务的需求。",
+        "step_2_redirect": "智慧留置平台聚焦于办案安全与看护保障核心业务，财务审计有专门的财务系统，我们可提供接口对接，确保数据互通。"
+      }
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "objection",
+    "title": "语音识别功能异议",
+    "content": {
+      "objection_category": "技术功能",
+      "objection_text": "你们的语音识别是不是只能把谈话转成文字，不能做敏感词预警？",
+      "root_concern": "对平台智能化深度存疑，担心预警能力不足。",
+      "response_framework": {
+        "step_1_acknowledge": "您对语音识别功能的关注很专业。",
+        "step_2_redirect": "我们的语音识别不仅支持笔录文字转换，还内置敏感词预警模型，可实时监测并告警，实现多模态智能预警。"
+      }
+    }
+  },
+  {
+    "id": "C006",
+    "card_type": "solution",
+    "title": "智慧留置解决方案",
+    "content": {
+      "solution_name": "智慧留置解决方案",
+      "target_scenario": "省市纪委监委留置场所的案件办理、谈话讯问、看护保障等全业务场景。",
+      "product_composition": [
+        {
+          "product_ref": "智慧留置综合管理平台",
+          "role": "核心"
+        },
+        {
+          "product_ref": "智慧看护终端",
+          "role": "看护交互"
+        },
+        {
+          "product_ref": "谈话指挥系统",
+          "role": "远程指挥"
+        },
+        {
+          "product_ref": "光盘刻录系统",
+          "role": "资料归档"
+        }
+      ],
+      "implementation_roadmap": "需求调研与立体感知网络规划 → 国产化环境部署与系统对接 → 分阶段上线业务模块（看护、谈话、刻录、医护等） → 培训与驻场服务。"
+    }
+  },
+  {
+    "id": "C007",
+    "card_type": "parameter",
+    "title": "关键参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "同步录音录像存储时长",
+          "value": "12",
+          "unit": "月",
+          "notes": "满足《监察机关LZ场所管理办法》要求，保障全程留痕。"
+        },
+        {
+          "name": "平台用户角色类型",
+          "value": "6",
+          "unit": "类",
+          "notes": "覆盖案管、办案、看护、医护、信息技术、后勤人员，各有专属工作台。"
+        },
+        {
+          "name": "多模态预警融合维度",
+          "value": "3",
+          "unit": "维度",
+          "notes": "融合视觉、语音、体征数据，实现复杂风险精准识别。"
+        }
+      ]
+    }
+  }
+]

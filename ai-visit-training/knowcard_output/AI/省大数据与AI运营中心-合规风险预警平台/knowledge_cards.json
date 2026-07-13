@@ -1,0 +1,152 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "合规风险预警平台",
+    "content": {
+      "product_name": "合规风险预警平台",
+      "positioning": "基于大模型与RAG技术的国企风控合规全流程智能化平台",
+      "core_capabilities": [
+        "知识库管理",
+        "智能问答",
+        "风险识别与预警",
+        "文档合规审查",
+        "违规事件分析"
+      ],
+      "competitive_advantages": [
+        "AI驱动主动预警，从被动补救转向事前预防",
+        "全流程闭环管理，覆盖风险识别→评估→处置",
+        "支持私有化内网部署，全量数据本地存储不外传",
+        "模块化灵活组合，按需选配基础版/标准版/高级版"
+      ],
+      "pricing_model": "按模块授权+用户数+部署方式报价，提供基础版、标准版、高级版按需选配"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "暂无案例",
+    "content": {}
+  },
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "数据安全与内网部署异议",
+    "content": {
+      "objection_category": "技术/安全",
+      "objection_text": "我们的数据非常敏感，必须内网部署，你们能保证数据不外传吗？",
+      "root_concern": "国企数据安全合规，担心敏感数据泄露",
+      "response_framework": {
+        "step_1_acknowledge": "完全理解国企对数据安全的高度重视。",
+        "step_2_redirect": "我们的平台支持全量数据本地存储，完全内网部署，不外传任何数据，并有多重加密、权限管控与审计机制，符合国企数据安全规范。"
+      }
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "objection",
+    "title": "价格与预算异议",
+    "content": {
+      "objection_category": "价格",
+      "objection_text": "你们的价格太贵了，能不能便宜点？",
+      "root_concern": "预算有限，希望控制采购成本",
+      "response_framework": {
+        "step_1_acknowledge": "我理解您对预算的关注。",
+        "step_2_redirect": "我们提供基础版、标准版、高级版按需选配，您可以根据实际需求选择模块和用户数，灵活控制成本。而且AI自动化能大幅降低人工风控成本，长期ROI非常可观。"
+      }
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "objection",
+    "title": "采购流程与招标异议",
+    "content": {
+      "objection_category": "实施/采购",
+      "objection_text": "我们国企采购必须走招标流程，你们能配合吗？",
+      "root_concern": "采购合规性与流程匹配",
+      "response_framework": {
+        "step_1_acknowledge": "明白，国企采购确实需要严格遵循招标流程。",
+        "step_2_redirect": "我们支持项目制交付、年度订阅、本地化部署+运维三种模式，完全可对接国企招标流程，并提供所需资质文件与授权书。"
+      }
+    }
+  },
+  {
+    "id": "C006",
+    "card_type": "solution",
+    "title": "国企风控合规智能体解决方案",
+    "content": {
+      "solution_name": "国企风控合规智能体解决方案",
+      "target_scenario": "市属国有企业风控合规管理，覆盖合同管理、投融资、招投标、财务审计、办公室制度、会议材料等关键场景",
+      "product_composition": [
+        {
+          "product_ref": "合规风险预警平台",
+          "role": "核心平台，提供知识库管理、智能问答、风险识别预警、文档合规审查、违规事件分析等全流程AI能力"
+        }
+      ],
+      "implementation_roadmap": "环境准备→后端部署→前端部署→参数配置→数据初始化→联调测试→系统上线，7步标准化交付，支持快速部署与培训"
+    }
+  },
+  {
+    "id": "C007",
+    "card_type": "parameter",
+    "title": "基础版部署关键硬件参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "应用服务器CPU",
+          "value": "≥8",
+          "unit": "核",
+          "notes": "基础版推荐配置，支持Docker容器化"
+        },
+        {
+          "name": "应用服务器内存",
+          "value": "≥32",
+          "unit": "GB",
+          "notes": "基础版推荐配置"
+        },
+        {
+          "name": "应用服务器存储",
+          "value": "≥500",
+          "unit": "GB SSD",
+          "notes": "基础版推荐配置，建议企业级SSD"
+        },
+        {
+          "name": "数据库服务器CPU",
+          "value": "≥8",
+          "unit": "核",
+          "notes": "基础版推荐配置，支持MySQL/MongoDB"
+        },
+        {
+          "name": "数据库服务器内存",
+          "value": "≥32",
+          "unit": "GB",
+          "notes": "基础版推荐配置"
+        },
+        {
+          "name": "数据库服务器存储",
+          "value": "≥500",
+          "unit": "GB SSD",
+          "notes": "基础版推荐配置"
+        },
+        {
+          "name": "存储服务器CPU",
+          "value": "≥4",
+          "unit": "核",
+          "notes": "基础版推荐配置，支持MinIO对象存储"
+        },
+        {
+          "name": "存储服务器内存",
+          "value": "≥8",
+          "unit": "GB",
+          "notes": "基础版推荐配置"
+        },
+        {
+          "name": "存储服务器存储",
+          "value": "≥1",
+          "unit": "TB SSD",
+          "notes": "基础版推荐配置"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,106 @@
+{
+  "industry": "金融",
+  "scenario_name": "金融-银行-贷后失联修复与外呼触达",
+  "client_profile": {
+    "role": "信用卡中心贷后管理部总经理",
+    "personality": "谨慎务实，关注合规与成本控制",
+    "org_type": "国有大型银行信用卡中心",
+    "current_situation": "信用卡逾期客户中约30%无法通过预留联系方式联系，传统人工查找方式效率低且存在合规风险，不良率持续承压。"
+  },
+  "pain_points": [
+    {
+      "id": "P1",
+      "point": "逾期用户失联，无法进行有效提醒，导致不良率难以下降",
+      "severity": "high",
+      "hint": "我们很多客户逾期后就联系不上了，催收效果很差。"
+    },
+    {
+      "id": "P2",
+      "point": "现有查找失联用户联系方式的手段效率低、成本高，且可能涉及违规获取隐私",
+      "severity": "high",
+      "hint": "我们试过一些第三方数据修复，但合规性让我们担忧。"
+    },
+    {
+      "id": "P3",
+      "point": "外呼催收容易引发用户投诉骚扰，缺乏合规的触达渠道",
+      "severity": "medium",
+      "hint": "外呼团队经常被投诉，我们急需合规的外呼方式。"
+    }
+  ],
+  "product_match": [
+    {
+      "pain_point_ref": "P1",
+      "product": "翼联寻回失联修复",
+      "value_prop": "通过加密匹配电信数据模型，找到失联用户近30天最活跃号码",
+      "case_ref": "三网修复30-40分钟返回结果，修复成功率高",
+      "key_talking_point": "合规、高效找回失联用户最新活跃号码"
+    },
+    {
+      "pain_point_ref": "P2",
+      "product": "翼联寻回修复平台",
+      "value_prop": "加密上传，查得计费，修复成功才收费，成本可控",
+      "case_ref": "某银行使用后失联修复成功率提升，成本降低",
+      "key_talking_point": "按成功修复计费，避免无效支出"
+    },
+    {
+      "pain_point_ref": "P3",
+      "product": "翼联寻回隐私外呼",
+      "value_prop": "AXB隐私号绑定，限频限时段，话术报备，合规触达",
+      "case_ref": "每日外呼≤3次，每月≤10次，外呼时段8:30-21:00",
+      "key_talking_point": "全流程合规，避免骚扰投诉"
+    }
+  ],
+  "objections": [
+    {
+      "id": "O1",
+      "objection": "我们非常担心用户数据泄露，你们怎么保证安全？",
+      "trigger": "当介绍需要上传用户身份信息时",
+      "ideal_response_direction": "强调加密传输与脱敏处理，平台不存储明文，只以匿号映射，符合数据安全法规。"
+    },
+    {
+      "id": "O2",
+      "objection": "外呼频次限制会不会影响我们的催收效率？",
+      "trigger": "当介绍呼叫频次限制时",
+      "ideal_response_direction": "解释频次限制是为了合规和避免投诉，同时通过精准修复最活跃号码提高接通率，整体效率反而提升。"
+    }
+  ],
+  "scoring_points": [
+    {
+      "id": "S1",
+      "category": "product_knowledge",
+      "point": "是否准确说出产品核心能力",
+      "weight": 3,
+      "check_method": "回复中包含失联修复和隐私外呼两大能力"
+    },
+    {
+      "id": "S2",
+      "category": "product_knowledge",
+      "point": "是否引用具体参数或案例",
+      "weight": 3,
+      "check_method": "提及三网修复时间、频次限制、计费模式等"
+    },
+    {
+      "id": "S3",
+      "category": "need_discovery",
+      "point": "是否主动询问客户现状与痛点",
+      "weight": 3,
+      "check_method": "对话开始时有探索性问题，如失联比例、当前处理方式"
+    },
+    {
+      "id": "S4",
+      "category": "objection_handling",
+      "point": "是否有效应对数据安全异议",
+      "weight": 2,
+      "check_method": "面对数据安全质疑，给出加密、脱敏、匿号等具体措施"
+    },
+    {
+      "id": "S5",
+      "category": "objection_handling",
+      "point": "是否有效应对外呼效率异议",
+      "weight": 2,
+      "check_method": "解释精准修复提升接通率，频次限制不影响整体效果"
+    }
+  ],
+  "difficulty": "medium",
+  "difficulty_reason": "客户关注合规与成本，会提出数据安全、外呼效率等针对性质疑"
+}

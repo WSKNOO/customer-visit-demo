@@ -1,0 +1,98 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "天翼云CTyunOS系统",
+    "content": {
+      "product_name": "天翼云CTyunOS系统",
+      "positioning": "自主研发的国产企业级服务器操作系统，满足国产化替代全方面要求",
+      "core_capabilities": [
+        "全新系统内核与云原生深度优化（内存分级扩展、bond6增强、eBPF扩展）",
+        "自研/合研28款系统组件及软件安全链管理（SBOM）",
+        "漏洞全生命周期管理与CentOS一键迁移极简部署"
+      ],
+      "competitive_advantages": [
+        "核心自主可控，独立演进内核，掌握核心技术知识产权",
+        "虚拟化“零”损耗，自研虚拟化引擎，领先的云支撑能力"
+      ],
+      "pricing_model": "按标准版计费，数据中心版折算为标准版数量（1:15），购买数量除以50向上取整，支持议价折扣，通过原子能力平台下单"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "暂无案例",
+    "content": {}
+  },
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "暂无常见异议",
+    "content": {}
+  },
+  {
+    "id": "C004",
+    "card_type": "solution",
+    "title": "CTyunOS三级技术支持服务方案",
+    "content": {
+      "solution_name": "CTyunOS三级技术支持服务方案",
+      "target_scenario": "用户在使用CTyunOS过程中遇到技术问题，需要原厂服务支持，确保系统稳定运行",
+      "product_composition": [
+        {
+          "product_ref": "天翼云CTyunOS系统",
+          "role": "核心操作系统"
+        }
+      ],
+      "implementation_roadmap": "用户通过400热线、智能客服、在线咨询等渠道反馈问题，服务中心派单至L1支持团队全程跟踪，L2运维团队7×24小时监控与故障处理，必要时升级至L3研发团队解决，最终归档总结"
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "solution",
+    "title": "CTyunOS原子能力平台采购方案",
+    "content": {
+      "solution_name": "CTyunOS原子能力平台采购方案",
+      "target_scenario": "客户需要通过天翼云原子能力平台正式采购CTyunOS操作系统",
+      "product_composition": [
+        {
+          "product_ref": "天翼云CTyunOS系统",
+          "role": "采购标的"
+        }
+      ],
+      "implementation_roadmap": "登录原子能力平台搜索产品，进入详情页发起议价申请或提前商议折扣，在OA发起销售价格申请并审批通过，回到下单页面绑定议价编码，上传审批附件，提交订单，5天内服务确认后计费"
+    }
+  },
+  {
+    "id": "C006",
+    "card_type": "parameter",
+    "title": "CTyunOS关键参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "自研/合研系统软件包数量",
+          "value": "28",
+          "unit": "款",
+          "notes": "体现产品自主核心组件丰富度"
+        },
+        {
+          "name": "优化修改开源组件数量",
+          "value": "24",
+          "unit": "款",
+          "notes": "体现对开源组件的深度优化能力"
+        },
+        {
+          "name": "Legacy MBR支持最大硬盘容量",
+          "value": "2",
+          "unit": "TB",
+          "notes": "传统BIOS引导模式下的硬盘容量上限，UEFI模式无此限制"
+        },
+        {
+          "name": "数据中心版折算标准版比例",
+          "value": "15",
+          "unit": "套标准版/数据中心版",
+          "notes": "下单时需将数据中心版折算为标准版数量进行采购"
+        }
+      ]
+    }
+  }
+]

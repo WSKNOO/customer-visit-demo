@@ -1,0 +1,128 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "翼点触达",
+    "content": {
+      "product_name": "翼点触达",
+      "positioning": "基于实时信令+大数据算法的政务/应急/文旅精准短信触达原子能力",
+      "core_capabilities": [
+        "围栏圈人",
+        "标签筛选",
+        "三网覆盖",
+        "合规安全",
+        "应急免审"
+      ],
+      "competitive_advantages": [
+        "精准度与数据能力全面领先，支持常驻/漫入/驻留时长/年龄/性别等多标签组合筛选",
+        "应急效率高，7×24支撑，应急话术免审、高速通道",
+        "电信央企背书，数据在内部处理不外泄，全程可审计",
+        "SaaS/API/代运营灵活交付，小时级开通"
+      ],
+      "pricing_model": "按实际发送成功量计费，原子能力结算成本0.06元/条（含数据费用与短信通信费用）"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "solution",
+    "title": "翼点触达精准短信触达方案",
+    "content": {
+      "solution_name": "翼点触达精准短信触达方案",
+      "target_scenario": "政务宣传、应急预警、城市旅游、公益服务等需要向特定区域人群发送短信的场景",
+      "product_composition": [
+        {
+          "product_ref": "翼点触达平台",
+          "role": "核心"
+        },
+        {
+          "product_ref": "代运营服务",
+          "role": "可选"
+        },
+        {
+          "product_ref": "API接口",
+          "role": "可选（应急条线）"
+        }
+      ],
+      "implementation_roadmap": "客户账号申请与配置 → 短信模板创建与审核 → 围栏区域圈选与人群标签筛选 → 短信任务创建与发送 → 数据监控与统计"
+    }
+  },
+  {
+    "id": "C003",
+    "card_type": "parameter",
+    "title": "关键参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "计费单价",
+          "value": "0.06",
+          "unit": "元/条",
+          "notes": "按实际发送成功量计费，含数据费用与短信通信费用"
+        },
+        {
+          "name": "围栏地市数量上限",
+          "value": "4",
+          "unit": "个",
+          "notes": "创建围栏时最多选择四个地市，超过无法创建"
+        },
+        {
+          "name": "经纬度上传点数上限",
+          "value": "50",
+          "unit": "个",
+          "notes": "上传经纬度文件不能超过50个点"
+        },
+        {
+          "name": "每日发送上限",
+          "value": "可配置",
+          "unit": "",
+          "notes": "个性化配置中可设置每日发送上限"
+        },
+        {
+          "name": "总发送上限",
+          "value": "可配置",
+          "unit": "",
+          "notes": "任务总发送人数上限可设置"
+        },
+        {
+          "name": "同一号码发送频次",
+          "value": "可配置",
+          "unit": "",
+          "notes": "可设置同一号码接收短信的频次间隔"
+        },
+        {
+          "name": "勿扰时段",
+          "value": "可配置",
+          "unit": "",
+          "notes": "可设置勿扰时段避免打扰用户"
+        }
+      ]
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "objection",
+    "title": "三网覆盖与代运营模式",
+    "content": {
+      "objection_category": "技术",
+      "objection_text": "你们支持三网发送吗？移动和联通用户怎么发？",
+      "root_concern": "担心覆盖不全或代运营模式下的链路延迟",
+      "response_framework": {
+        "step_1_acknowledge": "理解您需要覆盖所有运营商的用户。",
+        "step_2_redirect": "翼点触达基于数据筛选支持三网发送，移动和联通采用代运营模式，确保三网用户都能收到，且我们提供7×24支撑保障时效。"
+      }
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "objection",
+    "title": "客户范围限制",
+    "content": {
+      "objection_category": "实施",
+      "objection_text": "我们能作为代理商帮政府发吗？或者互联网客户能用吗？",
+      "root_concern": "合作模式限制，担心无法满足自身业务",
+      "response_framework": {
+        "step_1_acknowledge": "我理解您希望拓展服务范围。",
+        "step_2_redirect": "翼点触达原则上只接受政府部门直接需求，需要政府部门授权，这是为了确保合规和公益性质，避免营销滥用。"
+      }
+    }
+  }
+]

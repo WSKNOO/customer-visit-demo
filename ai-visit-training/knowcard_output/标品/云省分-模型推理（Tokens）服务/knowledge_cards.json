@@ -1,0 +1,128 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "天翼云模型推理服务",
+    "content": {
+      "product_name": "天翼云模型推理服务（息壤模型推理服务）",
+      "positioning": "提供大模型在线推理服务，支持Tokens按量计费，无需训练模型，即开即用。",
+      "core_capabilities": [
+        "模型体验",
+        "模型服务（服务接入、在线推理、调用监控）"
+      ],
+      "competitive_advantages": [
+        "三种计费模式灵活选择（包周期、卡时、Tokens）",
+        "每个模型提供免费Token额度体验",
+        "HTTPS加密通信保障数据安全",
+        "支持PyTorch和MindSpore主流训练框架"
+      ],
+      "pricing_model": "包周期预付费（优惠大）、按需卡时（灵活释放）、按需Tokens（按实际用量精准计费），不支持按带宽、流量计费。"
+    }
+  },
+  {},
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "不支持模型训练",
+    "content": {
+      "objection_category": "技术",
+      "objection_text": "你们这个平台能训练我自己的模型吗？",
+      "root_concern": "客户希望在一个平台完成训练和推理，减少多平台切换成本。",
+      "response_framework": {
+        "step_1_acknowledge": "理解您需要训练自定义模型的需求。",
+        "step_2_redirect": "我们的模型推理服务专注于提供高性能、低门槛的在线推理，已集成多种主流大模型，可直接调用。如需训练能力，天翼云有独立的训练平台可满足您的需求。"
+      }
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "objection",
+    "title": "计费模式不支持按带宽",
+    "content": {
+      "objection_category": "价格",
+      "objection_text": "能不能按带宽计费？我这边流量比较稳定。",
+      "root_concern": "客户希望有更匹配自身业务形态的计费方式以降低成本。",
+      "response_framework": {
+        "step_1_acknowledge": "您对计费方式的关注我完全理解。",
+        "step_2_redirect": "虽然我们不支持按带宽计费，但提供的按需Tokens计费模式可以按实际使用量精准计费，特别适合业务量不稳定的场景，避免资源浪费；如果您的用量稳定，包周期预付费能享受更大优惠。"
+      }
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "objection",
+    "title": "免费额度有效期短",
+    "content": {
+      "objection_category": "价格",
+      "objection_text": "免费额度才14天，太短了，能不能延长？",
+      "root_concern": "客户希望有更充裕的时间进行深度测试和评估。",
+      "response_framework": {
+        "step_1_acknowledge": "14天确实是一个标准的试用周期。",
+        "step_2_redirect": "免费额度主要用于快速验证模型效果，每个模型都配有不等的免费Token，您可以在14天内充分体验。如需长期使用，可以开通Tokens按量付费，按实际使用量计费，成本完全可控，且开通即用。"
+      }
+    }
+  },
+  {
+    "id": "C006",
+    "card_type": "solution",
+    "title": "模型在线推理解决方案",
+    "content": {
+      "solution_name": "天翼云模型推理服务",
+      "target_scenario": "需要直接调用大模型进行文本生成、视觉识别、向量化等推理任务，无需自行训练和运维模型的场景。",
+      "product_composition": [
+        {
+          "product_ref": "模型广场",
+          "role": "提供文本大模型、视觉大模型、向量化模型等预置模型，可直接选择使用"
+        },
+        {
+          "product_ref": "服务接入",
+          "role": "创建服务组并自动生成AppKey，用于API调用鉴权"
+        },
+        {
+          "product_ref": "在线推理",
+          "role": "支持将模型部署为“我的服务”或直接通过API进行在线推理"
+        }
+      ],
+      "implementation_roadmap": "1. 登录控制台开通模型推理服务；2. 在服务接入中创建服务组获取AppKey；3. 在模型广场获取目标模型ID；4. 通过HTTPS API调用模型进行推理；5. 在调用监控中查看用量与性能。"
+    }
+  },
+  {
+    "id": "C007",
+    "card_type": "parameter",
+    "title": "关键参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "DeepSeek-R1上下文长度",
+          "value": "32K",
+          "unit": "tokens",
+          "notes": "模型支持的最大输入token数"
+        },
+        {
+          "name": "免费token额度有效期",
+          "value": "14",
+          "unit": "天",
+          "notes": "从第一次使用该模型开始计算，主/子账号共用"
+        },
+        {
+          "name": "服务退订期限",
+          "value": "7",
+          "unit": "天",
+          "notes": "服务开通后7天内未使用可支持退订"
+        },
+        {
+          "name": "模型体验中心历史对话记录上限",
+          "value": "200",
+          "unit": "条",
+          "notes": "体验中心可保存的历史对话记录数量"
+        },
+        {
+          "name": "后付费账单结算周期",
+          "value": "按月",
+          "unit": "",
+          "notes": "按需计费模式下的账单结算周期"
+        }
+      ]
+    }
+  }
+]

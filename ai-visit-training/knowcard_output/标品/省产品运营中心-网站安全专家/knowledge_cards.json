@@ -1,0 +1,140 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "云堤·网站安全专家",
+    "content": {
+      "product_name": "云堤·网站安全专家",
+      "positioning": "运营商级网站安全防护产品，提供网站安全监测和网站安全防护服务",
+      "core_capabilities": [
+        "网站安全监控：7×24小时可用性监测、内容篡改监测、漏洞检测",
+        "网站安全防护：基于云安全大数据的4-7层应用安全防护，阻拦篡改、挂马、漏洞攻击、恶意扫描、CC攻击等",
+        "自服务门户：提供攻击报表、防护日志、配置管理、黑白名单等自助运营能力"
+      ],
+      "competitive_advantages": [
+        "运营商级防护能力，依托中国电信骨干网和云防护平台",
+        "220+分布式监测点覆盖中国大陆及海外，多运营商线路降低误报",
+        "支持HTTP/HTTPS、PING、FTP、DNS等多种监测类型",
+        "不影响网站备案，类似CDN解析方式"
+      ],
+      "pricing_model": "按服务版本计费（基础版/专业版/旗舰版），具体价格未在文档中提及"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "",
+    "content": {}
+  },
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "与现有CDN兼容性",
+    "content": {
+      "objection_category": "技术",
+      "objection_text": "我们已经在用CDN了，再加云WAF会不会冲突，影响加速和防护效果？",
+      "root_concern": "担心多一层代理导致缓存异常、排障困难、真实IP隐藏影响CC防护等",
+      "response_framework": {
+        "step_1_acknowledge": "理解您对现有CDN架构稳定性的重视，很多客户都有类似顾虑。",
+        "step_2_redirect": "云WAF支持通过CNAME方式指定回源服务器，只要CDN服务商支持CNAME回源即可共存。但需注意：CDN可能缓存拦截页面，建议配置缓存规则避免；CDN会隐藏客户端真实IP，可能影响CC攻击和Bot检测的精准度，我们可以配合调整防护策略，将云WAF置于CDN之前或之后，根据您的架构定制最优方案。"
+      }
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "objection",
+    "title": "网站备案影响",
+    "content": {
+      "objection_category": "实施",
+      "objection_text": "使用云防护会改变网站解析IP，会不会导致备案失效或被注销？",
+      "root_concern": "担心监管合规风险，影响网站合法运营",
+      "response_framework": {
+        "step_1_acknowledge": "备案是网站运营的红线，您的担忧非常必要。",
+        "step_2_redirect": "云防护本质是在线加速和防护服务，类似CDN，只改变解析IP，不改变网站实际接入机房，因此不会影响备案。我们已服务大量政企客户，从未出现因使用云防护导致备案异常的情况。"
+      }
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "objection",
+    "title": "网站审核不通过风险",
+    "content": {
+      "objection_category": "实施",
+      "objection_text": "我的网站内容比较特殊，能顺利加入云防护吗？",
+      "root_concern": "担心因内容或资质问题被拒绝接入，浪费前期准备时间",
+      "response_framework": {
+        "step_1_acknowledge": "我们会对网站进行必要审核，这是为了保障平台整体安全合规。",
+        "step_2_redirect": "只要网站具备有效ICP备案号、可正常访问且有实际内容，不涉及色情、违法、黑客、钓鱼、游戏私服等违规信息，医院类有相应资质，均可通过审核。您可以先提交域名，我们快速预审反馈。"
+      }
+    }
+  },
+  {
+    "id": "C006",
+    "card_type": "solution",
+    "title": "云堤·网站安全专家解决方案",
+    "content": {
+      "solution_name": "云堤·网站安全专家解决方案",
+      "target_scenario": "政企、教育、医疗卫生、金融、电商、航空等行业的门户网站及Web业务系统，面临网页篡改、挂马、注入攻击、CC攻击、数据泄露等安全威胁，同时需满足监管合规要求",
+      "product_composition": [
+        {
+          "product_ref": "网站安全监控",
+          "role": "7×24小时远程监控网站可用性、内容篡改和漏洞，多渠道告警"
+        },
+        {
+          "product_ref": "网站安全防护",
+          "role": "基于云安全大数据的4-7层防护，拦截OWASP常见攻击、CC攻击、Bot行为管理等"
+        },
+        {
+          "product_ref": "自服务门户",
+          "role": "提供攻击报表、防护日志、配置管理和黑白名单等自助运营能力"
+        }
+      ],
+      "implementation_roadmap": "客户开通服务后获取CNAME地址，在域名服务商处修改解析记录将网站流量指向云防护平台；生效后恶意流量被清洗，正常流量回源至源站；客户可通过自服务门户或热线邮箱持续运营。"
+    }
+  },
+  {
+    "id": "C007",
+    "card_type": "parameter",
+    "title": "关键参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "防护端口（基础版）",
+          "value": "80, 8080, 443, 8443",
+          "unit": "个",
+          "notes": "仅支持标准端口"
+        },
+        {
+          "name": "防护端口（专业版）",
+          "value": "最多10",
+          "unit": "个",
+          "notes": "包含标准端口，可自定义非标端口"
+        },
+        {
+          "name": "防护端口（旗舰版）",
+          "value": "最多50",
+          "unit": "个",
+          "notes": "包含标准端口，可自定义非标端口"
+        },
+        {
+          "name": "可用性监测点",
+          "value": "220+",
+          "unit": "个",
+          "notes": "分布于中国大陆不同城市及海外，涵盖电信、联通等多运营商线路"
+        },
+        {
+          "name": "监测类型",
+          "value": "HTTP(s), PING, FTP, DNS, TCP, UDP, SMTP",
+          "unit": "种",
+          "notes": "支持多种协议的可用性监测"
+        },
+        {
+          "name": "DNS解析生效时间",
+          "value": "不超过48",
+          "unit": "小时",
+          "notes": "取决于域名TTL设置和NS记录刷新时间"
+        }
+      ]
+    }
+  }
+]

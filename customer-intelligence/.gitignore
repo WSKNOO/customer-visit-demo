@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+tmp/
+frontend/node_modules/
+frontend/dist/
+

@@ -1,0 +1,105 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "全球物联网出海翼联",
+    "content": {
+      "product_name": "全球物联网出海翼联",
+      "positioning": "一站式全球物联网连接服务，助力中国智造出海",
+      "core_capabilities": [
+        "一个平台统一管理全球连接",
+        "一张SIM卡实现全域覆盖，国内测试海外码号自动切换",
+        "一点结算，与电信统一结算，全球账单格式统一",
+        "一点售后，故障受理流程闭环"
+      ],
+      "competitive_advantages": [
+        "特殊国家和区域使用本地资源，避免漫游中断",
+        "解决海外漫游资费高、平台差异大、售后难等痛点"
+      ],
+      "pricing_model": "一点结算，境内与电信统一结算，全球统一账单"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "阜阳供水NB抄表项目",
+    "content": {
+      "case_name": "阜阳供水NB抄表项目",
+      "background": "智能水表远程抄收、城乡供水一体化改造，需提升抄表成功率并降低运维成本",
+      "solution": "提供NB卡或云芯AI模组+NB卡服务，嵌入水司生产运营流程，实现远程抄收与联网报警",
+      "results": [],
+      "key_value": "助力水务公司降本增效，提升抄表成功率，并为规模化客户提供私有化AIOT高保障平台"
+    }
+  },
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "测试卡停机后无法继续使用",
+    "content": {
+      "objection_category": "业务规则",
+      "objection_text": "测试卡停机了，还能复机或延期继续测试吗？",
+      "root_concern": "测试周期不足，担心测试中断影响项目进度",
+      "response_framework": {
+        "step_1_acknowledge": "理解您需要延长测试时间的需求。",
+        "step_2_redirect": "测试卡停机3个月后会自动拆机，停机前可申请转商用套餐继续使用；若测试延迟，停机前可通过生产辅助工单申请延期。建议提前沟通测试进展，及时转商用或申请延期。"
+      }
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "solution",
+    "title": "智能水表远程抄收解决方案",
+    "content": {
+      "solution_name": "智能水表远程抄收解决方案",
+      "target_scenario": "水表行业，包括智能水表、城乡供水一体化、农饮水改造提升工程",
+      "product_composition": [
+        {
+          "product_ref": "NB-IoT卡",
+          "role": "核心连接"
+        },
+        {
+          "product_ref": "云芯AI模组",
+          "role": "可选终端模组"
+        },
+        {
+          "product_ref": "AIOT平台",
+          "role": "设备管理与数据平台"
+        }
+      ],
+      "implementation_roadmap": "提供NB卡或云芯AI模组+NB卡，嵌入水司生产、运营、运维流程，实现远程抄收与联网报警；对规模客户提供私有化AIOT平台，对中小客户提供智慧水务平台。"
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "parameter",
+    "title": "ICCID位数说明",
+    "content": {
+      "parameters": [
+        {
+          "name": "IT系统与5G CMP系统ICCID",
+          "value": "19",
+          "unit": "位",
+          "notes": "系统侧使用的ICCID长度为19位"
+        },
+        {
+          "name": "SIM卡内写入ICCID",
+          "value": "20",
+          "unit": "位",
+          "notes": "19位+1位校验位，设备读取20位"
+        },
+        {
+          "name": "SIM卡版面打印ICCID（插拔卡条形码）",
+          "value": "19",
+          "unit": "位",
+          "notes": "条形码为19位；打印的ICCID为19位+1位字母（字母代表卡商）"
+        },
+        {
+          "name": "SIM卡版面打印ICCID（5X6贴片卡）",
+          "value": "19位+1位字母",
+          "unit": "",
+          "notes": "打印的ICCID为19位+1位字母，字母代表卡商，如H华弘、B恒宝等"
+        }
+      ]
+    }
+  }
+]

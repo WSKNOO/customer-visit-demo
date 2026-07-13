@@ -1,0 +1,114 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "天翼云GPU主机",
+    "content": {
+      "product_name": "天翼云GPU主机（含GPU物理机/裸金属与GPU云主机）",
+      "positioning": "依托电信骨干网与属地化服务，提供覆盖AI训练推理、图形渲染、科学计算的高性能GPU算力，兼具物理机极致性能与云主机弹性灵活。",
+      "core_capabilities": [
+        "GPU物理机无虚拟化损耗，物理独占，适配千亿级大模型训练与政务物理隔离场景",
+        "GPU云主机分钟级开通、弹性扩缩容，提供图形加速基础型（G系列）与计算加速型（P系列）",
+        "预置DeepSeek模型（1.5B-70B参数）镜像，搭配Ollama与Open WebUI，开机即用"
+      ],
+      "competitive_advantages": [
+        "云网融合+属地服务：200Gbps+超高带宽，近30省部署，安徽全域7×24驻场运维，故障响应＜30分钟",
+        "高性价比+灵活适配：GPU裸金属无虚拟化损耗、租用单价更低，新用户享1个月免费试用"
+      ],
+      "pricing_model": "GPU云主机支持包周期与按量计费；GPU物理机仅支持包年/包月（最短1个月，最长3年）；新用户可申请1个月免费试用。"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "案例",
+    "content": {}
+  },
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "品牌与生态知名度",
+    "content": {
+      "objection_category": "竞品",
+      "objection_text": "天翼云在AI领域的品牌知名度不如阿里云、华为云，开发者社区不活跃，工具链也不成熟。",
+      "root_concern": "担心技术生态支持不足，影响开发效率和长期使用体验。",
+      "response_framework": {
+        "step_1_acknowledge": "认可您对品牌生态的关注，阿里云和华为云确实在互联网领域声量较大。",
+        "step_2_redirect": "天翼云作为央企云，在政务、国企等合规场景是首选；我们提供预装DeepSeek模型、一对一本地技术指导，并联合中通服实现‘能力+落地’一体化服务，以本地化定制优化弥补通用工具链，已有成熟本地落地案例。"
+      }
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "objection",
+    "title": "高端GPU型号上线滞后",
+    "content": {
+      "objection_category": "技术",
+      "objection_text": "我们需要最新的H100或A100 80GB，你们目前没有这些高端型号，阿里云已经上线了。",
+      "root_concern": "对最新硬件性能的需求，担心现有型号无法满足前沿大模型训练。",
+      "response_framework": {
+        "step_1_acknowledge": "理解您对最新硬件的需求，高端GPU型号的上线节奏确实是我们持续优化的方向。",
+        "step_2_redirect": "目前我们已提供A100、H800等主流高端型号，并推出‘GPU+昇腾NPU’双算力覆盖方案，弥补国际生态兼容性短板；同时通过无虚拟化损耗的裸金属和本地化性能调优，在千亿级大模型训练中可实现TCO降低20%以上，性价比更优。"
+      }
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "solution",
+    "title": "政务/国企合规与属地保障方案",
+    "content": {
+      "solution_name": "政务/国企合规与属地保障方案",
+      "target_scenario": "政务、国企等需满足数据本地存储、物理隔离合规要求的高性能计算场景。",
+      "product_composition": [
+        {
+          "product_ref": "GPU物理机（裸金属）",
+          "role": "核心算力，物理隔离，极致性能"
+        },
+        {
+          "product_ref": "GPU云主机",
+          "role": "辅助弹性算力，轻量AI推理与图形渲染"
+        }
+      ],
+      "implementation_roadmap": "依托安徽本地化团队，联合中通服提供私有化部署与一站式交付；结合‘数字江淮’等本地政策定制化配置，实现7×24驻场运维，故障响应＜30分钟，确保合规与业务连续性。"
+    }
+  },
+  {
+    "id": "C006",
+    "card_type": "parameter",
+    "title": "关键参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "GPU型号",
+          "value": "A100、H800、A10、T4等",
+          "unit": "",
+          "notes": "高端型号（A100/H800）适用于大模型训练，中端型号（A10/T4）适用于推理与图形渲染"
+        },
+        {
+          "name": "实例规格",
+          "value": "vCPU、内存、显存组合",
+          "unit": "",
+          "notes": "图形加速基础型（G系列）与计算加速型（P系列）提供不同vCPU/内存/显存配比"
+        },
+        {
+          "name": "操作系统支持",
+          "value": "Linux（CentOS、Ubuntu、CTyunOS）、Windows Server",
+          "unit": "",
+          "notes": "GPU云主机部分规格支持CTyunOS，具体以控制台为准"
+        },
+        {
+          "name": "计费方式",
+          "value": "包周期/按量（仅云主机）",
+          "unit": "",
+          "notes": "GPU物理机仅支持包年/包月，云主机支持两种模式"
+        },
+        {
+          "name": "免费试用",
+          "value": "1个月",
+          "unit": "",
+          "notes": "新用户可申请，含预置DeepSeek模型的镜像也可享受试用福利"
+        }
+      ]
+    }
+  }
+]

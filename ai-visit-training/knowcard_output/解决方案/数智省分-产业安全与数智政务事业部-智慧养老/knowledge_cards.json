@@ -1,0 +1,145 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "智慧养老软件平台",
+    "content": {
+      "product_name": "智慧养老软件平台",
+      "positioning": "集政府监管、机构运营、社区居家、健康管理等全场景于一体的智能化养老服务平台",
+      "core_capabilities": [
+        "政府监管决策",
+        "机构养老运营管理",
+        "社区居家养老服务",
+        "老人健康管理",
+        "智能设备对接与监护",
+        "数据安全管理与备份"
+      ],
+      "competitive_advantages": [
+        "基于SpringCloud微服务架构，高可用、易扩展",
+        "多终端适配（电脑、平板、适老APP、微信小程序），适老APP支持语音控制",
+        "严格角色权限管控与数据安全规范",
+        "7×24小时运维保障，服务可用率≥99.5%，年均故障率≤5%"
+      ],
+      "pricing_model": "未在文档中提及"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "",
+    "content": {}
+  },
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "平台卡顿/加载慢",
+    "content": {
+      "objection_category": "技术/性能",
+      "objection_text": "你们这个平台用起来经常卡顿，加载半天，太影响工作效率了。",
+      "root_concern": "担心平台不稳定，影响日常养老服务开展，增加工作负担。",
+      "response_framework": {
+        "step_1_acknowledge": "非常理解您的感受，平台流畅度确实直接影响使用体验，我们高度重视。",
+        "step_2_redirect": "我们的平台有严格的运维保障体系，提供多种自助优化方法（如清理缓存、检查网络），同时运维团队7×24小时响应，确保服务可用率不低于99.5%。此外，平台基于SpringCloud微服务架构，具备弹性扩展能力，能持续优化性能。"
+      }
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "solution",
+    "title": "智慧养老整体解决方案",
+    "content": {
+      "solution_name": "智慧养老整体解决方案",
+      "target_scenario": "适用于政府民政部门监管、养老机构运营、社区居家养老服务、老人健康管理等全场景",
+      "product_composition": [
+        {
+          "product_ref": "养老大数据中心",
+          "role": "数据汇聚与分析核心"
+        },
+        {
+          "product_ref": "老人管理模块",
+          "role": "老人档案、安全监护、健康管理"
+        },
+        {
+          "product_ref": "居家养老模块",
+          "role": "社区管家、政府补贴管理"
+        },
+        {
+          "product_ref": "社区养老模块",
+          "role": "关爱走访、活动管理、志愿者时间银行"
+        },
+        {
+          "product_ref": "机构养老模块",
+          "role": "床位、入住、费用、照护管理"
+        },
+        {
+          "product_ref": "基础服系统",
+          "role": "基础设置与系统管理"
+        },
+        {
+          "product_ref": "服务人员APP",
+          "role": "移动端服务执行"
+        }
+      ],
+      "implementation_roadmap": "交付前期准备→平台部署与核心模块调试→数据迁移与第三方对接→客户培训→验收交付→售后运维支持"
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "parameter",
+    "title": "平台关键性能与安全参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "服务可用率",
+          "value": "99.5",
+          "unit": "%",
+          "notes": "不低于99.5%，保障高可用"
+        },
+        {
+          "name": "年均故障率",
+          "value": "5",
+          "unit": "%",
+          "notes": "控制在5%以内"
+        },
+        {
+          "name": "单次故障最大持续时间",
+          "value": "4",
+          "unit": "小时",
+          "notes": "不超过4小时"
+        },
+        {
+          "name": "数据备份成功率",
+          "value": "100",
+          "unit": "%",
+          "notes": "确保数据安全不丢失"
+        },
+        {
+          "name": "密码最小长度",
+          "value": "8",
+          "unit": "位",
+          "notes": "需包含字母、数字及特殊符号"
+        },
+        {
+          "name": "支持终端类型",
+          "value": "电脑端(Windows/Mac)、平板端、适老APP、微信小程序",
+          "unit": "",
+          "notes": "多终端适配，适老APP支持语音控制"
+        }
+      ]
+    }
+  },
+  {
+    "id": "C006",
+    "card_type": "objection",
+    "title": "账号登录失败",
+    "content": {
+      "objection_category": "技术/体验",
+      "objection_text": "登录老是失败，不是密码错就是账号锁了，太耽误事了。",
+      "root_concern": "担心系统可靠性差，紧急情况下无法及时登录处理事务。",
+      "response_framework": {
+        "step_1_acknowledge": "登录问题确实让人着急，我们完全理解您需要快速进入系统。",
+        "step_2_redirect": "平台提供了多种便捷的登录恢复方式，如自助找回密码、30分钟自动解锁等，同时您也可以随时联系本单位管理员或我们的技术支持快速处理。我们还有适老APP、小程序等多终端，确保您随时能接入。"
+      }
+    }
+  }
+]

@@ -1,0 +1,114 @@
+services:
+  unified-portal:
+    build:
+      context: ../unified-portal
+    environment:
+      PORTAL_HOST: 0.0.0.0
+      PORTAL_PORT: 8080
+      PORTAL_INTELLIGENCE_URL: /intelligence/
+      PORTAL_TRAINING_URL: /training/
+      PORTAL_SOLUTION_URL: ${PORTAL_SOLUTION_URL:-}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  customer-intelligence-api:
+    build:
+      context: ../customer-intelligence
+      dockerfile: Dockerfile.api
+    environment:
+      MOCK_MODE: ${INTELLIGENCE_MOCK_MODE:-true}
+      INTELLIGENCE_MOCK_MODE: ${INTELLIGENCE_MOCK_MODE:-true}
+      INTELLIGENCE_CORS_ORIGINS: ${PUBLIC_ORIGIN:-http://localhost:8080}
+      INTELLIGENCE_RESEARCH_TIMEOUT_SECONDS: ${INTELLIGENCE_RESEARCH_TIMEOUT_SECONDS:-600}
+      PYTHON_EXECUTABLE: python3
+      TRAINING_INTEGRATION_ENABLED: "true"
+      TRAINING_SERVICE_BASE_URL: http://ai-training:5000
+      TRAINING_PUBLIC_URL: /training/
+      TRAINING_CONNECT_TIMEOUT_MS: ${TRAINING_CONNECT_TIMEOUT_MS:-2000}
+      TRAINING_READ_TIMEOUT_MS: ${TRAINING_READ_TIMEOUT_MS:-10000}
+      SEARCH_MCP_ENGINE: ${SEARCH_MCP_ENGINE:-baidu}
+      SEARCH_SERVICE_BASE_URL: ${SEARCH_SERVICE_BASE_URL:-https://www.baidu.com/s}
+      SEARCH_SERVICE_API_KEY: ${SEARCH_SERVICE_API_KEY:-}
+      SEARCH_MCP_TIMEOUT: ${SEARCH_MCP_TIMEOUT:-15}
+      SEARCH_MAX_FETCH_PAGES: ${SEARCH_MAX_FETCH_PAGES:-80}
+      SEARCH_MAX_CONTENT_CHARS: ${SEARCH_MAX_CONTENT_CHARS:-50000}
+      SEARCH_MCP_SUMMARIZER_API_BASE: ${INTELLIGENCE_MODEL_BASE_URL:-}
+      SEARCH_MCP_SUMMARIZER_MODEL: ${INTELLIGENCE_MODEL_NAME:-}
+      SEARCH_MCP_SUMMARIZER_API_KEY: ${INTELLIGENCE_MODEL_API_KEY:-}
+      HTTP_PROXY: ${HTTP_PROXY:-}
+      HTTPS_PROXY: ${HTTPS_PROXY:-}
+      NO_PROXY: ${NO_PROXY:-127.0.0.1,localhost,ai-training,customer-intelligence-api,unified-portal,nginx}
+    volumes:
+      - intelligence_reports:/app/tmp/reports
+    depends_on:
+      ai-training:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  customer-intelligence-frontend:
+    build:
+      context: ../customer-intelligence/frontend
+      args:
+        VITE_BASE_PATH: /intelligence/
+        VITE_API_BASE_URL: /intelligence-api
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  ai-training:
+    build:
+      context: ../ai-visit-training
+    environment:
+      MOCK_MODE: ${TRAINING_MOCK_MODE:-true}
+      ASR_ENABLED: "false"
+      TTS_ENABLED: "false"
+      CORS_ORIGINS: ${PUBLIC_ORIGIN:-http://localhost:8080}
+      DEEPSEEK_BASE_URL: ${TRAINING_MODEL_BASE_URL:-}
+      DEEPSEEK_MODEL: ${TRAINING_MODEL_NAME:-}
+      DEEPSEEK_API_KEY: ${TRAINING_MODEL_API_KEY:-}
+      DEFAULT_TRAINING_ROUNDS: ${DEFAULT_TRAINING_ROUNDS:-6}
+      MODEL_REQUEST_TIMEOUT_SECONDS: ${MODEL_REQUEST_TIMEOUT_SECONDS:-60}
+      MODEL_MAX_RETRIES: ${MODEL_MAX_RETRIES:-1}
+      SESSION_TTL_SECONDS: ${SESSION_TTL_SECONDS:-7200}
+      MAX_SESSIONS: ${MAX_SESSIONS:-100}
+      HTTP_PROXY: ${HTTP_PROXY:-}
+      HTTPS_PROXY: ${HTTPS_PROXY:-}
+      NO_PROXY: ${NO_PROXY:-127.0.0.1,localhost,ai-training,customer-intelligence-api,unified-portal,nginx}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/api/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "${GATEWAY_PORT:-8080}:8080"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      unified-portal:
+        condition: service_healthy
+      customer-intelligence-api:
+        condition: service_healthy
+      customer-intelligence-frontend:
+        condition: service_healthy
+      ai-training:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/gateway-health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  intelligence_reports:

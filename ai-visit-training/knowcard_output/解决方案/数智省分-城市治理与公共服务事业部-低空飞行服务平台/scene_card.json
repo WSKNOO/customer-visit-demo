@@ -1,0 +1,106 @@
+{
+  "industry": "政务",
+  "scenario_name": "政务-城市管理局-无人机城市综合治理平台",
+  "client_profile": {
+    "role": "市城市管理局副局长",
+    "personality": "谨慎务实，关注投资回报和系统兼容性",
+    "org_type": "市级城市管理局，负责城市管理、综合执法、市容环境等",
+    "current_situation": "已采购大疆、复亚等多品牌无人机用于市容巡检，但各自独立操控，数据分散，缺乏统一监管平台。"
+  },
+  "pain_points": [
+    {
+      "id": "P1",
+      "point": "多品牌无人机无法统一调度，飞行任务需分别操作，效率低",
+      "severity": "high",
+      "hint": "我们有好几种无人机，每次都要用不同的遥控器，飞手忙不过来。"
+    },
+    {
+      "id": "P2",
+      "point": "巡检视频和图片分散在各设备中，无法实时回传和集中分析，问题发现滞后",
+      "severity": "high",
+      "hint": "拍回来的视频还得人工拷贝，等分析出来黄花菜都凉了。"
+    },
+    {
+      "id": "P3",
+      "point": "低空空域使用混乱，飞行安全无法保障，担心黑飞和撞机",
+      "severity": "high",
+      "hint": "上次差点和一架物流无人机撞上，根本不知道它在哪。"
+    }
+  ],
+  "product_match": [
+    {
+      "pain_point_ref": "P1",
+      "product": "天翼星云低空飞行作业平台",
+      "value_prop": "一个平台统一纳管多品牌无人机和机库，实现远程飞控和自动巡检",
+      "case_ref": "已兼容大疆、复亚、星逻等主流品牌，覆盖国内90%机库产品",
+      "key_talking_point": "支持多品牌无人机统一调度，显著提升飞手调度效率，降低管理复杂度。"
+    },
+    {
+      "pain_point_ref": "P2",
+      "product": "天翼星云平台+AI分析模块",
+      "value_prop": "实时视频回传与云端AI分析，自动识别违规问题并生成报告",
+      "case_ref": "支持国标GB28181视频汇聚，已为多个城市提供智能巡检服务",
+      "key_talking_point": "AI实时分析让问题发现时间从小时级缩短到分钟级，数据统一汇聚，决策更及时。"
+    },
+    {
+      "pain_point_ref": "P3",
+      "product": "天翼星巡低空服务监管平台",
+      "value_prop": "提供空域管理、飞行计划审批、轨迹实时监管，解决‘看不见、呼不到、管不住’",
+      "case_ref": "已在多个试点城市落地，实现低空飞行全流程监管",
+      "key_talking_point": "构建城市低空交通管理能力，保障飞行安全，杜绝黑飞隐患。"
+    }
+  ],
+  "objections": [
+    {
+      "id": "O1",
+      "objection": "我们现有无人机和飞手已经投入不少，上平台会不会造成浪费？",
+      "trigger": "介绍统一平台纳管能力时",
+      "ideal_response_direction": "平台支持利旧，可接入现有无人机和机库，无需更换设备，同时提升飞手效率，降低整体人力成本。"
+    },
+    {
+      "id": "O2",
+      "objection": "我们的视频监控平台是海康的，能对接吗？",
+      "trigger": "提到视频汇聚与AI分析时",
+      "ideal_response_direction": "平台支持国标GB28181级联，可无缝对接主流视频平台，已成功对接海康、大华等，无需推倒重建。"
+    }
+  ],
+  "scoring_points": [
+    {
+      "id": "S1",
+      "category": "product_knowledge",
+      "point": "是否准确说出产品核心能力",
+      "weight": 3,
+      "check_method": "回复中包含天翼星云/星巡的具体能力和适用场景"
+    },
+    {
+      "id": "S2",
+      "category": "product_knowledge",
+      "point": "是否引用案例数据",
+      "weight": 3,
+      "check_method": "提及具体客户案例或兼容性数据（如覆盖90%机库、国标对接等）"
+    },
+    {
+      "id": "S3",
+      "category": "need_discovery",
+      "point": "是否主动询问客户痛点",
+      "weight": 3,
+      "check_method": "对话开始时有探索性问题，如当前无人机管理遇到的最大挑战是什么"
+    },
+    {
+      "id": "S4",
+      "category": "objection_handling",
+      "point": "是否有效应对客户异议",
+      "weight": 2,
+      "check_method": "面对质疑给出有说服力的回应，强调利旧、兼容、降本增效"
+    },
+    {
+      "id": "S5",
+      "category": "solution_matching",
+      "point": "是否将痛点与产品方案精准匹配",
+      "weight": 2,
+      "check_method": "针对客户提出的每个痛点，都能对应到具体的平台或功能模块"
+    }
+  ],
+  "difficulty": "medium",
+  "difficulty_reason": "客户有无人机使用经验，会关注兼容性和投资回报，提出针对性质疑"
+}

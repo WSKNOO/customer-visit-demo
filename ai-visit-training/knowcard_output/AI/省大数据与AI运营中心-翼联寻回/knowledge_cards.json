@@ -1,0 +1,149 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "翼联寻回产品概览",
+    "content": {
+      "product_name": "翼联寻回",
+      "positioning": "面向银行、持牌消金、保险、法院等客户，提供失联信息修复与隐私外呼触达闭环的一体化服务",
+      "core_capabilities": [
+        "失联号码修复（匹配近30天最活跃号码）",
+        "隐私号AXB模式外呼触达",
+        "全流程加密脱敏与合规限频"
+      ],
+      "competitive_advantages": [
+        "运营商数据模型，修复精准",
+        "严格合规：用户授权、话术报备、匿号限频，杜绝骚扰",
+        "支持SaaS与API灵活对接"
+      ],
+      "pricing_model": "查得计费，修复成功即收费；结果有效期默认30天，期内只计费一次"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "案例",
+    "content": {}
+  },
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "隐私号绑定时效过短",
+    "content": {
+      "objection_category": "技术/使用体验",
+      "objection_text": "隐私号绑定时效只有10分钟，太短了，万一我们坐席没来得及呼叫就失效了，还得重新绑定，太麻烦。",
+      "root_concern": "担心操作不便，影响外呼效率",
+      "response_framework": {
+        "step_1_acknowledge": "理解您对操作效率的关注，10分钟绑定时效确实需要坐席及时处理。",
+        "step_2_redirect": "这个设计是为了安全合规，避免号码被滥用。实际使用中，坐席在修复结果出来后立即发起呼叫，10分钟足够。而且绑定失效后可重新发起，平台操作简便。我们可以提供培训，优化流程。"
+      }
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "objection",
+    "title": "外呼话术必须报备",
+    "content": {
+      "objection_category": "实施/合规",
+      "objection_text": "外呼话术必须报备，而且开头要表明企业身份，这太死板了，能不能简化或者跳过？",
+      "root_concern": "担心上线周期长，话术限制影响沟通效果",
+      "response_framework": {
+        "step_1_acknowledge": "我们完全理解您希望快速上线和灵活沟通的需求。",
+        "step_2_redirect": "话术报备是监管要求，也是保护双方免受投诉的关键。我们已优化报备流程，通常很快通过。在话术开头表明身份，反而能提高接通率和信任度。我们可以协助您拟定合规且高效的话术。"
+      }
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "objection",
+    "title": "A号类型限制",
+    "content": {
+      "objection_category": "技术/资源",
+      "objection_text": "我们公司用的号码不是企业实名的，是普通手机号，能不能作为外显A号？",
+      "root_concern": "现有号码资源不符合要求，需要额外办理",
+      "response_framework": {
+        "step_1_acknowledge": "您现有的号码资源确实可能不满足企业实名要求。",
+        "step_2_redirect": "非企业实名号码，根据规则只能使用电信运营商号码。我们可以协助您办理电信企业实名号码，或使用已有的电信固话/手机号。这也能提升外显号码的可信度。"
+      }
+    }
+  },
+  {
+    "id": "C006",
+    "card_type": "objection",
+    "title": "查得计费模式",
+    "content": {
+      "objection_category": "价格",
+      "objection_text": "修复成功就收费，但如果我修复了号码但没打电话，也要付钱，这不合理吧？",
+      "root_concern": "担心为未使用的服务付费，成本浪费",
+      "response_framework": {
+        "step_1_acknowledge": "您的顾虑很正常，希望费用与实际使用挂钩。",
+        "step_2_redirect": "修复过程已经消耗了数据模型和算力资源，所以查得计费。但修复结果30天内有效，期间您可以多次触达，只收一次费。相比传统方式，我们精准修复能大幅降低无效外呼成本，整体ROI更高。"
+      }
+    }
+  },
+  {
+    "id": "C007",
+    "card_type": "solution",
+    "title": "翼联寻回失联修复与外呼触达解决方案",
+    "content": {
+      "solution_name": "翼联寻回失联修复与外呼触达解决方案",
+      "target_scenario": "金融机构贷后逾期提醒、保险孤儿保单找回、法院文书送达与调解",
+      "product_composition": [
+        {
+          "product_ref": "ECP续联平台",
+          "role": "失联号码修复核心"
+        },
+        {
+          "product_ref": "UDT外呼平台",
+          "role": "隐私号外呼触达"
+        }
+      ],
+      "implementation_roadmap": "客户提交材料开通账号→报备外显A号及话术→通过SaaS或API上传加密数据→获取修复结果→坐席登录UDT平台发起隐私号呼叫"
+    }
+  },
+  {
+    "id": "C008",
+    "card_type": "parameter",
+    "title": "翼联寻回关键参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "隐私号绑定时效",
+          "value": "10",
+          "unit": "分钟",
+          "notes": "超时自动失效，需重新绑定"
+        },
+        {
+          "name": "外呼时段",
+          "value": "8:30-21:00",
+          "unit": "",
+          "notes": "每日允许外呼时间范围"
+        },
+        {
+          "name": "呼叫频次限制",
+          "value": "单日≤3次/月≤10次",
+          "unit": "次",
+          "notes": "同一被叫用户，以点击主叫按钮次数为准"
+        },
+        {
+          "name": "修复结果返回时间",
+          "value": "电信单网15-20，三网30-40",
+          "unit": "分钟",
+          "notes": "高峰期可能延长"
+        },
+        {
+          "name": "修复结果有效期",
+          "value": "30",
+          "unit": "天",
+          "notes": "默认有效期，期内只计费一次"
+        },
+        {
+          "name": "计费方式",
+          "value": "查得计费",
+          "unit": "",
+          "notes": "修复成功即收费，与是否实际触达无关"
+        }
+      ]
+    }
+  }
+]

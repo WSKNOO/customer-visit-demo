@@ -1,0 +1,114 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "天翼云TeleDB数据库",
+    "content": {
+      "product_name": "天翼云TeleDB数据库",
+      "positioning": "运营商级高可靠、全栈自主可控的云原生数据库",
+      "core_capabilities": [
+        "存算分离弹性伸缩",
+        "百万级并发交易处理",
+        "同城跨AZ多活容灾与两地三中心金融级部署",
+        "高度兼容MySQL/PostgreSQL（99%语法兼容）"
+      ],
+      "competitive_advantages": [
+        "运营商级可靠性（99.99%可用性）",
+        "省、市、县四级属地化专家服务",
+        "全栈国产芯片与操作系统适配"
+      ],
+      "pricing_model": ""
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "objection",
+    "title": "迁移复杂度异议",
+    "content": {
+      "objection_category": "技术",
+      "objection_text": "我们现有业务基于MySQL/PostgreSQL开发，迁移到TeleDB的复杂度高吗？是否需要大量改造应用代码？",
+      "root_concern": "担心迁移成本高、业务中断、代码改造风险",
+      "response_framework": {
+        "step_1_acknowledge": "理解您对迁移平滑性的关注，TeleDB正是为此设计。",
+        "step_2_redirect": "TeleDB兼容MySQL/PostgreSQL语法达99%，现有SQL、存储过程可直接运行，提供完善迁移工具和专业服务，实现无缝迁移，大幅降低风险和成本。"
+      }
+    }
+  },
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "竞品对比异议",
+    "content": {
+      "objection_category": "竞品",
+      "objection_text": "TeleDB与阿里云RDS、腾讯云CDB相比有什么优势？",
+      "root_concern": "客户在选型时对比市场主流云数据库，关注差异化价值",
+      "response_framework": {
+        "step_1_acknowledge": "您提到的这些产品都是优秀的云数据库，各有特点。",
+        "step_2_redirect": "TeleDB的独特优势在于运营商级可靠性（99.99%可用性，同城跨AZ多活），全栈自主可控适配国产化，以及覆盖省、市、县四级的属地化专家服务，这是其他云厂商难以比拟的。"
+      }
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "solution",
+    "title": "数据库平滑迁移方案",
+    "content": {
+      "solution_name": "数据库平滑迁移方案",
+      "target_scenario": "从MySQL/PostgreSQL或其它云数据库迁移到TeleDB",
+      "product_composition": [
+        {
+          "product_ref": "TeleDB数据库",
+          "role": "核心"
+        },
+        {
+          "product_ref": "迁移工具",
+          "role": "辅助"
+        },
+        {
+          "product_ref": "专业迁移服务",
+          "role": "服务"
+        }
+      ],
+      "implementation_roadmap": "评估兼容性（健康检查）→ 迁移工具进行数据迁移 → 应用测试验证 → 切换上线，全程无需或极少代码改造。"
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "parameter",
+    "title": "关键性能与可用性指标",
+    "content": {
+      "parameters": [
+        {
+          "name": "系统可用性",
+          "value": "99.99",
+          "unit": "%",
+          "notes": "支持同城跨AZ多活容灾，金融级部署"
+        },
+        {
+          "name": "数据恢复点目标(RPO)",
+          "value": "趋近于0",
+          "unit": "",
+          "notes": "主备数据完全一致"
+        },
+        {
+          "name": "恢复时间目标(RTO)",
+          "value": "秒级",
+          "unit": "",
+          "notes": "自动检测切换，最大限度减少业务中断"
+        },
+        {
+          "name": "语法兼容度",
+          "value": "99",
+          "unit": "%",
+          "notes": "兼容MySQL/PostgreSQL语法"
+        },
+        {
+          "name": "并发处理能力",
+          "value": "百万级",
+          "unit": "并发交易",
+          "notes": "线程池、读写分离应对高并发"
+        }
+      ]
+    }
+  }
+]

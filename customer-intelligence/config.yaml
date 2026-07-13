@@ -1,0 +1,45 @@
+search:
+  # Default search engine: bing, baidu, google, dblp, semantic_scholar
+  default_engine: bing
+  # Default number of search results to fetch (1-10)
+  default_count: 10
+  # HTTP request timeout in seconds
+  request_timeout: 15
+  # Proxy configuration with per-domain routing
+  # Format: { default: "...", rules: { "domain": "proxy" } }
+  # Use "" for no proxy, "socks5://..." or "http://..." for specific proxy
+  proxy:
+    default: ""
+    rules:
+      # Academic databases — accessible without proxy (fast from China)
+      "dblp.org": ""
+      "arxiv.org": ""
+      "semanticscholar.org": ""
+      "crossref.org": ""
+      # Chinese sites — no proxy needed
+      "baidu.com": ""
+      "cn.bing.com": ""
+      "bing.com": ""
+      # Google — needs proxy (blocked in China)
+      "google.com": "socks5://127.0.0.1:12000"
+      # GitHub — accessible
+      "github.com": ""
+      "huggingface.co": ""
+  # Custom user agent string
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+
+summarizer:
+  # Enable AI summarization
+  enabled: true
+  # OpenAI-compatible API base URL
+  api_base: ""
+  # API key (set via SEARCH_MCP_SUMMARIZER_API_KEY env var or here)
+  api_key: ""
+  # Model name
+  model: ""
+  # Temperature for generation
+  temperature: 0.3
+  # Max tokens per summary
+  max_tokens: 64000
+  # Maximum input characters to summarize (truncate if longer)
+  max_input_chars: 128000

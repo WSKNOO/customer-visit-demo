@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:customer-visit:visit-brief:1.0",
+  "title": "VisitBrief",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "customer", "visit"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "brief_id": { "type": "string", "maxLength": 100, "default": "" },
+    "customer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "industry": { "type": "string", "maxLength": 120, "default": "" },
+        "profile_summary": { "type": "string", "maxLength": 2000, "default": "" }
+      }
+    },
+    "visit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goal"],
+      "properties": {
+        "goal": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "target_role": { "type": "string", "maxLength": 100, "default": "业务或技术决策相关角色" },
+        "focus_areas": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 80 }, "default": [] },
+        "suggested_questions": { "type": "array", "maxItems": 15, "items": { "type": "string", "maxLength": 300 }, "default": [] }
+      }
+    },
+    "signals": {
+      "type": "object",
+      "additionalProperties": false,
+      "default": {},
+      "properties": {
+        "recent_events": { "$ref": "#/$defs/summaryItems" },
+        "digital_clues": { "$ref": "#/$defs/summaryItems" },
+        "potential_needs": { "$ref": "#/$defs/summaryItems" },
+        "recommended_solutions": { "$ref": "#/$defs/summaryItems" }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "maxItems": 20,
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "url"],
+        "properties": {
+          "title": { "type": "string", "maxLength": 300 },
+          "url": { "type": "string", "format": "uri", "maxLength": 1000 }
+        }
+      }
+    },
+    "training_options": {
+      "type": "object",
+      "additionalProperties": false,
+      "default": {},
+      "properties": {
+        "difficulty": { "enum": ["简单", "中等", "困难"], "default": "中等" },
+        "phase": { "enum": ["contact", "discovery", "present", "objection", "close"], "default": "discovery" },
+        "round_limit": { "type": "integer", "minimum": 3, "maximum": 10, "default": 6 },
+        "voice_enabled": { "type": "boolean", "default": false }
+      }
+    }
+  },
+  "$defs": {
+    "summaryItems": {
+      "type": "array",
+      "maxItems": 10,
+      "default": [],
+      "items": {
+        "oneOf": [
+          { "type": "string", "maxLength": 500 },
+          {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "summary": { "type": "string", "maxLength": 500 },
+              "title": { "type": "string", "maxLength": 200 },
+              "reason": { "type": "string", "maxLength": 300 }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

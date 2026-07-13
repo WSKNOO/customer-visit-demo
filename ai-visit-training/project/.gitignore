@@ -1,0 +1,16 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.wav
+*.mp3
+*.pkl
+*.log
+.DS_Store
+venv/
+env/
+.idea/
+.vscode/
+*.egg-info/
+dist/
+build/

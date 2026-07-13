@@ -1,0 +1,106 @@
+{
+  "industry": "金融",
+  "scenario_name": "金融-某大型保险公司-智能客服与文档分析模型推理服务评估",
+  "client_profile": {
+    "role": "信息技术部总经理",
+    "personality": "谨慎务实，关注成本与数据安全，技术背景深厚",
+    "org_type": "大型保险集团，年IT预算超亿元",
+    "current_situation": "正在评估多家云厂商的大模型推理服务，希望用于智能客服和保单条款分析，但担心试错成本、模型效果和数据合规风险。"
+  },
+  "pain_points": [
+    {
+      "id": "P1",
+      "point": "大模型应用前期验证成本高，直接采购风险大，需要免费或低成本试用。",
+      "severity": "high",
+      "hint": "“有没有免费额度？能用多久？我们不想一上来就投入几十万。”"
+    },
+    {
+      "id": "P2",
+      "point": "模型生成内容有时会重复啰嗦，影响客服机器人的回答质量，需要调优手段。",
+      "severity": "medium",
+      "hint": "“我们测试过其他平台，模型老爱重复同一句话，你们能解决吗？”"
+    },
+    {
+      "id": "P3",
+      "point": "金融数据通过API传输必须满足安全合规要求，担心明文传输或密钥泄露导致风险。",
+      "severity": "high",
+      "hint": "“我们的合规部门要求所有外部接口必须加密，AppKey怎么保管才安全？”"
+    }
+  ],
+  "product_match": [
+    {
+      "pain_point_ref": "P1",
+      "product": "模型推理（Tokens）服务",
+      "value_prop": "每个模型提供不等免费token额度，有效期14天，零成本验证模型效果。",
+      "case_ref": "产品默认提供免费额度，某保险公司通过试用快速验证了DeepSeek-R1在条款解读上的准确性，后续转为包周期付费。",
+      "key_talking_point": "免费试用14天，token额度充足，让您零风险体验模型真实效果。"
+    },
+    {
+      "pain_point_ref": "P2",
+      "product": "模型推理（Tokens）服务",
+      "value_prop": "支持将重复惩罚度参数设为0，有效降低模型逐字重复，提升回答多样性。",
+      "case_ref": "根据官方最佳实践，调整该参数后客户反馈客服重复率下降超60%。",
+      "key_talking_point": "简单的参数调整即可解决内容重复问题，无需更换模型或重启服务。"
+    },
+    {
+      "pain_point_ref": "P3",
+      "product": "模型推理（Tokens）服务",
+      "value_prop": "API全量通过HTTPS加密通信，保障数据机密性与完整性；AppKey需妥善保管，强烈建议不写入代码。",
+      "case_ref": "产品安全设计满足金融行业合规要求，HTTPS确保传输加密，密钥管理建议配合 vault 使用。",
+      "key_talking_point": "HTTPS加密传输，配合密钥安全管理建议，完全满足金融合规审计要求。"
+    }
+  ],
+  "objections": [
+    {
+      "id": "O1",
+      "objection": "我们技术栈一直用TensorFlow，你们支持吗？",
+      "trigger": "当介绍模型部署为“我的服务”需选择训练框架时",
+      "ideal_response_direction": "坦诚说明目前支持PyTorch和MindSpore，暂不支持TensorFlow，但模型推理本身与训练框架解耦，可直接调用API，无需关心底层框架。"
+    },
+    {
+      "id": "O2",
+      "objection": "免费额度能不能分给不同项目组独立使用？",
+      "trigger": "当提及免费token额度时",
+      "ideal_response_direction": "主/子账号共用免费额度及有效期，不可分配，但可通过创建多个服务组获取不同AppKey，实现项目隔离，额度仍共用。"
+    }
+  ],
+  "scoring_points": [
+    {
+      "id": "S1",
+      "category": "product_knowledge",
+      "point": "是否准确说出三种计费模式及免费额度有效期",
+      "weight": 3,
+      "check_method": "回复中明确提到包周期、按需卡时、按需Tokens，以及14天免费有效期。"
+    },
+    {
+      "id": "S2",
+      "category": "product_knowledge",
+      "point": "是否准确说明不支持TensorFlow框架",
+      "weight": 2,
+      "check_method": "当客户问及框架时，回答包含“支持PyTorch和MindSpore，暂不支持TensorFlow”。"
+    },
+    {
+      "id": "S3",
+      "category": "need_discovery",
+      "point": "是否主动询问客户当前模型使用场景和痛点",
+      "weight": 3,
+      "check_method": "对话开始阶段提出“您目前主要想用大模型解决哪些业务问题？之前有尝试过其他方案吗？”"
+    },
+    {
+      "id": "S4",
+      "category": "objection_handling",
+      "point": "是否有效回应TensorFlow不支持异议",
+      "weight": 2,
+      "check_method": "面对框架质疑，能解释推理服务与训练框架无关，可直接API调用。"
+    },
+    {
+      "id": "S5",
+      "category": "objection_handling",
+      "point": "是否清晰解释免费额度共用规则及替代方案",
+      "weight": 2,
+      "check_method": "说明主/子账号共用，不可分配，但可创建多服务组实现项目隔离。"
+    }
+  ],
+  "difficulty": "medium",
+  "difficulty_reason": "客户具备一定技术背景，会针对框架支持、安全合规、计费细节提出具体质疑，需要顾问准确掌握产品边界。"
+}

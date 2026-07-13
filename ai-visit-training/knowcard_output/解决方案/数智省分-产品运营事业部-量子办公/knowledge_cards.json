@@ -1,0 +1,135 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "量子办公",
+    "content": {
+      "product_name": "量子办公",
+      "positioning": "基于量子加密技术的安全协同办公平台",
+      "core_capabilities": [
+        "量子加密安全通信（密信）",
+        "单位通讯录与组织管理",
+        "考勤打卡与流程审批",
+        "新闻通知与工作台应用",
+        "多组织切换与权限管理"
+      ],
+      "competitive_advantages": [
+        "量子加密技术保障通信安全，支持消息阅后即焚",
+        "支持电信天翼免密登录，便捷高效",
+        "多单位组织灵活切换，分级权限管控"
+      ],
+      "pricing_model": "未提及"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "",
+    "content": {}
+  },
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "非电信用户功能受限",
+    "content": {
+      "objection_category": "技术",
+      "objection_text": "非电信用户可以使用所有功能吗？",
+      "root_concern": "担心员工使用非电信手机卡无法正常使用核心办公功能",
+      "response_framework": {
+        "step_1_acknowledge": "部分功能如一键登录需电信卡，但核心通讯、打卡、审批等均可正常使用",
+        "step_2_redirect": "推荐电信卡以获得完整体验，同时强调量子加密通信的安全价值不受运营商限制"
+      }
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "objection",
+    "title": "加密通信需更换量子卡",
+    "content": {
+      "objection_category": "技术",
+      "objection_text": "加密通信功能是否需要更换量子卡？",
+      "root_concern": "换卡成本高、流程麻烦，担心影响现有通信",
+      "response_framework": {
+        "step_1_acknowledge": "确实需要通信双方更换量子卡才能使用加密通信",
+        "step_2_redirect": "量子卡是实现端到端量子加密的安全基础，能彻底防止信息泄露，对于高安全需求场景是必要投入"
+      }
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "objection",
+    "title": "打卡地点不可自选",
+    "content": {
+      "objection_category": "实施",
+      "objection_text": "量子办公打卡是否支持自选打卡地点？",
+      "root_concern": "外勤或灵活办公场景下考勤灵活性不足",
+      "response_framework": {
+        "step_1_acknowledge": "当前打卡地点以手机定位为准，不支持自选",
+        "step_2_redirect": "基于真实定位确保考勤公平性，防止虚拟打卡，同时可通过后台设置多个合法打卡地点满足固定外勤需求"
+      }
+    }
+  },
+  {
+    "id": "C006",
+    "card_type": "solution",
+    "title": "量子办公安全协同办公解决方案",
+    "content": {
+      "solution_name": "量子办公安全协同办公解决方案",
+      "target_scenario": "企业/单位内部安全通信、组织管理、移动办公场景",
+      "product_composition": [
+        {
+          "product_ref": "量子办公App",
+          "role": "核心客户端，提供加密通信、通讯录、打卡、审批等功能"
+        },
+        {
+          "product_ref": "单位管理后台",
+          "role": "管理员进行组织架构配置、新闻发布、权限管控"
+        },
+        {
+          "product_ref": "量子卡",
+          "role": "加密通信安全介质，实现量子加密通话与消息"
+        }
+      ],
+      "implementation_roadmap": "1.企业订购并获取管理员账号；2.管理员后台配置组织通讯录；3.用户下载App并登录；4.按需更换量子卡启用加密通信；5.推广使用打卡、审批、新闻等办公功能"
+    }
+  },
+  {
+    "id": "C007",
+    "card_type": "parameter",
+    "title": "量子办公关键参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "登录验证码有效期",
+          "value": "1",
+          "unit": "分钟",
+          "notes": "验证码1分钟内有效，超时需重新获取"
+        },
+        {
+          "name": "加密消息销毁时间选项",
+          "value": "30秒/1分钟/5分钟/不销毁",
+          "unit": "-",
+          "notes": "加密聊天可选择消息自动销毁时间，到期后消息从聊天框消失"
+        },
+        {
+          "name": "管理员重置用户初始密码",
+          "value": "Lzbg@手机号后四位",
+          "unit": "-",
+          "notes": "如手机号198****3210初始密码为Lzbg@3210"
+        },
+        {
+          "name": "打卡定位方式",
+          "value": "手机GPS定位",
+          "unit": "-",
+          "notes": "打卡地点不可自选，以实际定位为准"
+        },
+        {
+          "name": "通讯录批量导入模板要求",
+          "value": "部门从单位名称一级开始填写",
+          "unit": "-",
+          "notes": "需按模板填充数据，部门栏以单位名称为一级名称，否则导入失败"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,128 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "企业园区平台",
+    "content": {
+      "product_name": "企业园区平台",
+      "positioning": "依托中国电信天翼云，融合云计算、物联网、大数据等技术，为企业园区提供智慧化综合解决方案",
+      "core_capabilities": [
+        "综合数据中心",
+        "企业服务平台",
+        "能耗监测系统",
+        "移动办公平台"
+      ],
+      "competitive_advantages": [
+        "属地运维：7×24小时快速响应，2小时到场",
+        "捆绑销售：多模块打包优惠20%-30%",
+        "价格低廉：远低于竞品，无隐形消费",
+        "支持定开：适配特殊管理需求"
+      ],
+      "pricing_model": "按模块功能复杂度、园区规模及定制化需求定价，基础报价不含硬件，多模块捆绑可享20%-30%优惠"
+    }
+  },
+  {},
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "价格与硬件兼容异议",
+    "content": {
+      "objection_category": "价格",
+      "objection_text": "你们的价格包含硬件吗？我们已有部分硬件，不想重复投入。",
+      "root_concern": "担心总成本过高，希望利旧降低投入",
+      "response_framework": {
+        "step_1_acknowledge": "理解您对成本控制的重视，利旧确实是降低投入的有效方式。",
+        "step_2_redirect": "我们的基础报价仅含软件及服务，不含硬件，但支持兼容主流品牌硬件（如海康、大华、华为等），可进行对接调试，无需额外更换。同时多模块捆绑优惠20%-30%，整体性价比更高。"
+      }
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "objection",
+    "title": "系统稳定性异议",
+    "content": {
+      "objection_category": "技术",
+      "objection_text": "系统会不会卡顿、崩溃？我们园区日常运营不能受影响。",
+      "root_concern": "担心系统不稳定影响业务",
+      "response_framework": {
+        "step_1_acknowledge": "您对系统稳定性的担忧非常合理，园区运营确实需要高可靠保障。",
+        "step_2_redirect": "我们的产品经过长期迭代，支持7×24小时不间断运行，针对不同规模优化并发（小型500人、中型1000人、大型5000人在线），整体响应≤300ms，门禁识别≤50ms。同时属地运维团队1小时响应，24小时解决，确保稳定。"
+      }
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "solution",
+    "title": "小型园区基础智慧化方案",
+    "content": {
+      "solution_name": "小型园区基础智慧化方案",
+      "target_scenario": "小型企业园区，预算有限，侧重基础管理需求",
+      "product_composition": [
+        {
+          "product_ref": "智慧物业",
+          "role": "核心"
+        },
+        {
+          "product_ref": "智慧通行",
+          "role": "核心"
+        },
+        {
+          "product_ref": "智慧安全",
+          "role": "核心"
+        }
+      ],
+      "implementation_roadmap": "需求调研→模块配置与部署→硬件兼容对接→培训上线，快速交付"
+    }
+  },
+  {
+    "id": "C006",
+    "card_type": "parameter",
+    "title": "关键性能参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "小型园区并发在线",
+          "value": "500",
+          "unit": "人",
+          "notes": "支持500人同时在线"
+        },
+        {
+          "name": "中型园区并发在线",
+          "value": "1000",
+          "unit": "人",
+          "notes": "支持1000人同时在线"
+        },
+        {
+          "name": "大型园区并发在线",
+          "value": "5000",
+          "unit": "人",
+          "notes": "支持5000人同时在线"
+        },
+        {
+          "name": "整体响应速度",
+          "value": "≤300",
+          "unit": "ms",
+          "notes": "产品整体响应时间"
+        },
+        {
+          "name": "门禁识别响应",
+          "value": "≤50",
+          "unit": "ms",
+          "notes": "智慧通行门禁识别速度"
+        },
+        {
+          "name": "能耗数据统计响应",
+          "value": "≤100",
+          "unit": "ms",
+          "notes": "智慧能耗实时统计响应"
+        },
+        {
+          "name": "办公流程响应",
+          "value": "≤200",
+          "unit": "ms",
+          "notes": "智慧办公文件传输、审批响应"
+        }
+      ]
+    }
+  }
+]

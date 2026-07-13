@@ -1,0 +1,93 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "统一运维平台",
+    "content": {
+      "product_name": "统一运维平台",
+      "positioning": "融合乘云、牧云、皖安三大平台核心能力，提供云网基础设施与应用软件的统一纳管、监控及安全支撑的一体化运维平台。",
+      "core_capabilities": [
+        "IT资产统一纳管与维护",
+        "实时监控与异常告警",
+        "快速故障定位",
+        "工单闭环处置",
+        "资源使用趋势分析"
+      ],
+      "competitive_advantages": [
+        "三平台能力融合，覆盖云网基础设施与应用软件",
+        "从发现问题到处置的完整闭环流程",
+        "支持轻量版到定制版的灵活扩展"
+      ],
+      "pricing_model": "提供轻量版、标准版、增强版、定制版四个版本，按功能分级报价（具体价格需咨询）。"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "",
+    "content": {}
+  },
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "",
+    "content": {}
+  },
+  {
+    "id": "C004",
+    "card_type": "solution",
+    "title": "统一运维平台私有化部署方案",
+    "content": {
+      "solution_name": "统一运维平台私有化部署方案",
+      "target_scenario": "企业需要对IT资产（云网基础设施、应用服务）进行统一监控、告警、定位和工单闭环管理，并希望数据本地化部署。",
+      "product_composition": [
+        {
+          "product_ref": "乘云",
+          "role": "云网基础设施纳管监控"
+        },
+        {
+          "product_ref": "牧云",
+          "role": "应用服务监控与拨测"
+        },
+        {
+          "product_ref": "皖安",
+          "role": "安全能力支撑"
+        }
+      ],
+      "implementation_roadmap": "客户准备服务器（推荐6台CentOS 7.6~9机器），进行私有化部署，根据需求选择版本（轻量/标准/增强/定制），完成资产录入、监控配置、告警与工单流程设置后上线。"
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "parameter",
+    "title": "部署与运维关键参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "推荐部署节点数",
+          "value": "6",
+          "unit": "台",
+          "notes": "若不需要Doris数据库采集监控日志和调用链，可缩减为3台"
+        },
+        {
+          "name": "操作系统要求",
+          "value": "CentOS 7.6~9",
+          "unit": "",
+          "notes": "推荐版本，需关闭防火墙和SELinux"
+        },
+        {
+          "name": "拨测源地址（3.0环境）",
+          "value": "134.95.64.20",
+          "unit": "",
+          "notes": "牧云拨测服务容器出口IP，用于网络开通"
+        },
+        {
+          "name": "拨测源地址（4.0环境）",
+          "value": "172.26.16.0/22",
+          "unit": "",
+          "notes": "牧云拨测服务容器出口网段"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,146 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "翼辰数据中台",
+    "content": {
+      "product_name": "翼辰数据治理服务平台（翼辰数据中台）",
+      "positioning": "全链路数据采集、治理、开发、共享的智能数据中台，融合数据仓库、数据湖与数据服务，面向多行业提供一站式数据资产化与业务赋能。",
+      "core_capabilities": [
+        "多源异构数据采集（结构化、半结构化、非结构化）",
+        "全生命周期数据治理（元数据、质量、标准、模型、血缘）",
+        "可视化数据开发与分布式作业调度",
+        "数据资产目录管理与共享交换",
+        "统一门户、权限与集群管理"
+      ],
+      "competitive_advantages": [
+        "完全自主研发，深度集成并优化Hadoop/Spark/Flink/ClickHouse等主流开源生态",
+        "支持利旧现有Hadoop集群，降低重复投资",
+        "内置完整数据治理体系，提供统一RESTful API与JDBC/ODBC接口，避免供应商锁定",
+        "针对运营商场景深度优化，性能指标明确（API P95≤200ms，并发1000+）"
+      ],
+      "pricing_model": "文档未提及"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "叶集数据中台项目",
+    "content": {
+      "case_name": "叶集数据中台项目",
+      "background": "客户需构建统一数据中台，实现多源数据整合与共享。",
+      "solution": "部署翼辰数据治理服务平台，提供数据采集、治理、开发调度与资源共享能力。",
+      "results": [],
+      "key_value": "文档未提供详细成效数据"
+    }
+  },
+  {
+    "id": "C003",
+    "card_type": "case",
+    "title": "宁国数据中台项目",
+    "content": {
+      "case_name": "宁国数据中台项目",
+      "background": "客户需建设数据中台以支撑数据资产化与服务化。",
+      "solution": "采用翼辰数据中台实现全链路数据治理与共享交换。",
+      "results": [],
+      "key_value": "文档未提供详细成效数据"
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "objection",
+    "title": "与传统数据仓库的区别",
+    "content": {
+      "objection_category": "技术",
+      "objection_text": "你们的数据中台和传统数据仓库有什么区别？不就是换个名字吗？",
+      "root_concern": "担心产品只是传统数仓的包装，缺乏实质性提升，无法支撑实时业务和广泛数据服务。",
+      "response_framework": {
+        "step_1_acknowledge": "认可传统数仓在固定报表和离线分析领域的成熟价值。",
+        "step_2_redirect": "强调翼辰数据中台是“数据仓库+数据湖+数据服务”的融合体，不仅支持离线批处理，更支持实时计算；内置完整数据治理体系（元数据、质量、生命周期），并提供统一数据服务API，让数据快速被业务系统调用，实现从“看数据”到“用数据”的跨越。"
+      }
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "objection",
+    "title": "产品自主研发与开放性",
+    "content": {
+      "objection_category": "技术/竞品",
+      "objection_text": "你们的产品是自主研发的吗？还是基于开源包装的？会不会和第三方系统对接不上，或者以后被锁定？",
+      "root_concern": "对技术自主可控、知识产权、集成能力和供应商锁定的深层担忧。",
+      "response_framework": {
+        "step_1_acknowledge": "理解客户对自主可控和开放生态的重视。",
+        "step_2_redirect": "说明核心平台完全自主研发，拥有完整知识产权，同时深度集成主流开源生态（Hadoop、Spark、Flink、ClickHouse等）并针对运营商场景优化；提供标准RESTful API、JDBC/ODBC接口，支持与Tableau、帆软、Airflow等第三方工具无缝对接，核心数据模型和ETL脚本均可导出，从机制上避免锁定。"
+      }
+    }
+  },
+  {
+    "id": "C006",
+    "card_type": "objection",
+    "title": "试用与POC可行性",
+    "content": {
+      "objection_category": "实施",
+      "objection_text": "能不能先试用或者做个POC测试，验证一下功能和性能？",
+      "root_concern": "希望通过实际验证降低采购风险，确认产品在真实环境中的表现。",
+      "response_framework": {
+        "step_1_acknowledge": "认可通过POC验证产品匹配度的必要性。",
+        "step_2_redirect": "明确支持在客户环境或我方云环境提供1-3个月POC测试，覆盖核心功能和性能验证；POC期间提供远程技术支持，关键阶段可现场支持，确保测试充分有效。"
+      }
+    }
+  },
+  {
+    "id": "C007",
+    "card_type": "solution",
+    "title": "翼辰数据中台标准交付方案",
+    "content": {
+      "solution_name": "翼辰数据中台标准交付方案",
+      "target_scenario": "适用于政府、企业、运营商等需要整合多源异构数据、构建数据资产体系、实现数据共享与业务赋能的场景。",
+      "product_composition": [
+        {
+          "product_ref": "翼辰数据治理服务平台",
+          "role": "核心平台，提供数据采集、治理、开发调度、资源共享、统一门户等全链路能力"
+        }
+      ],
+      "implementation_roadmap": "项目启动→需求调研与方案设计→环境准备与部署→数据接入与开发→功能测试与试运行（稳定运行≥72小时）→正式上线→验收移交→运维质保"
+    }
+  },
+  {
+    "id": "C008",
+    "card_type": "parameter",
+    "title": "关键性能与交付参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "数据接入吞吐量",
+          "value": "≥50",
+          "unit": "MB/秒/节点",
+          "notes": "单节点数据接入能力，实际性能受硬件配置影响"
+        },
+        {
+          "name": "离线计算效率",
+          "value": "GB级数据小时级完成",
+          "unit": "-",
+          "notes": "典型离线批处理场景"
+        },
+        {
+          "name": "API响应时间（P95）",
+          "value": "≤200",
+          "unit": "毫秒",
+          "notes": "在1000 QPS压力下测得"
+        },
+        {
+          "name": "并发查询支持",
+          "value": "1000+",
+          "unit": "并发",
+          "notes": "平台可稳定支撑的并发查询数"
+        },
+        {
+          "name": "标准交付周期",
+          "value": "30",
+          "unit": "工作日",
+          "notes": "自客户环境、网络、权限全部到位次日起算，具体以合同为准"
+        }
+      ]
+    }
+  }
+]

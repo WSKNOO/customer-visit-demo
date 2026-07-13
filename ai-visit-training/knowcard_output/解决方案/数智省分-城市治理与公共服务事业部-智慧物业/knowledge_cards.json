@@ -1,0 +1,181 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "智慧物业平台",
+    "content": {
+      "product_name": "物业服务综合管理平台",
+      "positioning": "面向省、市、区县、街道、社区五级物业主管部门及物业企业、业委会、居民的多用户物业服务综合监管平台",
+      "core_capabilities": [
+        "物业事项备案",
+        "投诉建议报修闭环处理",
+        "行业监管与检查任务",
+        "企业信用评价",
+        "业主自治与电子表决",
+        "统计分析公示公开"
+      ],
+      "competitive_advantages": [
+        "全面信创适配（麒麟V11+达梦V8）",
+        "五级权限隔离与数据脱敏加密",
+        "与皖事通及政务系统对接",
+        "支持SaaS化和私有化部署"
+      ],
+      "pricing_model": "未提及"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "安徽省住建厅物业综合服务管理平台",
+    "content": {
+      "case_name": "安徽省住建厅物业综合服务管理平台",
+      "background": "安徽省开展物业管理服务大排查、大整治、大提升，需建设省市县一体化监管平台，推动物业投诉源头治理和闭环管理。",
+      "solution": "建设物业服务综合管理平台，实现五级数据贯通、投诉闭环处理、物业事项备案、信用评价、电子表决等功能，并与皖事通及政务系统对接。",
+      "results": [
+        {
+          "metric": "覆盖层级",
+          "value": "省-市-区县-街道-社区五级"
+        },
+        {
+          "metric": "核心业务上线",
+          "value": "投诉处理、备案、信用评价等"
+        }
+      ],
+      "key_value": "推动全省物业行业数字化监管，提升投诉处理效率与透明度"
+    }
+  },
+  {
+    "id": "C003",
+    "card_type": "case",
+    "title": "阜阳市智慧物管平台",
+    "content": {
+      "case_name": "阜阳市智慧物管平台",
+      "background": "阜阳市需要加强物业行业监管，提升物业管理信息化水平。",
+      "solution": "部署智慧物业平台，实现市级物业监管、投诉受理、事项备案等功能。",
+      "results": [
+        {
+          "metric": "落地城市",
+          "value": "阜阳市"
+        }
+      ],
+      "key_value": "提升阜阳市物业监管信息化水平，实现市-区县-街道-社区四级联动"
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "objection",
+    "title": "信创适配异议",
+    "content": {
+      "objection_category": "技术",
+      "objection_text": "你们的平台能符合信创要求吗？我们必须要国产化。",
+      "root_concern": "担心无法通过政务信创验收，影响项目立项或验收。",
+      "response_framework": {
+        "step_1_acknowledge": "理解您对信创合规的重视，这确实是政务项目的硬性要求。",
+        "step_2_redirect": "我们的平台已全面适配麒麟V11操作系统和达梦V8数据库，完全满足安徽省政务系统信创适配标准，并有安徽省住建厅、阜阳市等落地案例验证。"
+      }
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "objection",
+    "title": "与智慧社区区别异议",
+    "content": {
+      "objection_category": "竞品",
+      "objection_text": "你们这个和智慧社区物管端有什么区别？是不是重复建设？",
+      "root_concern": "担心功能重叠，浪费投资，或定位不清。",
+      "response_framework": {
+        "step_1_acknowledge": "您关注避免重复建设非常正确，我们明确区分了两者的定位。",
+        "step_2_redirect": "物业监管平台面向政府监管侧，用于主管部门监管、投诉处理、备案等；智慧社区物管端面向物业企业日常管理，两者客户群体和功能不同，可互补，不是重复建设。"
+      }
+    }
+  },
+  {
+    "id": "C006",
+    "card_type": "objection",
+    "title": "数据安全异议",
+    "content": {
+      "objection_category": "实施",
+      "objection_text": "数据安全怎么保证？居民信息泄露谁负责？",
+      "root_concern": "担心敏感数据泄露风险及责任归属。",
+      "response_framework": {
+        "step_1_acknowledge": "数据安全是底线，我们和您一样高度重视。",
+        "step_2_redirect": "平台从技术和管理双重保障：数据脱敏加密存储，五级权限隔离，操作全程留痕，配备专业网络安全监控，且严格遵循安徽省政务数据安全管理规范，确保数据安全。"
+      }
+    }
+  },
+  {
+    "id": "C007",
+    "card_type": "solution",
+    "title": "物业服务综合管理平台解决方案",
+    "content": {
+      "solution_name": "物业服务综合管理平台解决方案",
+      "target_scenario": "省/市/区县物业主管部门对辖区内物业行业进行数字化监管，处理居民投诉，物业事项备案，企业信用评价，业主自治等。",
+      "product_composition": [
+        {
+          "product_ref": "监管端",
+          "role": "省市区县街道社区主管部门使用"
+        },
+        {
+          "product_ref": "物业企业端",
+          "role": "物业企业使用"
+        },
+        {
+          "product_ref": "业主端（移动端）",
+          "role": "业主投诉、评价、表决"
+        }
+      ],
+      "implementation_roadmap": "环境准备→部署实施→联调验证→初验→试运行（30天）→终验，整体交付周期70个工作日。"
+    }
+  },
+  {
+    "id": "C008",
+    "card_type": "parameter",
+    "title": "关键部署参数",
+    "content": {
+      "parameters": [
+        {
+          "name": "CPU",
+          "value": "8核及以上，推荐16核",
+          "unit": "核心",
+          "notes": "C86海光架构"
+        },
+        {
+          "name": "内存",
+          "value": "16GB及以上，推荐32GB",
+          "unit": "GB",
+          "notes": ""
+        },
+        {
+          "name": "系统盘",
+          "value": "100",
+          "unit": "GB",
+          "notes": "系统盘空间"
+        },
+        {
+          "name": "数据盘",
+          "value": "200",
+          "unit": "GB",
+          "notes": "数据盘空间"
+        },
+        {
+          "name": "服务器数量",
+          "value": "8",
+          "unit": "台",
+          "notes": "3台中间件集群，3台后端微服务，2台前端高可用"
+        },
+        {
+          "name": "操作系统",
+          "value": "麒麟V10",
+          "unit": "",
+          "notes": "信创要求"
+        },
+        {
+          "name": "数据库",
+          "value": "达梦D8",
+          "unit": "",
+          "notes": "信创要求"
+        }
+      ]
+    }
+  }
+]

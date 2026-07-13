@@ -1,0 +1,95 @@
+{
+  "industry": "政企服务",
+  "scenario_name": "智能服务热线-大型客服中心-智能化升级需求",
+  "client_profile": {
+    "role": "客服中心负责人",
+    "age_range": "35-45",
+    "personality": "务实、注重效率",
+    "org_type": "大型客服中心",
+    "current_situation": "当前客服系统自动化程度不足，AI深度不够，功能不全，响应速度慢，技术与生态有差距"
+  },
+  "pain_points": [
+    {
+      "id": "P1",
+      "point": "客服系统自动化程度不足",
+      "severity": "high",
+      "hint": "抱怨客服响应速度慢，处理效率低"
+    },
+    {
+      "id": "P2",
+      "point": "AI深度不够，智能化应用不足",
+      "severity": "medium",
+      "hint": "提到竞争对手已采用更先进的AI技术"
+    },
+    {
+      "id": "P3",
+      "point": "功能不全，无法满足多样化需求",
+      "severity": "high",
+      "hint": "提到需要支持语音识别、自然语言理解等功能"
+    }
+  ],
+  "product_match": [
+    {
+      "pain_point_ref": "P1",
+      "product": "智能语音客服",
+      "value_prop": "提供7×24小时全天候电话接听服务，提升响应速度",
+      "case_ref": "安徽电信统一呼叫平台项目",
+      "key_talking_point": "自动化处理高频问题，减少人工干预"
+    },
+    {
+      "pain_point_ref": "P2",
+      "product": "智能坐席助手",
+      "value_prop": "结合知识库系统，提供知识推荐跟随、话术指引",
+      "case_ref": "安徽省12333项目",
+      "key_talking_point": "AI深度分析用户需求，提升服务精准度"
+    },
+    {
+      "pain_point_ref": "P3",
+      "product": "智能派单",
+      "value_prop": "基于历史派发数据进行深度学习，构建智能分派算法模型",
+      "case_ref": "黄山电力呼叫项目",
+      "key_talking_point": "功能全面，满足多样化需求"
+    }
+  ],
+  "objections": [
+    {
+      "id": "O1",
+      "objection": "你们的系统真的能比我们现在的系统更高效吗？",
+      "trigger": "介绍产品功能时",
+      "ideal_response_direction": "提供成功案例数据，展示效率提升的具体数字"
+    },
+    {
+      "id": "O2",
+      "objection": "部署和维护会不会很复杂？",
+      "trigger": "讨论部署细节时",
+      "ideal_response_direction": "强调部署手册的详细指导，降低部署错误率"
+    }
+  ],
+  "scoring_points": [
+    {
+      "id": "S1",
+      "category": "product_knowledge",
+      "point": "能否准确描述智能语音客服的核心功能",
+      "weight": 2,
+      "check_method": "询问产品功能细节"
+    },
+    {
+      "id": "S2",
+      "category": "need_discovery",
+      "point": "能否挖掘客户当前的痛点",
+      "weight": 3,
+      "check_method": "观察提问是否切中客户现状"
+    },
+    {
+      "id": "S3",
+      "category": "objection_handling",
+      "point": "能否有效回应客户关于系统效率的质疑",
+      "weight": 2,
+      "check_method": "观察是否引用案例数据"
+    }
+  ],
+  "difficulty": "medium",
+  "difficulty_reason": "客户对现有系统有依赖，需要提供强有力的案例和数据支持",
+  "_source": "智能服务热线",
+  "_generated": true
+}

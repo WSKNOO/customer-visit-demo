@@ -1,0 +1,107 @@
+[
+  {
+    "id": "C001",
+    "card_type": "product",
+    "title": "量子密改",
+    "content": {
+      "product_name": "量子密改（抗量子密改）",
+      "positioning": "融合商用密码与量子安全技术的一站式密改解决方案",
+      "core_capabilities": [
+        "自研密码服务管理平台",
+        "密码硬件设备（密码卡/密码机）",
+        "数据库加密系统",
+        "量子安全基础设施集成",
+        "量子身份认证、量子加密传输与存储"
+      ],
+      "competitive_advantages": [
+        "全系产品自研，规模优势，同等性能价格最优",
+        "央企电信直属，全国服务团队24小时响应",
+        "顶尖密码专家团队，数百个密改项目经验"
+      ],
+      "pricing_model": "按年订阅服务（如安庆项目19.5万元/年），支持密码资源池按需开通"
+    }
+  },
+  {
+    "id": "C002",
+    "card_type": "case",
+    "title": "安庆政务云租户量子密改项目",
+    "content": {
+      "case_name": "安庆政务云租户量子密改项目",
+      "background": "安庆高新区管委会需对安全风险防控智能化管控平台进行密码能力建设，满足密评法规要求。",
+      "solution": "安庆分公司投资建设一城一池密码资源池，面向云上租户提供一站式密码服务，包括量子身份认证、量子加密存储、量子加密传输等。",
+      "results": [
+        {
+          "metric": "年服务费",
+          "value": "19.5万元"
+        },
+        {
+          "metric": "实施效果",
+          "value": "协助客户快速通过密评，满足验收要求"
+        }
+      ],
+      "key_value": "通过量子密改资源池模式，云租户快速低成本满足密评合规，保障系统验收。"
+    }
+  },
+  {
+    "id": "C003",
+    "card_type": "objection",
+    "title": "价格异议",
+    "content": {
+      "objection_category": "价格",
+      "objection_text": "你们的价格能不能再低一些？",
+      "root_concern": "担心预算超支，希望降低采购成本",
+      "response_framework": {
+        "step_1_acknowledge": "理解您对成本的关注，我们同样重视性价比。",
+        "step_2_redirect": "我们全系产品自研，从密码卡到平台均为自主研发，加上电信全国规模优势，成本管控优于同行，同等性能价格最优，同等价格性能领先。"
+      }
+    }
+  },
+  {
+    "id": "C004",
+    "card_type": "objection",
+    "title": "技术与信任异议",
+    "content": {
+      "objection_category": "技术",
+      "objection_text": "你们能做好密改吗？之前没听说过你们做这个。",
+      "root_concern": "对我司技术实力和项目经验不信任",
+      "response_framework": {
+        "step_1_acknowledge": "您的顾虑很正常，密改确实需要专业团队。",
+        "step_2_redirect": "我们是电信集团直属央企，拥有以郁昱、李晖等国家级密码专家领衔的上百人研发团队，已成功实施数百个密改项目，经验丰富，能高效对接监管部门。"
+      }
+    }
+  },
+  {
+    "id": "C005",
+    "card_type": "solution",
+    "title": "抗量子密改解决方案",
+    "content": {
+      "solution_name": "抗量子密改解决方案",
+      "target_scenario": "政务、政法、医卫、金融等行业的等保三级以上系统、关键信息基础设施、国家政务信息系统的商用密码应用安全性改造",
+      "product_composition": [
+        {
+          "product_ref": "密码服务管理平台",
+          "role": "核心管理平台"
+        },
+        {
+          "product_ref": "密码硬件设备（密码卡/密码机）",
+          "role": "硬件支撑"
+        },
+        {
+          "product_ref": "数据库加密系统",
+          "role": "数据加密"
+        },
+        {
+          "product_ref": "量子安全基础设施",
+          "role": "量子密钥分发"
+        }
+      ],
+      "implementation_roadmap": "提供从密评咨询、方案设计、产品部署、系统集成到协助测评验收的一站式服务，支持云上密码资源池模式快速开通。"
+    }
+  },
+  {
+    "id": "C006",
+    "card_type": "parameter",
+    "title": "关键参数",
+    "content": {}
+  }
+]
