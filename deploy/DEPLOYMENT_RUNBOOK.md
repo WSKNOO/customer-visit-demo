@@ -132,4 +132,41 @@ bash deploy/benchmark-funasr.sh /path/to/anonymous-at-least-60s.wav
 
 ## 9. TTS 当前结论
 
-现有陪练代码保留了 `/api/tts` 入口，但实现依赖 `edge-tts` 公网服务，不符合内网离线上线条件。本阶段必须保持 `TTS_ENABLED=false`，不得把该入口作为真实可用能力。此次不接入任何新 TTS 模型；如后续确有需求，应另行评审一个独立的离线适配器，只提供“文本输入、WAV 输出”接口，并在选定引擎、中文音质、许可证和 CPU 性能验证后再实施。
+陪练代码保留 `/api/tts` 和 `/api/tts/voices` 契约，但已移除 `edge-tts` 公网实现。本阶段必须保持 `TTS_ENABLED=false`，不得把该入口作为真实可用能力。此次不接入任何新 TTS 模型；如后续确有需求，应另行评审一个独立的离线适配器，只提供“文本输入、WAV 输出”接口，并在选定引擎、中文音质、许可证和 CPU 性能验证后再实施。
+
+## 10. 领导演示模式
+
+明天演示建议在 `deploy/.env` 设置：
+
+```dotenv
+DEMO_MODE=true
+DEMO_SCENE_ID=knowcard/标品/省产品运营中心-安全大脑
+TRAINING_MOCK_MODE=false
+ASR_PROVIDER=disabled
+TTS_ENABLED=false
+```
+
+Demo 模式仍优先调用已配置的内部模型，但单次等待最长 12 秒且不重试；配置无效、超时或模型异常时自动切换到确定性演示回答。页面点击“✨ 一键演示”后会自动创建政务客户训练会话、选中推荐场景并展示第一轮客户问题。
+
+本次只需重建和传输 `ai-training` 镜像，FunASR 服务代码、依赖和镜像均未变化。在 Windows 构建机执行（版本号按实际发布号替换）：
+
+```powershell
+$env:IMAGE_TAG="20260714-demo"
+$env:AI_TRAINING_IMAGE="deploy-ai-training"
+docker compose -f deploy/docker-compose.yml build ai-training
+docker save -o E:\customer-visit-ai-training-20260714-demo.tar deploy-ai-training:20260714-demo
+```
+
+将 tar 包和本次变更的 `deploy/docker-compose.yml`、`deploy/.env.example`、`deploy/test-training.sh` 上传到批准的离线介质后，在服务器执行；服务器不在线构建镜像：
+
+```bash
+docker load -i /mnt/disk/customer-visit-demo-package/customer-visit-ai-training-20260714-demo.tar
+cd /mnt/disk/customer-visit-demo/deploy
+# 先备份 .env，再设置 IMAGE_TAG=20260714-demo、DEMO_MODE=true 及上文演示配置
+docker compose config --quiet
+docker compose up -d --no-deps --force-recreate ai-training
+curl -fsS http://127.0.0.1:${GATEWAY_PORT:-18088}/api/health
+curl -fsS http://127.0.0.1:${GATEWAY_PORT:-18088}/api/mode
+curl -fsS -X POST http://127.0.0.1:${GATEWAY_PORT:-18088}/api/demo/start
+bash test-training.sh
+```

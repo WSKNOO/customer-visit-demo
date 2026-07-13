@@ -740,6 +740,7 @@
                 <!-- 操作按钮 -->
                 <div class="panel">
                     <h3>🎬 操作</h3>
+                    <button id="demoBtn" class="btn-primary" style="display:none;background:#34c759;">✨ 一键演示</button>
                     <button id="startBtn" class="btn-primary">🎬 开始对练</button>
                     <button id="exportBtn" class="btn-secondary">📥 导出记录</button>
                     <div class="stats">
@@ -799,7 +800,7 @@
 
                 <!-- 综合总结 -->
                 <div class="report-section">
-                    <div class="report-section-title">💡 AI 教练综合点评</div>
+                    <div class="report-section-title">📊 综合评分</div>
                     <div class="report-summary-box" id="reportSummary">
                         正在生成...
                     </div>
@@ -807,13 +808,18 @@
 
                 <!-- 亮点与改进建议 -->
                 <div class="report-section" id="reportHighlightsSection" style="display:none;">
-                    <div class="report-section-title">✨ 表现亮点</div>
+                    <div class="report-section-title">✨ 沟通优势</div>
                     <div class="report-summary-box" id="reportHighlights"></div>
                 </div>
                 
                 <div class="report-section" id="reportWeaknessSection" style="display:none;">
                     <div class="report-section-title">🔧 改进建议</div>
                     <div class="report-summary-box" id="reportWeakness"></div>
+                </div>
+
+                <div class="report-section" id="reportNextSection" style="display:none;">
+                    <div class="report-section-title">🎯 后续训练建议</div>
+                    <div class="report-summary-box" id="reportNextSteps"></div>
                 </div>
             </div>
 
@@ -840,7 +846,7 @@
         selectedSceneFullName: '通用销售', selectedSceneGroup: '', selectedDifficulty: '中等', messages: [],
         msgCount: 0, startTime: Date.now(), isRecording: false, recognition: null,
         ttsEnabled: false, ttsVoice: 'zh-CN-YunxiNeural', ttsAudio: null, isPlayingTts: false,
-        backendMode: 'lite', asrReady: false, voiceEnabled: false, voiceAvailable: false, voiceDenied: false,
+        backendMode: 'lite', demoMode: false, asrReady: false, voiceEnabled: false, voiceAvailable: false, voiceDenied: false,
         finalTranscript: '', interimTranscript: '', sessionStarted: false, roundLimit: 8, conversationEnded: false,
         scoreHistory: [], isNewSession: true,
         selectedPhase: 'discovery',
@@ -1470,7 +1476,7 @@
             addMessage('ai',cleanContent);
             playTts(cleanContent,'ai');
         }
-        /* Cheat mode */if(isCheatOn()){queryKnowledge();}else{console.log('[Cheat] Skipped');}}else{addMessage('ai','请求失败：'+(r.error||'未知错误'));}}).catch(function(e){hideTypingIndicator();addMessage('ai','网络错误：'+e.message);}); }
+        if(r.notice)addMessage('system',r.notice);/* Cheat mode */if(isCheatOn()){queryKnowledge();}else{console.log('[Cheat] Skipped');}}else{addMessage('system','客户暂时没有回应，请稍后重试或继续使用演示模式。');}}).catch(function(){hideTypingIndicator();addMessage('system','连接暂时不稳定，请稍后重试，已输入的内容不会丢失。');}); }
 
     var lastParsedScores = {};
     function parseScoresFromText(text) { var m=text.match(/<!--SCORE\s*(\{[\s\S]*?\})\s*(?:SCORE_END)?\s*-->/);if(m){try{var d=JSON.parse(m[1].replace(/&quot;/g,'"'));var s={};var roundData={round:state.msgCount,dims:{}};SCORE_DIMS.forEach(function(x){if(typeof d[x.id]==='number'){s[x.id]=d[x.id];roundData.dims[x.id]=d[x.id];}});lastParsedScores=s;lastParsedScores._mood=d.mood;lastParsedScores._moodReason=d.mood_reason||'';if(Object.keys(s).length>0){state.scoreHistory.push(roundData);updateScorePanel(s);updateScoreTrendChart();}if(d.mood)updateMoodIndicator(d.mood,d.mood_reason||'');return s;}catch(e){console.warn('[Score]'+e);}}return{}; }
@@ -1638,6 +1644,13 @@
         sp = sp.split(placeholder).join('<br>');
         gId('reportSummary').innerHTML = sp;
 
+        var ranked=SCORE_DIMS.map(function(d){return {name:d.name,value:scoreObj[d.id]};}).filter(function(x){return typeof x.value==='number';}).sort(function(a,b){return b.value-a.value;});
+        var strengths=ranked.slice(0,2).map(function(x){return x.name+'（'+x.value+'分）';});
+        var improvements=ranked.slice(-2).reverse().map(function(x){return x.name+'（'+x.value+'分）';});
+        gId('reportHighlightsSection').style.display='';gId('reportHighlights').textContent=strengths.length?'本次表现较好的是：'+strengths.join('、')+'。':'能够完成客户沟通并持续推进话题。';
+        gId('reportWeaknessSection').style.display='';gId('reportWeakness').textContent=improvements.length?'建议重点提升：'+improvements.join('、')+'，回答时增加量化依据和客户确认。':'建议进一步聚焦客户痛点和成功标准。';
+        gId('reportNextSection').style.display='';gId('reportNextSteps').textContent='下一轮建议练习“现状追问 → 影响量化 → 小范围试点 → 明确下一步”四步表达，并在每轮结束前向客户确认理解是否准确。';
+
         // 保存到历史记录
         addHistoryRecord({ avg: avg, dims: scoreObj });
 
@@ -1752,11 +1765,12 @@
 
     function startTimer() { setInterval(function(){var e=Math.floor((Date.now()-state.startTime)/1000);var m=Math.floor(e/60);var s=e%60;gId('duration').textContent=m+':'+(s<10?'0':'')+s;},1000); }
 
-    function detectBackendMode() { fetch('/api/mode').then(function(r){return r.json()}).then(function(d){state.backendMode=d.mode||'lite';state.voiceEnabled=!!d.voice_enabled;state.asrProvider=(d.asr&&d.asr.method==='http-service')?'http':'disabled';var md=gId('modeDescription');if(md)md.textContent='客户拜访AI智能对练系统 | '+(d.mock?'Mock模式':'受控模型模式')+' | '+(state.voiceEnabled?'语音可选':'纯文字主演示');var ais=gId('aiStatus'),ait=gId('aiStatusText');if(ais&&ait){if(d.mock){ais.className='status-dot warning';ait.textContent='AI模型：Mock';}else if(d.model_configured){ais.className='status-dot ready';ait.textContent='AI模型：已配置';}else{ais.className='status-dot warning';ait.textContent='AI模型：未配置';}}var tt=gId('ttsToggle');if(tt){tt.checked=false;tt.disabled=!d.tts_available;state.ttsEnabled=false;}if(state.voiceEnabled&&state.asrProvider==='http'){state.asrReady=true;gId('asrStatus').className='status-dot ready';gId('asrStatusText').textContent='ASR：已配置';initMediaRecorder();}else{gId('asrStatus').className='status-dot warning';gId('asrStatusText').textContent='ASR：已关闭';gId('micStatus').className='status-dot warning';gId('micStatusText').textContent='麦克风：已关闭';recordBtn.disabled=true;}}).catch(function(){var ait=gId('aiStatusText');if(ait)ait.textContent='AI模型：状态未知';recordBtn.disabled=true;}); }
+    function detectBackendMode() { fetch('/api/mode').then(function(r){return r.json()}).then(function(d){state.backendMode=d.mode||'lite';state.demoMode=!!d.demo_mode;state.voiceEnabled=!!d.voice_enabled;state.asrProvider=(d.asr&&d.asr.method==='http-service')?'http':'disabled';var db=gId('demoBtn');if(db){db.style.display=state.demoMode?'':'none';db.onclick=startDemoSession;}var md=gId('modeDescription');if(md)md.textContent='客户拜访AI智能对练系统 | '+(state.demoMode?'演示保障模式':(d.mock?'Mock模式':'受控模型模式'))+' | '+(state.voiceEnabled?'语音可选':'纯文字主演示');var ais=gId('aiStatus'),ait=gId('aiStatusText');if(ais&&ait){if(state.demoMode){ais.className='status-dot ready';ait.textContent='AI能力：演示就绪';}else if(d.mock){ais.className='status-dot warning';ait.textContent='AI能力：模拟就绪';}else if(d.model_configured){ais.className='status-dot ready';ait.textContent='AI能力：已就绪';}else{ais.className='status-dot warning';ait.textContent='AI能力：准备中';}}var tt=gId('ttsToggle');if(tt){tt.checked=false;tt.disabled=!d.tts_available;state.ttsEnabled=false;}if(state.voiceEnabled&&state.asrProvider==='http'){state.asrReady=true;gId('asrStatus').className='status-dot ready';gId('asrStatusText').textContent='语音：可用';initMediaRecorder();}else{gId('asrStatus').className='status-dot warning';gId('asrStatusText').textContent='语音：未启用';gId('micStatus').className='status-dot warning';gId('micStatusText').textContent='麦克风：未启用';recordBtn.disabled=true;}}).catch(function(){var ait=gId('aiStatusText');if(ait)ait.textContent='AI能力：暂时不可用';recordBtn.disabled=true;}); }
 
     function applyIntegratedSession(data) {
         state.integrationSessionId = data.session_id;
         state.integrationSession = data;
+        if(data.scene_id){state.selectedSceneId=data.scene_id;state.selectedScene=data.scene_id;state.selectedSceneName=data.scene_name||data.scene_id.split('/').pop();state.selectedSceneFullName=data.scene_full_name||state.selectedSceneName;state.selectedSceneGroup=data.scene_group||'';}
         state.selectedDifficulty = data.difficulty || '中等';
         state.selectedPhase = data.phase || 'discovery';
         state.roundLimit = data.round_limit || 6;
@@ -1769,8 +1783,12 @@
         addMessage('system', '本次目标：'+escHtml(data.training_goal)+' ｜ 共 '+state.roundLimit+' 轮');
         state.messages.push({role:'assistant', content:data.opening_question});
         addMessage('ai', data.opening_question);
-        textInput.disabled = false; textInput.placeholder = '请直接回答客户问题...'; textInput.focus();
+        textInput.disabled = false; textInput.placeholder = '请直接回答客户问题...';
+        sendBtn.disabled = false; sendBtn.style.opacity = '';
+        textInput.focus();
     }
+
+    function startDemoSession(){var b=gId('demoBtn');if(b){b.disabled=true;b.textContent='正在准备演示...';}fetch('/api/demo/start',{method:'POST'}).then(function(r){return r.json().then(function(d){return {ok:r.ok,data:d};});}).then(function(v){if(!v.ok)throw new Error('demo');applyIntegratedSession(v.data);addMessage('system',v.data.notice||'演示场景已准备完成。');}).catch(function(){addMessage('system','演示场景暂时无法自动加载，请点击“开始对练”进入普通模式。');}).finally(function(){if(b){b.disabled=false;b.textContent='✨ 一键演示';}});}
 
     function loadIntegratedSession() {
         var sessionId = new URLSearchParams(window.location.search).get('session_id');

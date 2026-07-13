@@ -70,6 +70,8 @@ services:
       context: ../ai-visit-training
     environment:
       MOCK_MODE: ${TRAINING_MOCK_MODE:-true}
+      DEMO_MODE: ${DEMO_MODE:-false}
+      DEMO_SCENE_ID: ${DEMO_SCENE_ID:-knowcard/标品/省产品运营中心-安全大脑}
       ASR_PROVIDER: ${ASR_PROVIDER:-disabled}
       ASR_BASE_URL: ${ASR_BASE_URL:-http://funasr-service:8000}
       ASR_REQUEST_TIMEOUT_SECONDS: ${ASR_REQUEST_TIMEOUT_SECONDS:-120}

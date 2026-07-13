@@ -7,6 +7,7 @@ os.environ["MOCK_MODE"] = "true"
 os.environ["VOICE_ENABLED"] = "false"
 os.environ["TTS_ENABLED"] = "false"
 
+import app as training_app
 from app import app, resolve_resource_file, training_sessions
 from visit_brief import validate_visit_brief
 
@@ -125,6 +126,47 @@ class TrainingApiTests(unittest.TestCase):
         response = self.client.post("/api/training/session/init", json={"customer": {}})
         self.assertEqual(response.status_code, 400)
         self.assertNotIn("Traceback", response.get_data(as_text=True))
+
+    def test_demo_one_click_session_and_model_fallback(self):
+        previous_demo = training_app.DEMO_MODE
+        previous_mock = training_app.MOCK_MODE
+        previous_status = training_app.MODEL_CONFIG_STATUS
+        try:
+            training_app.DEMO_MODE = True
+            response = self.client.post('/api/demo/start')
+            self.assertEqual(response.status_code, 201)
+            demo = response.get_json()
+            self.assertTrue(demo['demo_mode'])
+            self.assertTrue(demo['opening_question'])
+            self.assertTrue(demo['scene_id'].startswith('knowcard/'))
+
+            training_app.MOCK_MODE = False
+            training_app.MODEL_CONFIG_STATUS = training_app.validate_model_config('', '', '')
+            chat = self.client.post('/api/chat', json={
+                'session_id': demo['session_id'],
+                'messages': [{'role': 'user', 'content': '请介绍一下试点建议。'}],
+            }).get_json()
+            self.assertTrue(chat['success'])
+            self.assertTrue(chat['demo_fallback'])
+            self.assertNotIn('MODEL_CONFIG_INVALID', chat.get('content', ''))
+        finally:
+            training_app.DEMO_MODE = previous_demo
+            training_app.MOCK_MODE = previous_mock
+            training_app.MODEL_CONFIG_STATUS = previous_status
+
+    def test_tts_is_interface_only(self):
+        response = self.client.post('/api/tts', json={'text': '测试'})
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.get_json()['error_code'], 'TTS_DISABLED')
+
+        previous_tts = training_app.TTS_ENABLED
+        try:
+            training_app.TTS_ENABLED = True
+            response = self.client.post('/api/tts', json={'text': '测试'})
+            self.assertEqual(response.status_code, 501)
+            self.assertEqual(response.get_json()['error_code'], 'TTS_NOT_CONFIGURED')
+        finally:
+            training_app.TTS_ENABLED = previous_tts
 
 
 if __name__ == "__main__":
