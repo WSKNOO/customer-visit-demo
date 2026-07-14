@@ -31,8 +31,10 @@ file /tmp/demo.wav
 
 验收：`model_loaded=true`，响应 `Content-Type: audio/wav`，文件非空且浏览器可播放。前端送入 TTS 前过滤 `<think>`、COACH、SCORE、REPORT 和 HTML 标签。
 
-## 明确未验证项
+## 已验证与未验证边界
 
-本次本机没有 Docker，未执行镜像构建、Compose 运行态检查、真实模型推理、浏览器麦克风权限和服务器内部模型连通性。上述项目必须在服务器逐项验收。
+2026-07-14 已在 A 电脑完成真实 CPU 推理：FunASR 能从 WAV 返回中文文本；TTS 能加载外置 ONNX 模型并通过 HTTP 接口返回 44.1 kHz、单声道、16-bit PCM WAV。两个模型检查脚本均输出 `READY`。
+
+本机没有 Docker，因此未执行镜像构建、Compose 运行态、服务器只读挂载、浏览器麦克风权限和服务器内部模型连通性。上述项目仍必须在服务器逐项验收。
 
 特别注意：`http://192.168.240.14:18088` 不是 localhost，浏览器可能因非 HTTPS 安全上下文拒绝麦克风。必须使用现场设备实测录音权限；失败时使用文字输入，ASR 服务本身可用预录 WAV 通过 `test-asr.sh` 独立验证。

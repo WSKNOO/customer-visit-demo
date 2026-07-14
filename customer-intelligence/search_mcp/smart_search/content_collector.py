@@ -18,6 +18,7 @@ from urllib.parse import urlparse
 from search_mcp.config import get_config
 from search_mcp.engines.bing import BingSearch
 from search_mcp.engines.baidu import BaiduSearch
+from search_mcp.engines.sogou import SogouSearch
 from search_mcp.scraper import scrape_url
 from search_mcp.proxy_router import resolve_proxy
 
@@ -101,12 +102,19 @@ class ContentCollector:
         self.timeout = search_cfg.get("request_timeout", 15)
         self.user_agent = search_cfg.get("user_agent", "")
         self.max_content_chars = min(200000, max(1000, int(search_cfg.get("max_content_chars", 50000))))
+        self.fetch_content_enabled = bool(search_cfg.get("fetch_content_enabled", False))
+        self.snippet_fallback_enabled = bool(search_cfg.get("snippet_fallback_enabled", True))
 
-        # 搜索引擎实例（只使用百度，Bing CN返回大量无关门户首页）
+        self.default_engine = str(search_cfg.get("default_engine", "sogou")).lower()
+        service_url = search_cfg.get("service_base_url", "")
+        # 演示默认使用搜狗；百度保留为顺序兜底，不并发放大请求量。
         self.engines = {
+            "sogou": SogouSearch(proxy=resolve_proxy(engine_name="sogou") if not proxy else proxy,
+                                  timeout=self.timeout, user_agent=self.user_agent,
+                                  base_url=service_url if self.default_engine == "sogou" else ""),
             "baidu": BaiduSearch(proxy=resolve_proxy(engine_name="baidu") if not proxy else proxy,
                                  timeout=self.timeout, user_agent=self.user_agent,
-                                 base_url=search_cfg.get("service_base_url", ""),
+                                 base_url=service_url if self.default_engine == "baidu" else "",
                                  api_key=search_cfg.get("service_api_key", "")),
         }
 
@@ -119,7 +127,9 @@ class ContentCollector:
         """用一个关键词在多个引擎上搜索，返回合并结果。"""
         items = []
         if engines is None:
-            engines = ["bing", "baidu"]
+            engines = [self.default_engine]
+            if self.default_engine != "baidu":
+                engines.append("baidu")
 
         for engine_name in engines:
             engine = self.engines.get(engine_name)
@@ -143,6 +153,8 @@ class ContentCollector:
                             _engine=engine_name,
                             content_hash=hashlib.md5(r.url.encode()).hexdigest()[:12],
                         ))
+                    if items:
+                        break
             except Exception as exc:
                 print(f"[collector] Search error [{engine_name}] {keyword}: {exc}", file=sys.stderr)
 
@@ -150,6 +162,8 @@ class ContentCollector:
 
     async def fetch_content(self, item: SourceItem) -> SourceItem:
         """抓取单个SourceItem的页面内容。"""
+        if not self.fetch_content_enabled:
+            return self._fallback_to_snippet(item, "正文抓取已关闭，使用搜索摘要")
         try:
             scraped = await scrape_url(
                 item.url,
@@ -173,6 +187,20 @@ class ContentCollector:
                 item.fetch_error = scraped.error or "抓取失败"
         except Exception as exc:
             item.fetch_error = str(exc)
+        if not item.fetch_success:
+            return self._fallback_to_snippet(item, item.fetch_error or "正文抓取失败")
+        return item
+
+    def _fallback_to_snippet(self, item: SourceItem, reason: str) -> SourceItem:
+        """Keep a bounded search摘要 when page fetching is disabled or fails."""
+        snippet = re.sub(r"\s+", " ", item.snippet or "").strip()
+        if self.snippet_fallback_enabled and len(snippet) >= 20:
+            item.content = snippet[:self.max_content_chars]
+            item.fetch_success = True
+            item.fetch_error = reason
+        else:
+            item.fetch_success = False
+            item.fetch_error = reason
         return item
 
     async def search_dimensions(self, keywords_by_dim: List[Dict],
@@ -236,7 +264,8 @@ class ContentCollector:
             if not item.fetch_success or not item.content:
                 continue
             # 内容太短的过滤
-            if len(item.content.strip()) < 100:
+            minimum_chars = 20 if item.fetch_error else 100
+            if len(item.content.strip()) < minimum_chars:
                 continue
             d = item.dimension
             if dim_final_count.get(d, 0) < max_per_dim:

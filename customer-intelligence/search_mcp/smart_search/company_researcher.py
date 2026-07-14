@@ -87,6 +87,15 @@ async def research_company(
         # ── 阶段1: 生成搜索关键词 ────────────────────────────────────────
         print(f"[researcher] 阶段1/4: 生成搜索关键词...", file=sys.stderr)
         keywords_by_dim = generate_keywords(company_name, focus_areas)
+        search_cfg = get_config().get("search", {})
+        max_dimensions = min(12, max(1, int(search_cfg.get("max_dimensions", 6))))
+        max_keywords = min(5, max(1, int(search_cfg.get("max_keywords_per_dimension", 1))))
+        keywords_by_dim = sorted(
+            keywords_by_dim,
+            key=lambda item: 0 if item.get("priority") == "high" else 1,
+        )[:max_dimensions]
+        for dimension in keywords_by_dim:
+            dimension["keywords"] = dimension.get("keywords", [])[:max_keywords]
         total_keywords = sum(len(d["keywords"]) for d in keywords_by_dim)
         print(f"[researcher] 生成 {len(keywords_by_dim)} 个维度, "
               f"{total_keywords} 个关键词", file=sys.stderr)

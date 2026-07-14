@@ -21,6 +21,17 @@ curl -fsS http://127.0.0.1:18088/training/api/health
 bash test-training.sh
 ```
 
+## 2.1 验证客户情报实时搜索
+
+确保 `.env` 中 `SEARCH_MCP_PROXY` 是容器可访问的代理地址，然后执行：
+
+```bash
+docker compose up -d --no-deps --force-recreate customer-intelligence-api
+bash test-intelligence-search.sh '中国电信 数字化 最新动态'
+```
+
+成功标准：返回 `success=true`、`engine=sogou`、至少一条带标题和来源 URL 的结果。搜狗失败时会顺序尝试百度；全部失败则保持已有报告和缓存演示入口，不阻塞 AI 陪练主链路。
+
 ## 3. 启用 ASR
 
 前提：`check-funasr-model.sh` 输出 `READY`。

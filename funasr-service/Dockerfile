@@ -20,7 +20,7 @@ RUN if [ "$DEBIAN_MIRROR" != "deb.debian.org" ]; then \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
-RUN pip install --no-cache-dir --index-url "$TORCH_INDEX_URL" torch==2.3.1 \
+RUN pip install --no-cache-dir --index-url "$TORCH_INDEX_URL" torch==2.3.1 torchaudio==2.3.1 \
     && pip install --no-cache-dir -r requirements.txt
 
 COPY app.py asr_engine.py audio_utils.py config.py ./

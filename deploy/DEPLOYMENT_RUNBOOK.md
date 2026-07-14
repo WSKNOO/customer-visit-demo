@@ -34,7 +34,7 @@ docker save -o E:\customer-visit-funasr-20260713-v2.tar deploy-funasr-service:20
 | `funasr/paraformer` | `iic/speech_paraformer-large_asr_nat-zh-cn-16k-common-vocab8404-pytorch` | `v2.0.4` | Apache-2.0 | 根文件约 889 MB |
 | `funasr/vad` | `iic/speech_fsmn_vad_zh-cn-16k-common-pytorch` | `v2.0.4` | Apache-2.0 | 根文件约 1.74 MB |
 | `funasr/punc` | `iic/punc_ct-transformer_zh-cn-common-vocab272727-pytorch` | `v2.0.4` | Apache-2.0 | 根文件约 296 MB |
-| `tts/vits-melo-tts-zh_en` | sherpa-onnx `tts-models` release | release asset | MIT | ONNX 约 163 MiB；解压目录约 339 MiB |
+| `tts/vits-melo-tts-zh_en` | sherpa-onnx 维护者发布的 Hugging Face 仓库 | 当前仓库快照 | MIT | 四个运行文件约 169 MiB |
 
 ModelScope `v2.0.4` 元数据中的主权重校验值：
 
@@ -44,7 +44,7 @@ ModelScope `v2.0.4` 元数据中的主权重校验值：
 | `vad/model.pt` | 1,721,366 | `b3be75be477f0780277f3bae0fe489f48718f585f3a6e45d7dd1fbb1a4255fc5` |
 | `punc/model.pt` | 291,979,892 | `a5818bb9d933805a916eebe41eb41648f7f9caad30b4bd59d56f3ca135421916` |
 
-TTS 官方 release archive 大小为 167,006,755 字节。该旧版 GitHub asset 未发布 digest，因此准备脚本会在 A 电脑完成下载后计算 archive SHA256，并把它和全部解压文件 SHA256 写入模型包；服务器通过随包清单核对传输完整性。
+TTS 准备脚本默认从 sherpa-onnx 维护者的 Hugging Face 仓库下载四个运行必需文件，并在 A 电脑生成逐文件 SHA256 清单。旧版 GitHub release archive（167,006,755 字节）仅作为可选备用源，可通过 `TTS_MODEL_SOURCE=github` 选择。
 
 ### A 电脑：下载、检查、打包
 
@@ -55,7 +55,7 @@ cd /path/to/customer-visit-demo
 # python3 -m pip install --user 'modelscope>=1.15,<2'
 bash deploy/prepare-funasr-model.sh
 
-# TTS 从 sherpa-onnx 官方 GitHub release 下载，支持断点续传。
+# TTS 默认从 sherpa-onnx 维护者的 Hugging Face 仓库下载；GitHub release 可作备用。
 bash deploy/prepare-tts-model.sh
 
 bash deploy/check-funasr-model.sh
@@ -63,6 +63,8 @@ bash deploy/check-tts-model.sh
 bash deploy/package-models.sh
 ls -lh customer-visit-models.tar.gz customer-visit-models.tar.gz.sha256
 ```
+
+2026-07-14 本机实测结果：两个检查脚本均输出 `READY`；FunASR 使用 CPU 完成中文 WAV 转写，TTS 使用 CPU 生成 44.1 kHz 单声道 PCM WAV。已生成的模型包 SHA256 为 `bf6394c00547e794c237444bcad1f6d85466a7fe983b44f3469cda0bc315bdef`。这只证明 A 电脑模型资产与本机 Python 推理可用，不代表 Docker、服务器挂载或浏览器链路已经验收。
 
 输出结构：
 
@@ -158,6 +160,7 @@ docker compose -f docker-compose.yml -f docker-compose.https.yml up -d nginx
 ## 6. 后续免 `docker save` 更新
 
 - Prompt/Python：启用 `USE_HOT_COMPOSE=true`，同步代码后执行 `bash deploy/update-server.sh ai-training`；Python 代码变更需重启容器。
+- 客户情报搜索：热覆盖会只读挂载 `research_cli.py`、`config.yaml` 和 `search_mcp/`。修改代理或搜索开关后重新创建 `customer-intelligence-api`，然后执行 `bash deploy/test-intelligence-search.sh`。
 - HTML/CSS/JavaScript：同步 `static/`，重启 `ai-training` 以清理运行态；浏览器强制刷新。
 - 陪练数据：准备新 release，先运行 `validate-data.py`，原子切换 `current` 软链接，再执行 `bash deploy/update-server.sh data`。
 - FunASR 代码：同步 `funasr-service/*.py`，执行 `bash deploy/update-server.sh funasr-service`。新增依赖时仍须重建镜像。
@@ -168,7 +171,7 @@ docker compose -f docker-compose.yml -f docker-compose.https.yml up -d nginx
 
 热更新覆盖文件仅用于内网开发/演示维护，不作为正式生产默认。生产发布应使用版本化镜像。
 
-演示维护环境可叠加 `deploy/docker-compose.hot.yml`。它只读挂载 AI 陪练代码、静态页面、陪练数据、FunASR/TTS 服务代码和 `/mnt/disk/models` 下的模型，因此修改 Prompt、Python、前端、数据、模型或 `.env` 后无需 `docker save/load`，但 Python、模型或环境变量变化后仍需重启对应容器：
+演示维护环境可叠加 `deploy/docker-compose.hot.yml`。它只读挂载客户情报搜索代码、AI 陪练代码、静态页面、陪练数据、FunASR/TTS 服务代码和 `/mnt/disk/models` 下的模型，因此修改 Prompt、Python、前端、数据、模型或 `.env` 后无需 `docker save/load`，但 Python、模型或环境变量变化后仍需重启对应容器：
 
 ```bash
 cd /mnt/disk/customer-visit-demo/deploy
@@ -182,6 +185,7 @@ docker compose -f docker-compose.yml -f docker-compose.hot.yml --profile asr --p
 
 ```bash
 bash deploy/test-training.sh
+bash deploy/test-intelligence-search.sh '中国电信 数字化 最新动态'
 docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.asr-debug.yml --profile asr up -d funasr-service
 bash deploy/test-asr.sh /path/to/anonymous-test.webm
 bash deploy/test-tts.sh
@@ -213,9 +217,7 @@ bash deploy/benchmark-funasr.sh /path/to/anonymous-at-least-60s.wav
 /mnt/disk/models/tts/vits-melo-tts-zh_en/model.onnx
 /mnt/disk/models/tts/vits-melo-tts-zh_en/tokens.txt
 /mnt/disk/models/tts/vits-melo-tts-zh_en/lexicon.txt
-/mnt/disk/models/tts/vits-melo-tts-zh_en/date.fst
-/mnt/disk/models/tts/vits-melo-tts-zh_en/number.fst
-/mnt/disk/models/tts/vits-melo-tts-zh_en/dict/
+/mnt/disk/models/tts/vits-melo-tts-zh_en/LICENSE
 ```
 
 `.env` 设置：
@@ -231,7 +233,7 @@ TTS_NUM_THREADS=8
 TTS_SPEED=1.0
 ```
 
-该模型使用包内词典和规则文件，保持 `TTS_DATA_DIR=`。首次离线部署需在 Windows 构建并导出 `tts-service` 镜像；服务器只执行 `docker load`：
+该模型已在 CPU 上使用上述四个文件完成真实中文 WAV 生成，保持 `TTS_DATA_DIR=`。首次离线部署需在 Windows 构建并导出 `tts-service` 镜像；服务器只执行 `docker load`：
 
 ```powershell
 $env:IMAGE_TAG="20260714-tts"

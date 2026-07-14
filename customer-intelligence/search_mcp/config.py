@@ -30,13 +30,17 @@ load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 DEFAULT_CONFIG: Dict[str, Any] = {
     "search": {
-        "default_engine": "bing",
+        "default_engine": "sogou",
         "default_count": 10,
         "request_timeout": 15,
-        "service_base_url": "https://www.baidu.com/s",
+        "service_base_url": "https://www.sogou.com/web",
         "service_api_key": "",
-        "max_fetch_pages": 80,
+        "max_fetch_pages": 20,
         "max_content_chars": 50000,
+        "max_dimensions": 6,
+        "max_keywords_per_dimension": 1,
+        "fetch_content_enabled": False,
+        "snippet_fallback_enabled": True,
         "proxy": {
             "default": "",
             "rules": {},
@@ -69,6 +73,10 @@ ENV_OVERRIDES = [
     ("SEARCH_SERVICE_API_KEY", ["search", "service_api_key"], str),
     ("SEARCH_MAX_FETCH_PAGES", ["search", "max_fetch_pages"], int),
     ("SEARCH_MAX_CONTENT_CHARS", ["search", "max_content_chars"], int),
+    ("SEARCH_MAX_DIMENSIONS", ["search", "max_dimensions"], int),
+    ("SEARCH_MAX_KEYWORDS_PER_DIMENSION", ["search", "max_keywords_per_dimension"], int),
+    ("SEARCH_FETCH_CONTENT_ENABLED", ["search", "fetch_content_enabled"], lambda v: v.lower() in ("1", "true", "yes")),
+    ("SEARCH_SNIPPET_FALLBACK_ENABLED", ["search", "snippet_fallback_enabled"], lambda v: v.lower() in ("1", "true", "yes")),
     ("SEARCH_MCP_SUMMARIZER_ENABLED", ["summarizer", "enabled"], lambda v: v.lower() in ("1", "true", "yes")),
     ("SEARCH_MCP_SUMMARIZER_API_BASE", ["summarizer", "api_base"], str),
     ("SEARCH_MCP_SUMMARIZER_API_KEY", ["summarizer", "api_key"], str),
@@ -172,6 +180,13 @@ def load_config() -> Dict[str, Any]:
                 _deep_set(config, keys, cast(raw))
             except (ValueError, TypeError) as exc:
                 print(f"[config] Warning: cannot parse {env_key}={raw!r}: {exc}", file=sys.stderr)
+
+    # A single explicit search proxy is easiest to deploy. If it is omitted,
+    # inherit the standard outbound proxy used by the container.
+    if not os.environ.get("SEARCH_MCP_PROXY"):
+        inherited_proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("HTTP_PROXY")
+        if inherited_proxy:
+            config["search"]["proxy"] = inherited_proxy
 
     return config
 

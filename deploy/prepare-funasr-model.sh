@@ -18,7 +18,7 @@ declare -a MODEL_SHA256=(
   a5818bb9d933805a916eebe41eb41648f7f9caad30b4bd59d56f3ca135421916
 )
 
-if [[ -s "$MODEL_DIR/paraformer/model.pt" && -s "$MODEL_DIR/vad/model.pt" && -s "$MODEL_DIR/punc/model.pt" && -s "$MODEL_DIR/MODEL_ASSET_INFO.txt" && -s "$MODEL_DIR/SHA256SUMS" ]]; then
+if [[ -s "$MODEL_DIR/paraformer/model.pt" && -s "$MODEL_DIR/paraformer/seg_dict" && -s "$MODEL_DIR/vad/model.pt" && -s "$MODEL_DIR/punc/model.pt" && -s "$MODEL_DIR/MODEL_ASSET_INFO.txt" && -s "$MODEL_DIR/SHA256SUMS" ]] && ! find "$MODEL_DIR" -name '*.incomplete' -print -quit | grep -q .; then
   echo "SKIP: verified FunASR asset set already exists"
   exec bash "$ROOT_DIR/deploy/check-funasr-model.sh"
 fi
@@ -63,6 +63,13 @@ EOF
   for file in configuration.json config.yaml model.pt; do
     [[ -s "$partial/$file" ]] || { echo "ERROR: incomplete download, missing $partial/$file" >&2; exit 1; }
   done
+  if [[ "$name" == paraformer ]]; then
+    [[ -s "$partial/seg_dict" ]] || { echo "ERROR: incomplete download, missing $partial/seg_dict" >&2; exit 1; }
+  fi
+  if find "$partial" -name '*.incomplete' -print -quit | grep -q .; then
+    echo "ERROR: downloader left incomplete files in $partial" >&2
+    exit 1
+  fi
   actual_sha=$(python3 - "$partial/model.pt" <<'PY'
 import hashlib, sys
 digest = hashlib.sha256()

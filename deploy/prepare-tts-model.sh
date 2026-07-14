@@ -8,6 +8,8 @@ MODEL_DIR="$MODEL_ROOT/$MODEL_NAME"
 DOWNLOAD_DIR="$MODEL_ROOT/.downloads"
 ARCHIVE="$DOWNLOAD_DIR/$MODEL_NAME.tar.bz2"
 SOURCE_URL=https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-melo-tts-zh_en.tar.bz2
+HF_SOURCE_URL=https://huggingface.co/csukuangfj/vits-melo-tts-zh_en
+SOURCE_MODE=${TTS_MODEL_SOURCE:-huggingface}
 EXPECTED_ARCHIVE_BYTES=167006755
 
 if [[ -s "$MODEL_DIR/model.onnx" && -s "$MODEL_DIR/tokens.txt" && -s "$MODEL_DIR/lexicon.txt" && -s "$MODEL_DIR/LICENSE" && -s "$MODEL_ROOT/MODEL_ASSET_INFO.txt" && -s "$MODEL_ROOT/SHA256SUMS" ]]; then
@@ -24,26 +26,53 @@ else
     exit 1
   fi
   command -v curl >/dev/null 2>&1 || { echo "ERROR: curl is required" >&2; exit 2; }
-  echo "Downloading official sherpa-onnx model (resume enabled): $SOURCE_URL"
-  curl --fail --location --retry 3 --retry-delay 2 --continue-at - --output "$ARCHIVE" "$SOURCE_URL"
-  archive_bytes=$(python3 -c 'import os,sys; print(os.path.getsize(sys.argv[1]))' "$ARCHIVE")
-  [[ "$archive_bytes" == "$EXPECTED_ARCHIVE_BYTES" ]] || { echo "ERROR: unexpected archive size: $archive_bytes" >&2; exit 1; }
-  if tar -tjf "$ARCHIVE" | grep -Eq '(^/|(^|/)\.\.(/|$))'; then
-    echo "ERROR: unsafe archive paths" >&2
-    exit 1
+  if [[ "$SOURCE_MODE" == huggingface ]]; then
+    extracted="$DOWNLOAD_DIR/hf-$MODEL_NAME"
+    mkdir -p "$extracted"
+    echo "Downloading official sherpa-onnx maintainer model from $HF_SOURCE_URL"
+    for file in model.onnx tokens.txt lexicon.txt LICENSE; do
+      if [[ ! -s "$extracted/$file" ]] || { [[ "$file" == model.onnx ]] && (( $(python3 -c 'import os,sys; print(os.path.getsize(sys.argv[1]))' "$extracted/$file") < 100000000 )); }; then
+        curl --fail --location --retry 5 --retry-delay 2 --continue-at - \
+          --output "$extracted/$file" "$HF_SOURCE_URL/resolve/main/$file?download=true"
+      fi
+    done
+    for file in model.onnx tokens.txt lexicon.txt LICENSE; do
+      [[ -s "$extracted/$file" ]] || { echo "ERROR: Hugging Face snapshot missing $file" >&2; exit 1; }
+    done
+    prepared="$DOWNLOAD_DIR/prepared-$MODEL_NAME"
+    rm -rf "$prepared"
+    mkdir -p "$prepared"
+    for file in model.onnx tokens.txt lexicon.txt LICENSE; do
+      cp "$extracted/$file" "$prepared/$file"
+    done
+    mv "$prepared" "$MODEL_DIR"
+  elif [[ "$SOURCE_MODE" == github ]]; then
+    echo "Downloading official sherpa-onnx model (resume enabled): $SOURCE_URL"
+    curl --fail --location --retry 3 --retry-delay 2 --continue-at - --output "$ARCHIVE" "$SOURCE_URL"
+    archive_bytes=$(python3 -c 'import os,sys; print(os.path.getsize(sys.argv[1]))' "$ARCHIVE")
+    [[ "$archive_bytes" == "$EXPECTED_ARCHIVE_BYTES" ]] || { echo "ERROR: unexpected archive size: $archive_bytes" >&2; exit 1; }
+    if tar -tjf "$ARCHIVE" | grep -Eq '(^/|(^|/)\.\.(/|$))'; then
+      echo "ERROR: unsafe archive paths" >&2
+      exit 1
+    fi
+    temp_dir=$(mktemp -d "${TMPDIR:-/tmp}/customer-visit-tts.XXXXXX")
+    trap 'rm -rf "$temp_dir"' EXIT
+    tar -xjf "$ARCHIVE" -C "$temp_dir"
+    extracted="$temp_dir/$MODEL_NAME"
+    for file in model.onnx tokens.txt lexicon.txt LICENSE; do
+      [[ -s "$extracted/$file" ]] || { echo "ERROR: archive missing $file" >&2; exit 1; }
+    done
+    mv "$extracted" "$MODEL_DIR"
+  else
+    echo "ERROR: TTS_MODEL_SOURCE must be huggingface or github" >&2
+    exit 2
   fi
-  temp_dir=$(mktemp -d "${TMPDIR:-/tmp}/customer-visit-tts.XXXXXX")
-  trap 'rm -rf "$temp_dir"' EXIT
-  tar -xjf "$ARCHIVE" -C "$temp_dir"
-  extracted="$temp_dir/$MODEL_NAME"
-  for file in model.onnx tokens.txt lexicon.txt LICENSE; do
-    [[ -s "$extracted/$file" ]] || { echo "ERROR: archive missing $file" >&2; exit 1; }
-  done
-  mv "$extracted" "$MODEL_DIR"
 fi
 
 archive_sha=not-retained
-if [[ -f "$ARCHIVE" ]]; then
+archive_bytes=not-applicable
+if [[ "$SOURCE_MODE" == github && -f "$ARCHIVE" ]]; then
+  archive_bytes=$EXPECTED_ARCHIVE_BYTES
   archive_sha=$(python3 - "$ARCHIVE" <<'PY'
 import hashlib, sys
 digest = hashlib.sha256()
@@ -58,11 +87,12 @@ cat >"$MODEL_ROOT/MODEL_ASSET_INFO.txt" <<EOF
 asset_set=customer-visit-tts
 model=$MODEL_NAME
 release=tts-models
-source=$SOURCE_URL
+source_mode=$SOURCE_MODE
+source=$([[ "$SOURCE_MODE" == huggingface ]] && echo "$HF_SOURCE_URL" || echo "$SOURCE_URL")
 upstream=https://huggingface.co/myshell-ai/MeloTTS-Chinese
 license=MIT
 archive_sha256=$archive_sha
-archive_bytes=$EXPECTED_ARCHIVE_BYTES
+archive_bytes=$archive_bytes
 sample_rate_hz=44100
 prepared_at_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 EOF

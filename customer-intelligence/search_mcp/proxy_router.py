@@ -122,6 +122,7 @@ def resolve_proxy(
             "bing_academic": "cn.bing.com",
             "bing": "",
             "baidu": "baidu.com",
+            "sogou": "sogou.com",
         }
         mapped = engine_map.get(engine_name, "")
         if mapped in rules:

@@ -4,6 +4,7 @@ Scrapes Baidu HTML search results (no official API required).
 Supports Chinese-language queries and encoding.
 """
 
+import re
 import sys
 from typing import List, Optional
 from urllib.parse import quote
@@ -76,6 +77,9 @@ class BaiduSearch(SearchEngine):
             tree = lxml_html.fromstring(html_content)
             results = self._parse_results(tree, count)
             response.results = results
+            if not results:
+                response.success = False
+                response.error = "Baidu returned no results (possibly blocked by verification)"
         except Exception as exc:
             response.success = False
             response.error = f"Failed to parse Baidu results: {exc}"
@@ -142,6 +146,13 @@ class BaiduSearch(SearchEngine):
                     if len(txt) > 10:
                         snippet = txt
                         break
+            if not snippet:
+                # Baidu frequently changes summary class names. Keeping the
+                # bounded result-card text is safer than discarding the source.
+                card_text = re.sub(r"\s+", " ", container.text_content()).strip()
+                if title and card_text.startswith(title):
+                    card_text = card_text[len(title):].strip(" -—|：:")
+                snippet = card_text[:600]
 
             results.append(SearchResult(
                 title=title,

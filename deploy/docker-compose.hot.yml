@@ -1,4 +1,9 @@
 services:
+  customer-intelligence-api:
+    volumes:
+      - ../customer-intelligence/research_cli.py:/app/research_cli.py:ro
+      - ../customer-intelligence/config.yaml:/app/config.yaml:ro
+      - ../customer-intelligence/search_mcp:/app/search_mcp:ro
   ai-training:
     volumes:
       - ../ai-visit-training/app.py:/app/app.py:ro

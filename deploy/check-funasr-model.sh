@@ -19,6 +19,11 @@ for name in paraformer vad punc; do
   done
 done
 
+[[ -s "$MODEL_DIR/paraformer/seg_dict" ]] || fail "missing or empty file: $MODEL_DIR/paraformer/seg_dict"
+if [[ -d "$MODEL_DIR" ]] && find "$MODEL_DIR" -name '*.incomplete' -print -quit | grep -q .; then
+  fail "incomplete download marker exists under $MODEL_DIR"
+fi
+
 [[ -s "$MODEL_DIR/MODEL_ASSET_INFO.txt" ]] || fail "missing asset metadata: $MODEL_DIR/MODEL_ASSET_INFO.txt"
 [[ -s "$MODEL_DIR/SHA256SUMS" ]] || fail "missing checksum manifest: $MODEL_DIR/SHA256SUMS"
 

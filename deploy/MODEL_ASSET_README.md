@@ -37,11 +37,15 @@ bash deploy/check-funasr-model.sh
 
 ## TTS
 
-模型：sherpa-onnx 发布的 `vits-melo-tts-zh_en`，许可证：模型包内 MIT License。官方发布文件：
+模型：sherpa-onnx 维护者发布的 `vits-melo-tts-zh_en`，许可证：模型包内 MIT License。准备脚本默认从维护者 `csukuangfj` 的 Hugging Face 仓库下载四个运行必需文件：
+
+<https://huggingface.co/csukuangfj/vits-melo-tts-zh_en>
+
+GitHub Release 压缩包仍作为可选备用源：
 
 <https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-melo-tts-zh_en.tar.bz2>
 
-固定压缩包大小为 `167006755` 字节。上游未在发布页提供稳定摘要，因此准备脚本下载后计算并记录压缩包 SHA256，再为解压后的全部文件生成 `SHA256SUMS`。
+备用压缩包固定大小为 `167006755` 字节。无论来源如何，准备脚本都会为最终的 `model.onnx`、`tokens.txt`、`lexicon.txt` 和 `LICENSE` 生成本地 `SHA256SUMS`。如需强制使用 GitHub 包，可设置 `TTS_MODEL_SOURCE=github`。
 
 ```bash
 bash deploy/prepare-tts-model.sh

@@ -1,6 +1,6 @@
 search:
   # Default search engine: bing, baidu, google, dblp, semantic_scholar
-  default_engine: bing
+  default_engine: sogou
   # Default number of search results to fetch (1-10)
   default_count: 10
   # HTTP request timeout in seconds
@@ -20,6 +20,7 @@ search:
       "baidu.com": ""
       "cn.bing.com": ""
       "bing.com": ""
+      "sogou.com": ""
       # Google — needs proxy (blocked in China)
       "google.com": "socks5://127.0.0.1:12000"
       # GitHub — accessible

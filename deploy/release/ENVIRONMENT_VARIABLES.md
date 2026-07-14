@@ -25,6 +25,22 @@ TRAINING_MODEL_MAX_TOKENS=1000
 
 内部模型受控验证通过后，将 `TRAINING_MOCK_MODE=false`。`TRAINING_MODEL_BASE_URL` 应指向 OpenAI 兼容服务根地址；`NO_PROXY` 必须加入内部模型主机，避免误走公网代理。不要在命令行历史或日志中回显 API Key。
 
+## 客户情报实时搜索
+
+```dotenv
+INTELLIGENCE_MOCK_MODE=false
+SEARCH_MCP_ENGINE=sogou
+SEARCH_MCP_PROXY=http://proxy-host:proxy-port
+SEARCH_SERVICE_BASE_URL=https://www.sogou.com/web
+SEARCH_MAX_FETCH_PAGES=20
+SEARCH_MAX_DIMENSIONS=6
+SEARCH_MAX_KEYWORDS_PER_DIMENSION=1
+SEARCH_FETCH_CONTENT_ENABLED=false
+SEARCH_SNIPPET_FALLBACK_ENABLED=true
+```
+
+容器不能使用宿主机的 `127.0.0.1` 代理地址，应填写容器可访问的代理主机/IP。显式搜索代理为空时会继承 `HTTPS_PROXY` 或 `HTTP_PROXY`。摘要模式不依赖浏览器爬虫；需要网页正文时才开启 `SEARCH_FETCH_CONTENT_ENABLED=true`，抓取失败仍回退到搜索摘要。
+
 ## 语音
 
 ```dotenv
