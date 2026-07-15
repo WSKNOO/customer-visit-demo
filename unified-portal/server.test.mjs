@@ -20,7 +20,8 @@ try {
   const page = await fetch(base).then(r => r.text())
   assert.equal(health.status, 'ok')
   assert.equal(config.solution_url, 'https://solution.example.com/')
-  assert.match(page, /政企客户智能拜访助手/)
+  assert.match(page, /产数售前助手/)
+  assert.match(page, /客户拜访AI对练助手/)
 } finally { server.close() }
 
 console.log('unified portal tests passed')

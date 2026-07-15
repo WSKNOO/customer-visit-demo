@@ -2,13 +2,13 @@
   <div class="report-list">
     <!-- Hero Section -->
     <div class="report-list__hero">
-      <p class="report-list__badge">客户情报研究平台</p>
-      <h1 class="report-list__title">研究报告</h1>
-      <p class="report-list__subtitle">基于多维数据智能生成的客户拜访简报，助您高效准备每一次客户沟通</p>
+      <p class="report-list__badge">产数售前助手 · 拜访准备</p>
+      <h1 class="report-list__title">客户拜访情报助手</h1>
+      <p class="report-list__subtitle">联网洞察客户背景、行业动态与数字化线索，智能生成拜访情报简报</p>
       <div class="report-list__actions">
         <a-button type="primary" size="large" @click="showNewResearch = true">
           <template #icon><PlusOutlined /></template>
-          发起新研究
+          生成拜访情报
         </a-button>
         <a-button size="large" @click="refresh" :loading="store.loading">
           <template #icon><ReloadOutlined /></template>
@@ -88,7 +88,7 @@
     <!-- New Research Modal -->
     <a-modal
       v-model:open="showNewResearch"
-      title="发起新客户研究"
+      title="生成客户拜访情报"
       :footer="null"
       destroyOnClose
       :width="520"
@@ -118,7 +118,7 @@
         <a-form-item>
           <a-button type="primary" html-type="submit" :loading="researching" block size="large">
             <template #icon><SearchOutlined /></template>
-            开始研究
+            开始生成
           </a-button>
         </a-form-item>
       </a-form>
@@ -210,8 +210,8 @@ async function handleResearch() {
     showNewResearch.value = false
     researchForm.value = { company_name: '', visit_purpose: '', focus_areas: '' }
     pollResearchStatus(res.task_id)
-  } catch (e: any) {
-    researchResult.value = `错误: ${e.message || '启动研究失败'}`
+  } catch {
+    researchResult.value = '暂时无法启动情报生成，请稍后重试；已有报告不会丢失。'
   } finally {
     researching.value = false
   }

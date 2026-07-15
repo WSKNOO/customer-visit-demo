@@ -50,7 +50,7 @@
                 :disabled="!store.currentReport"
                 @click="startTraining"
               >
-                <RocketOutlined /> 开始AI陪练
+                <RocketOutlined /> 开始AI对练
               </a-button>
               <a-tooltip title="切换目录">
                 <a-button class="report-detail__topbar-btn" @click="sidebarOpen = !sidebarOpen">

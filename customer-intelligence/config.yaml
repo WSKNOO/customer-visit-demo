@@ -44,3 +44,11 @@ summarizer:
   max_tokens: 64000
   # Maximum input characters to summarize (truncate if longer)
   max_input_chars: 128000
+  # Report-generation token budget for the current OpenAI-compatible model.
+  context_limit: 20480
+  max_input_tokens: 8000
+  max_report_output_tokens: 4096
+  token_safety_margin: 1024
+  retry_input_tokens: 4500
+  max_report_sources: 10
+  max_source_chars: 500

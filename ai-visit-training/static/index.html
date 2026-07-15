@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>语音对练 - 客户拜访AI对练</title>
+    <title>客户拜访AI对练助手 | 产数售前助手</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -547,8 +547,8 @@
     <div class="container">
         <!-- 头部 -->
         <div class="header">
-            <h1>语音对练</h1>
-            <p id="modeDescription">客户拜访AI智能对练系统 | 正在检测运行模式</p>
+            <h1>客户拜访AI对练助手</h1>
+            <p id="modeDescription">产数售前助手 | 正在检测运行模式</p>
             <div class="status-bar" id="statusBar">
                 <div class="status-item"><div class="status-dot loading" id="micStatus"></div><span id="micStatusText">麦克风：检测中...</span></div>
                 <div class="status-item"><div class="status-dot loading" id="asrStatus"></div><span id="asrStatusText">语音输入：检测中...</span></div>
@@ -644,7 +644,7 @@
                     <div id="envBanner" style="display:none;"></div>
                     <div class="welcome-message">
                         <div class="icon">🎯</div>
-                        <h2>售前实战对练系统</h2>
+                        <h2>客户拜访AI实战对练</h2>
                         <p>资深AI教练模拟真实客户，帮你提升售前能力</p>
                         <br>
                         <div style="background:rgba(0,0,0,0.04);padding:22px;border-radius:14px;text-align:left;max-width:450px;margin:0 auto;">
@@ -1788,7 +1788,7 @@
 
     function startTimer() { setInterval(function(){var e=Math.floor((Date.now()-state.startTime)/1000);var m=Math.floor(e/60);var s=e%60;gId('duration').textContent=m+':'+(s<10?'0':'')+s;},1000); }
 
-    function detectBackendMode() { fetch('/api/mode').then(function(r){return r.json()}).then(function(d){state.backendMode=d.mode||'lite';state.demoMode=!!d.demo_mode;state.voiceEnabled=!!d.voice_enabled;state.ttsAvailable=!!d.tts_available;state.asrProvider=(d.asr&&d.asr.method==='http-service')?'http':'disabled';updateTtsButtons();var db=gId('demoBtn');if(db){db.style.display=state.demoMode?'':'none';db.onclick=startDemoSession;}var md=gId('modeDescription');if(md)md.textContent='客户拜访AI智能对练系统 | '+(state.demoMode?'演示保障模式':(d.mock?'Mock模式':'受控模型模式'))+' | '+(state.voiceEnabled?'语音可选':'纯文字主演示');var ais=gId('aiStatus'),ait=gId('aiStatusText');if(ais&&ait){if(state.demoMode){ais.className='status-dot ready';ait.textContent='AI能力：演示就绪';}else if(d.mock){ais.className='status-dot warning';ait.textContent='AI能力：模拟就绪';}else if(d.model_configured){ais.className='status-dot ready';ait.textContent='AI能力：已就绪';}else{ais.className='status-dot warning';ait.textContent='AI能力：准备中';}}if(state.voiceEnabled&&state.asrProvider==='http'){state.asrReady=true;gId('asrStatus').className='status-dot ready';gId('asrStatusText').textContent='语音输入：可用';initMediaRecorder();}else{gId('asrStatus').className='status-dot warning';gId('asrStatusText').textContent='语音输入：未启用';gId('micStatus').className='status-dot warning';gId('micStatusText').textContent='麦克风：未启用';recordBtn.disabled=true;}}).catch(function(){var ait=gId('aiStatusText');if(ait)ait.textContent='AI能力：暂时不可用';recordBtn.disabled=true;}); }
+    function detectBackendMode() { fetch('/api/mode').then(function(r){return r.json()}).then(function(d){state.backendMode=d.mode||'lite';state.demoMode=!!d.demo_mode;state.voiceEnabled=!!d.voice_enabled;state.ttsAvailable=!!d.tts_available;state.asrProvider=(d.asr&&d.asr.method==='http-service')?'http':'disabled';updateTtsButtons();var db=gId('demoBtn');if(db){db.style.display=state.demoMode?'':'none';db.onclick=startDemoSession;}var md=gId('modeDescription');if(md)md.textContent='产数售前助手 · 客户拜访AI对练 | '+(state.demoMode?'演示保障模式':(d.mock?'Mock模式':'受控模型模式'))+' | '+(state.voiceEnabled?'语音可选':'纯文字主演示');var ais=gId('aiStatus'),ait=gId('aiStatusText');if(ais&&ait){if(state.demoMode){ais.className='status-dot ready';ait.textContent='AI能力：演示就绪';}else if(d.mock){ais.className='status-dot warning';ait.textContent='AI能力：模拟就绪';}else if(d.model_configured){ais.className='status-dot ready';ait.textContent='AI能力：已就绪';}else{ais.className='status-dot warning';ait.textContent='AI能力：准备中';}}if(state.voiceEnabled&&state.asrProvider==='http'){state.asrReady=true;gId('asrStatus').className='status-dot ready';gId('asrStatusText').textContent='语音输入：可用';initMediaRecorder();}else{gId('asrStatus').className='status-dot warning';gId('asrStatusText').textContent='语音输入：未启用';gId('micStatus').className='status-dot warning';gId('micStatusText').textContent='麦克风：未启用';recordBtn.disabled=true;}}).catch(function(){var ait=gId('aiStatusText');if(ait)ait.textContent='AI能力：暂时不可用';recordBtn.disabled=true;}); }
 
     function applyIntegratedSession(data) {
         state.integrationSessionId = data.session_id;
@@ -1908,7 +1908,7 @@
             if (leftSidebar) leftSidebar.style.display = '';
             if (rightSidebar) rightSidebar.style.display = '';
             document.querySelector('.main-content').style.gridTemplateColumns = '';
-            chatMessages.innerHTML = '<div class="welcome-message"><div class="icon">🎯</div><h2>售前实战对练系统</h2><p>资深AI教练模拟真实客户，帮你提升售前能力</p></div>';
+            chatMessages.innerHTML = '<div class="welcome-message"><div class="icon">🎯</div><h2>客户拜访AI实战对练</h2><p>资深AI教练模拟真实客户，帮你提升售前能力</p></div>';
             gId('textInput').placeholder = '输入消息或使用麦克风录音...';
             state.sessionStarted = false; state.messages = []; state.msgCount = 0;
             gId('msgCount').textContent = '0';

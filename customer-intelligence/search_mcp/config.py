@@ -59,6 +59,13 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "temperature": 0.3,
         "max_tokens": 2048,
         "max_input_chars": 100000,
+        "context_limit": 20480,
+        "max_input_tokens": 8000,
+        "max_report_output_tokens": 4096,
+        "token_safety_margin": 1024,
+        "retry_input_tokens": 4500,
+        "max_report_sources": 10,
+        "max_source_chars": 500,
     },
 }
 
@@ -84,6 +91,13 @@ ENV_OVERRIDES = [
     ("SEARCH_MCP_SUMMARIZER_TEMPERATURE", ["summarizer", "temperature"], float),
     ("SEARCH_MCP_SUMMARIZER_MAX_TOKENS", ["summarizer", "max_tokens"], int),
     ("SEARCH_MCP_SUMMARIZER_MAX_INPUT_CHARS", ["summarizer", "max_input_chars"], int),
+    ("INTELLIGENCE_MODEL_CONTEXT_LIMIT", ["summarizer", "context_limit"], int),
+    ("INTELLIGENCE_MODEL_MAX_INPUT_TOKENS", ["summarizer", "max_input_tokens"], int),
+    ("INTELLIGENCE_MODEL_MAX_OUTPUT_TOKENS", ["summarizer", "max_report_output_tokens"], int),
+    ("INTELLIGENCE_MODEL_TOKEN_SAFETY_MARGIN", ["summarizer", "token_safety_margin"], int),
+    ("INTELLIGENCE_MODEL_RETRY_INPUT_TOKENS", ["summarizer", "retry_input_tokens"], int),
+    ("INTELLIGENCE_REPORT_MAX_SOURCES", ["summarizer", "max_report_sources"], int),
+    ("INTELLIGENCE_REPORT_SOURCE_MAX_CHARS", ["summarizer", "max_source_chars"], int),
 ]
 
 
