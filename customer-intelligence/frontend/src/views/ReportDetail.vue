@@ -95,7 +95,7 @@
           <!-- Content -->
           <ContentViewer
             ref="contentViewerRef"
-            :markdown="store.currentReport.content"
+            :markdown="normalizedReportMarkdown"
           />
         </main>
       </div>
@@ -127,6 +127,7 @@ import SectionTree, { type HeadingItem } from '@/components/SectionTree.vue'
 import ContentViewer from '@/components/ContentViewer.vue'
 import { useReportStore } from '@/stores/reportStore'
 import { startTrainingFromReport } from '@/api'
+import { normalizeReportMarkdown, parseReportHeadings } from '@/utils/reportMarkdown'
 
 const route = useRoute()
 const router = useRouter()
@@ -148,23 +149,12 @@ const parsedDate = computed(() => {
 
 const isMockOrCachedReport = computed(() => /Mock|缓存演示结果/.test(store.currentReport?.content || ''))
 
-// Parse H1~H3 headings for the left TOC
-const headings = computed<HeadingItem[]>(() => {
-  if (!store.currentReport) return []
-  const lines = store.currentReport.content.split(/\r?\n/)
-  const result: HeadingItem[] = []
-  for (const line of lines) {
-    const m1 = line.match(/^# (?!#)(.+?)\r?$/)
-    const m2 = line.match(/^## (.+?)\r?$/)
-    const m3 = line.match(/^### (.+?)\r?$/)
-    if (m1) result.push({ level: 1, text: m1[1].replace(/\*\*/g, '') })
-    else if (m2) result.push({ level: 2, text: m2[1].replace(/\*\*/g, '') })
-    else if (m3) result.push({ level: 3, text: m3[1].replace(/\*\*/g, '') })
-  }
-  // Skip the first H1 if it's just the document title (科大讯飞股份有限公司 客户拜访情报简报)
-  // Keep later H1s (一、二、三...)
-  return result
-})
+const normalizedReportMarkdown = computed(() =>
+  normalizeReportMarkdown(store.currentReport?.content || ''),
+)
+
+// ContentViewer uses the same normalized Markdown and parser, keeping tree indexes aligned.
+const headings = computed<HeadingItem[]>(() => parseReportHeadings(normalizedReportMarkdown.value))
 
 onMounted(() => {
   if (filename.value) store.loadReport(filename.value)

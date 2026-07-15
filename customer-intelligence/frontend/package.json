@@ -11,7 +11,7 @@
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "server": "node server/index.js",
-    "test": "node server/validation.test.mjs && node server/visitBrief.test.mjs && node server/trainingIntegration.test.mjs"
+    "test": "node tests/reportMarkdown.test.mjs && node server/validation.test.mjs && node server/visitBrief.test.mjs && node server/trainingIntegration.test.mjs"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.0",

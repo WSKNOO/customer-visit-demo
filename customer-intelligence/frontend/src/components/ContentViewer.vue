@@ -2,7 +2,7 @@
   <div class="content-viewer">
     <div class="content-viewer__body" ref="bodyRef" v-html="renderedHtml" @click="handleContentClick"></div>
 
-    <div v-if="!markdown" class="content-viewer__empty">
+    <div v-if="!normalizedMarkdown" class="content-viewer__empty">
       <FileSearchOutlined />
       <p>暂无报告内容</p>
     </div>
@@ -10,92 +10,74 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { FileSearchOutlined } from '@ant-design/icons-vue'
-import { marked } from 'marked'
+import { Marked, Renderer } from 'marked'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
-
-marked.use({ gfm: true, breaks: true })
+import { compactHeadingId, normalizeReportMarkdown, parseReportHeadings } from '@/utils/reportMarkdown'
 
 const props = defineProps<{ markdown: string }>()
 
 const bodyRef = ref<HTMLElement | null>(null)
-const headingIds = ref<string[]>([])
-
-function compactHeadingId(title: string): string {
-  return title
-    .replace(/\*\*/g, '')
-    .normalize('NFKC')
-    .replace(/[^\p{L}\p{N}]/gu, '')
-    .toLowerCase() || 'section'
-}
-
-function buildHeadingIds(markdown: string): string[] {
-  const withoutCodeBlocks = markdown.replace(/```[\s\S]*?```/g, '')
-  const counts = new Map<string, number>()
-  const ids: string[] = []
-  withoutCodeBlocks.replace(/^(#{1,4})\s+(.+)$/gm, (_m: string, _hashes: string, title: string) => {
-    const base = compactHeadingId(title)
-    const count = (counts.get(base) || 0) + 1
-    counts.set(base, count)
-    ids.push(count === 1 ? base : `${base}-${count}`)
-    return ''
-  })
-  return ids
-}
+const normalizedMarkdown = computed(() => normalizeReportMarkdown(props.markdown))
+const reportHeadings = computed(() => parseReportHeadings(normalizedMarkdown.value))
+const headingIds = computed(() => reportHeadings.value.map(heading => heading.id))
 
 const renderedHtml = computed(() => {
-  if (!props.markdown) return ''
+  if (!normalizedMarkdown.value) return ''
 
-  // Process code blocks with highlight.js
-  const processed = props.markdown.replace(/```(\w*)\n([\s\S]*?)```/g, (_m: string, lang: string, code: string) => {
+  const renderer = new Renderer()
+  let headingIndex = 0
+  renderer.heading = (text: string, level: number) => {
+    if (level > 4) return `<h${level}>${text}</h${level}>\n`
+    const id = headingIds.value[headingIndex++] || `section-${headingIndex}`
+    return `<h${level} id="${id}">${text}</h${level}>\n`
+  }
+  renderer.code = (code: string, infostring?: string) => {
+    const requestedLanguage = (infostring || '').trim().split(/\s+/)[0].toLowerCase()
+    const language = /^[a-z0-9_+-]+$/i.test(requestedLanguage) ? requestedLanguage : ''
     let highlighted: string
-    if (lang && hljs.getLanguage(lang)) {
-      highlighted = hljs.highlight(code, { language: lang }).value
+    if (language && hljs.getLanguage(language)) {
+      highlighted = hljs.highlight(code, { language }).value
     } else {
       highlighted = hljs.highlightAuto(code).value
     }
-    return `<pre><code class="hljs language-${lang || 'plaintext'}">${highlighted}</code></pre>`
-  })
+    return `<pre><code class="hljs language-${language || 'plaintext'}">${highlighted}</code></pre>\n`
+  }
 
-  const ids = buildHeadingIds(props.markdown)
-  let headingIndex = 0
-
-  // Add deterministic Chinese-safe IDs to headings so Markdown links and the side TOC agree.
-  const withIds = processed.replace(/^(#{1,4})\s+(.+)$/gm, (_m: string, hashes: string, title: string) => {
-    const id = ids[headingIndex++] || `section-${headingIndex}`
-    return `${hashes} <span id="${id}" aria-hidden="true"></span>${title}`
-  })
-
-  headingIds.value = ids
-
-  return marked.parse(withIds, { async: false }) as string
+  return new Marked({ gfm: true, breaks: true, renderer }).parse(normalizedMarkdown.value) as string
 })
 
-// Expose scrollToHeading for parent to call
+function scrollToId(id: string) {
+  if (!id || !bodyRef.value) return
+  const target = document.getElementById(id)
+  if (!target || !bodyRef.value.contains(target)) return
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  window.history.replaceState(
+    null,
+    '',
+    `${window.location.pathname}${window.location.search}#${encodeURIComponent(id)}`,
+  )
+}
+
+// Expose scrollToHeading for the left navigation tree.
 function scrollToHeading(index: number) {
   const id = headingIds.value[index]
-  if (!id || !bodyRef.value) return
-  const el = bodyRef.value.querySelector(`#${CSS.escape(id)}`)
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
+  if (id) scrollToId(id)
 }
 
 function handleContentClick(event: MouseEvent) {
   const link = (event.target as HTMLElement | null)?.closest<HTMLAnchorElement>('a[href^="#"]')
   if (!link || !bodyRef.value) return
-  const rawHash = decodeURIComponent(link.getAttribute('href')?.slice(1) || '')
+  let rawHash = link.getAttribute('href')?.slice(1) || ''
+  try { rawHash = decodeURIComponent(rawHash) } catch { return }
   if (!rawHash) return
   const normalized = compactHeadingId(rawHash)
-  const targetId = headingIds.value.find(id => id === rawHash || id === normalized || id.endsWith(normalized))
+  const targetId = headingIds.value.find(id => id === rawHash || id === normalized)
   if (!targetId) return
-  const target = bodyRef.value.querySelector<HTMLElement>(`#${CSS.escape(targetId)}`)
-  if (!target) return
   event.preventDefault()
-  target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${targetId}`)
+  scrollToId(targetId)
 }
 
 defineExpose({ scrollToHeading })
